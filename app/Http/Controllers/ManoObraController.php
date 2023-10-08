@@ -62,7 +62,7 @@ class ManoObraController extends Controller
             'profesion'=>'required',
             'estado_civil'=>'required',
             'sexo'=>'required',
-            'fecha_nacimiento'=>'required',
+            'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
             'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
 
@@ -183,7 +183,7 @@ class ManoObraController extends Controller
             'profesion'=>'required',
             'estado_civil'=>'required',
             'sexo'=>'required',
-            'fecha_nacimiento'=>'required',
+            'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
             'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
         

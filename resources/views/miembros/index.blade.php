@@ -33,6 +33,7 @@
                     <td>{{$manoObra->isss}}</td>
                     <td>
                         <a class="btn btn-secondary" href="{{route('miembros.show', $manoObra->id)}}">Mostrar</a>
+                        <a class="btn btn-primary" href="{{route('miembros.edit', $manoObra->id)}}">Editar</a>
                         <a href="#confirmDeleteModal" class="btn btn-danger" data-toggle="modal">Eliminar</a>
                         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
