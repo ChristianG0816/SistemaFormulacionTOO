@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController;
-
+use App\Http\Controllers\EquipoTrabajoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +28,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles', RolController::class);
     Route::resource('usuarios', UsuarioController::class);
+    //Route::post('/eliminar-equipos', [EquipoDeTrabajoController::class, 'eliminarEquipos']);
+    //Route::post('/crear-equipos-trabajo', [EquipoTrabajoController::class, 'crearEquiposTrabajo']);
+    // Ruta para mostrar la lista de equipos relacionados con un proyecto específico
+    Route::get('/equipos/list/{proyectoId}', [EquipoTrabajoController::class, 'list']);
+    // Ruta para las otras acciones CRUD (opcional)
+    Route::resource('equipos', EquipoTrabajoController::class)->except(['list']);
+
 });

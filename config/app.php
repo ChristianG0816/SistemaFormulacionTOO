@@ -179,6 +179,9 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
 
+        //DATATABLES
+        Yajra\DataTables\DataTablesServiceProvider::class,
+
     ],
 
     /*
