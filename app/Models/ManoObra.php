@@ -23,6 +23,7 @@ class ManoObra extends Model
         'costo_servicio',
         'id_usuario'
     ];
+
     public function usuario(){
         return $this->belongsTo(User::class, 'id_usuario');
     }

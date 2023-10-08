@@ -324,6 +324,13 @@ return [
             'label'       => 4,
             'label_color' => 'success',
         ],
+        ['header' => 'Datos'],
+        
+        [
+            'text' => 'Miembros',
+            'url'  => 'miembros',
+            'icon' => 'fas fa-fw fa-users',
+        ],
         ['header' => 'Administración'],
         
         [
