@@ -45,12 +45,14 @@
                     {!! Form::date('fecha_fin', null, array('class'=>'form-control')) !!}
                 </div>
                 <div class="form-group">
-                    <label for="responsabilidades">Responsabilidades</label>
-                    {!! Form::text('responsabilidades', null, array('class'=>'form-control')) !!}
-                </div>
-                <div class="form-group">
                     <label for="id_estado_actividad">Estado Actividad</label>
                     {!! Form::select('id_estado_actividad', $estadosActividad, [], ['class' => 'form-control']) !!}
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <div class="form-group">
+                    <label for="responsabilidades">Responsabilidades</label>
+                    {!! Form::textarea('responsabilidades', null, array('class'=>'form-control')) !!}
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Guardar</button>

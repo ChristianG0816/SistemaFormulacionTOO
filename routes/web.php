@@ -33,7 +33,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('miembros', ManoObraController::class);
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
     Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
-    Route::resource('actividades', ActividadController::class)->except(['index','create']);
+    Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
+    Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
     //Route::post('/eliminar-equipos', [EquipoDeTrabajoController::class, 'eliminarEquipos']);
     //Route::post('/crear-equipos-trabajo', [EquipoTrabajoController::class, 'crearEquiposTrabajo']);
     // Ruta para mostrar la lista de equipos relacionados con un proyecto específico

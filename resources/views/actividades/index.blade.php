@@ -32,6 +32,7 @@
                     <td>{{$actividad->responsabilidades}}</td>
                     <td>{{$actividad->estado_actividad->nombre}}</td>
                     <td>
+                        <a class="btn btn-secondary" href="{{route('actividades.show', $actividad->id)}}">Mostrar</a>
                         <a class="btn btn-info" href="{{route('actividades.edit', $actividad->id)}}">Editar</a>
                         <a href="#confirmDeleteModal" class="btn btn-danger" data-toggle="modal">Eliminar</a>
                         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
