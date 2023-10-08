@@ -6,6 +6,7 @@ use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\EquipoTrabajoController;
 use App\Http\Controllers\ManoObraController;
+use App\Http\Controllers\ActividadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles', RolController::class);
     Route::resource('usuarios', UsuarioController::class);
     Route::resource('miembros', ManoObraController::class);
+    Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
+    Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
+    Route::resource('actividades', ActividadController::class)->except(['index','create']);
     //Route::post('/eliminar-equipos', [EquipoDeTrabajoController::class, 'eliminarEquipos']);
     //Route::post('/crear-equipos-trabajo', [EquipoTrabajoController::class, 'crearEquiposTrabajo']);
     // Ruta para mostrar la lista de equipos relacionados con un proyecto específico
