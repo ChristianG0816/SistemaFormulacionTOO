@@ -15,6 +15,7 @@
     <table id="tabla-miembros" class="table table-striped mt-2">
         <thread style="background-color: #6777ef;">
             <th>Nombre</th>
+            <th>Apellido</th>
             <th>Profesión</th>
             <th>Costo Servicio</th>
             <th>DUI</th>
