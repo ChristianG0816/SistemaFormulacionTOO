@@ -7,11 +7,13 @@
 @stop
 
 @section('content')
-    <a class="btn btn-warning" href="{{route('miembros.create')}}">Nuevo</a>
+    <a class="btn btn-sm btn-outline-warning" href="{{route('miembros.create')}}">Nuevo</a>
+    <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
+    <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
+    <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button> 
 
-    <table class="table table-striped mt-2">
+    <table id="tabla-miembros" class="table table-striped mt-2">
         <thread style="background-color: #6777ef;">
-            <th class="d-none">ID</th>
             <th>Nombre</th>
             <th>Profesión</th>
             <th>Costo Servicio</th>
@@ -20,46 +22,31 @@
             <th>ISS</th>
             <th>Acciones</th>
         </thread>
-
         <tbody>
-            @foreach($manoObras as $manoObra)
-                <tr>
-                    <td class="d-none">{{$manoObra->id}}</td>
-                    <td>{{$manoObra->usuario->name}} {{$manoObra->usuario->last_name}}</td>
-                    <td>{{$manoObra->profesion}}</td>
-                    <td>{{$manoObra->costo_servicio}}</td>
-                    <td>{{$manoObra->dui}}</td>
-                    <td>{{$manoObra->afp}}</td>
-                    <td>{{$manoObra->isss}}</td>
-                    <td>
-                        <a class="btn btn-secondary" href="{{route('miembros.show', $manoObra->id)}}">Mostrar</a>
-                        <a class="btn btn-primary" href="{{route('miembros.edit', $manoObra->id)}}">Editar</a>
-                        <a href="#confirmDeleteModal" class="btn btn-danger" data-toggle="modal">Eliminar</a>
-                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title" id="myModalLabel">Confirmar eliminación</h4>
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ¿Estás seguro de que deseas eliminar este registro?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                        {!! Form::open(['method' => 'DELETE', 'route'=>['miembros.destroy', $manoObra->id], 'style'=> 'display:inline' ]) !!}
-                                            {!! Form::submit('Eliminar', ['class' => 'btn btn-danger'])!!}
-                                        {!! Form::close() !!}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-
-                </tr>
-            @endforeach
         </tbody>
-
     </table>
+    <!-- Modal de eliminar -->
+    <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirmar eliminación</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <strong>¿Estás seguro de eliminar la actividad seleccionada?</strong>
+                    <p>Ten en cuenta que se eliminarán los datos relacionados a la actividad.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="eliminarMiembroBtn" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                    <button type="button" class="btn btn-outline-dark btn-sm" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>                 
+    <!-- /.Modal de eliminar -->
+@stop
 
+@section('js')
+    <script src="{{ asset('js/miembros/miembros.js') }}"></script>
 @stop

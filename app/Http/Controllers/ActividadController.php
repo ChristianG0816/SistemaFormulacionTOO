@@ -29,6 +29,13 @@ class ActividadController extends Controller
         return view('actividades.index', compact('actividades', 'proyecto'));
     }
 
+    public function data($id)
+    {
+        $proyecto = Proyecto::findOrFail($id);
+        $data = Actividad::where('id_proyecto', $proyecto->id)->with(['estado_actividad']) ->get();
+        return datatables()->of($data)->toJson();
+    }
+
     /**
      * Show the form for creating a new resource.
      *

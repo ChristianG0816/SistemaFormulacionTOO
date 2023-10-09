@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use App\Mail\NuevoUsuarioCreado;
 
 class ManoObraController extends Controller
 {
@@ -23,6 +24,12 @@ class ManoObraController extends Controller
     {
         $manoObras = ManoObra::all();
         return view('miembros.index', compact('manoObras'));
+    }
+
+    public function data()
+    {
+        $data = ManoObra::with('usuario')->get();
+        return datatables()->of($data)->toJson();
     }
 
     /**
@@ -66,6 +73,8 @@ class ManoObraController extends Controller
             'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
 
+        $password=$request->input('password');
+
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         
@@ -85,6 +94,7 @@ class ManoObraController extends Controller
             'fecha_nacimiento'=>$request->input('fecha_nacimiento'),
             'costo_servicio'=>$request->input('costo_servicio')
         ]);
+        \Mail::to($user->email)->send(new NuevoUsuarioCreado($user->name." ".$user->last_name, $user->email, $password));
         return redirect()->route('miembros.index');
     }
 

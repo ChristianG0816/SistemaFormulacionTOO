@@ -29,26 +29,25 @@
     </div>
     @endif
 
-    {!! Form::model($actividad, ['method'=>'PATCH', 'route' => ['actividades.update', $actividad->id]]) !!}
     <div class="container pb-5">
         <div class="row col-xs-12 col-sm-12 col-md-12">
             <div class="col-xs-6 col-sm-6 col-md-6">
                 {!! Form::text('id_proyecto', $actividad->id_proyecto, ['class' => 'form-control d-none', 'readonly' => 'readonly']) !!}
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    {!! Form::text('nombre', null, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    {!! Form::text('nombre', $actividad->nombre, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
                 <div class="form-group">
                     <label for="fecha_inicio">Fecha Inicio</label>
-                    {!! Form::date('fecha_inicio', null, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    {!! Form::date('fecha_inicio', $actividad->fecha_inicio, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
                 <div class="form-group">
                     <label for="fecha_fin">Fecha Fin</label>
-                    {!! Form::date('fecha_fin', null, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    {!! Form::date('fecha_fin', $actividad->fecha_fin, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
                 <div class="form-group">
                     <label for="prioridad">Prioridad</label>
-                    {!! Form::text('prioridad', null, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    {!! Form::text('prioridad', $actividad->prioridad, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
                 <div class="form-group">
                     <label for="id_estado_actividad">Estado Actividad</label>
@@ -58,10 +57,9 @@
             <div class="col-xs-6 col-sm-6 col-md-6">
                 <div class="form-group">
                     <label for="responsabilidades">Responsabilidades</label>
-                    {!! Form::textarea('responsabilidades', null, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    {!! Form::textarea('responsabilidades', $actividad->responsibilidades, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
 @stop
