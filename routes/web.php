@@ -32,11 +32,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles', RolController::class);
     Route::resource('usuarios', UsuarioController::class);
+    Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
     Route::resource('recursos', RecursoController::class);
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
     Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
+    Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
     //Route::post('/eliminar-equipos', [EquipoDeTrabajoController::class, 'eliminarEquipos']);
     //Route::post('/crear-equipos-trabajo', [EquipoTrabajoController::class, 'crearEquiposTrabajo']);
