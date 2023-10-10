@@ -61,7 +61,7 @@
             <div class="card-header">
                 <h3 class="card-title">Equipo de Trabajo</h3>
                 <div class="card-tools">
-                    <input type="submit" value="Agregar" class="btn btn-sm btn-success my-0">
+                    <input type="button" value="Agregar" class="btn btn-sm btn-success my-0" data-toggle="modal" data-target="#agregarMiembroModal">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
                     </button>
@@ -90,6 +90,38 @@
         </div>
     </div>
 </div>
+<!-- Modal Agregar Miembro -->
+<div class="modal fade" id="agregarMiembroModal" tabindex="-1" role="dialog" aria-labelledby="agregarMiembroModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="agregarMiembroModalLabel">Agregar Miembro al Equipo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="agregarMiembroForm">
+                    <div class="form-group">
+                        <label for="miembroSelect">Selecciona un miembro:</label>
+                        <select class="form-control" id="miembroSelect" name="miembroSelect">
+                        </select>
+                    </div>
+                </form>
+                <div id="miembroDetalle">
+                    <p><strong>Nombre:</strong> <span id="nombreMiembro"></span></p>
+                    <p><strong>Correo:</strong> <span id="correoMiembro"></span></p>
+                    <p><strong>Teléfono:</strong> <span id="telefonoMiembro"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="agregarMiembroBtn">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @stop
 
 @section('css')
@@ -102,6 +134,7 @@
     <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
         var proyectoId = {{ $proyectoId }};
+        var csrfToken = '{{ csrf_token() }}';
     </script>
     <script src="{{ asset('js/equipos/main.js') }}"></script>
 @stop

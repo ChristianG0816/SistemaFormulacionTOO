@@ -28,4 +28,9 @@ class ManoObra extends Model
         return $this->belongsTo(User::class, 'id_usuario');
     }
 
+    public function equipos()
+    {
+        return $this->hasMany(EquipoTrabajo::class, 'id_mano_obra');
+    }
+
 }
