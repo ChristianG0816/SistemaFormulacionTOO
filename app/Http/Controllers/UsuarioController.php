@@ -45,6 +45,7 @@ class UsuarioController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
+            'last_name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password'=>'required|same:confirm-password',
             'roles'=>'required'
@@ -97,6 +98,7 @@ class UsuarioController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
+            'last_name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'password'=>'same:confirm-password',
             'roles'=>'required'
@@ -129,4 +131,25 @@ class UsuarioController extends Controller
         User::find($id)->delete();
         return redirect()->route('usuarios.index');
     }
+
+    public function data() {
+    
+    $usuarios = User::all();
+    $data = [];
+
+    foreach ($usuarios as $usuario) {
+        $data[] = [
+            'id' => $usuario->id,
+            'name' => $usuario->name,
+            'email' => $usuario->email,
+            'roles' => $usuario->getRoleNames(),
+            /*'roles' => $usuario->roles->pluck('name')->implode(', '),*/
+        ];
+    }
+
+    return datatables()->of($data)->toJson();
+}
+
+
+
 }

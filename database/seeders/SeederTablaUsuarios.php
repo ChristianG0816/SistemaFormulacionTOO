@@ -14,6 +14,16 @@ class SeederTablaUsuarios extends Seeder
      */
     public function run()
     {
+
+        $administrador = User::create([
+            'name'=> 'admin',
+            'last_name'=> 'apellido',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('12345678')
+        ]);
+
+        $administrador->assignRole('Administrador');
+
         $usuario = User::create([
             'name'=> 'nombre',
             'last_name'=> 'apellido',

@@ -31,6 +31,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles', RolController::class);
+    Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
     Route::resource('usuarios', UsuarioController::class);
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
