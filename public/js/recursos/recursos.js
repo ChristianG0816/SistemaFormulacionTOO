@@ -54,20 +54,14 @@ $(document).ready(function() {
                     
                     var actionsHtml = '';
                     
-                    //if(hasPrivilegeVerMiembro === true){
-                        actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/recursos/'+row.id+'">Mostrar</a>';
-                    /*}
+                    actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/recursos/'+row.id+'">Mostrar</a>';
+    
+                    actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/recursos/'+row.id+'/edit">Editar</a>';
 
-                    if(hasPrivilegeEditarMiembro === true){*/
-                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/recursos/'+row.id+'/edit">Editar</a>';
-                    /*}
-                    
-                    if(hasPrivilegeEliminarMiembro === true){*/
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
-                   //}
-                    
+                   
                     return actionsHtml || '';
                 }
             }
@@ -136,35 +130,30 @@ $(document).ready(function() {
     $(document).on('click', '.eliminarModal-btn', function () {
         var id = $(this).data('id');
         var modal = $('#confirmarEliminarModal');
-        var tituloModal = modal.find('.modal-title');
-        var cuerpoModal = modal.find('.modal-body');
-        var eliminarBtn = modal.find('#eliminarMiembroBtn');
-        tituloModal.text('Confirmar eliminación');
-        cuerpoModal.html('<strong>¿Estás seguro de eliminar el miembro seleccionado?</strong><br>Ten en cuenta que se eliminarán \n\
-        los datos relacionados al miembro');
+        var eliminarBtn = modal.find('#eliminarRecursoBtn');
         eliminarBtn.data('id', id);
         modal.modal('show');
     });
    
    
    //Método para enviar la solicitud de eliminar
-    $(document).on('click', '#eliminarMiembroBtn', function () {
+    $(document).on('click', '#eliminarRecursoBtn', function () {
         var id = $(this).data('id');
         var modal = $('#confirmarEliminarModal');
         $.ajax({
-            url: '/miembros/' + id,
+            url: '/recursos/' + id,
             type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
                 modal.modal('hide');
-                var table = $('#tabla-miembros').DataTable();
+                var table = $('#tabla-recursos').DataTable();
                 table.ajax.reload(null, false);
             },
             error: function (error) {
                 modal.modal('hide');
-                var table = $('#tabla-miembros').DataTable();
+                var table = $('#tabla-recursos').DataTable();
                 table.ajax.reload(null, false);
             }
         });

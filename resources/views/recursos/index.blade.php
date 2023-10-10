@@ -31,11 +31,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
-                    <strong>¿Estás seguro de eliminar la actividad seleccionada?</strong>
-                    <p>Ten en cuenta que se eliminarán los datos relacionados a la actividad.</p>
+                    <strong>¿Estás seguro de eliminar el recurso seleccionado?</strong>
+                    <p>Ten en cuenta que se eliminarán los datos relacionados con el recurso.</p>
                 </div>
                 <div class="modal-footer">
-                    <button id="eliminarMiembroBtn" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                    <button id="eliminarRecursoBtn" class="btn btn-outline-danger btn-sm">Eliminar</button>
                     <button type="button" class="btn btn-outline-dark btn-sm" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
