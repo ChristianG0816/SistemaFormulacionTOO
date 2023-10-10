@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 
 //spatie
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class SeederTablaPermisos extends Seeder
 {
@@ -16,24 +17,20 @@ class SeederTablaPermisos extends Seeder
      */
     public function run()
     {
-        $permisos = [
 
-            //tabla roles
-            'ver-rol',
-            'crear-rol',
-            'editar-rol',
-            'borrar-rol',
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-            //tabla usuarios
-            //'ver-usuarios',
-            //'crear-usuarios',
-            //'editar-usuarios',
-            //'borrar-usuarios',
+        $roles = [
+            Permission::create(['name' => 'ver-rol']),
+            Permission::create(['name' => 'crear-rol']),
+            Permission::create(['name' => 'editar-rol']),
+            Permission::create(['name' => 'borrar-rol']),
         ];
 
-        foreach($permisos as $permiso){
-            Permission::create(['name'=>$permiso]);
-        }
+        $roleAdministrador = Role::create(['name' => 'Administrador'])->givePermissionTo([
+            //Roles referentes al administrador
+            $roles
+        ]);
 
     }
 }
