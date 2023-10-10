@@ -15,21 +15,15 @@ class RecursoController extends Controller
      */
     public function index()
     {
-        $recursos = Recurso::all();
-
-        foreach ($recursos as $recurso) {
-            $recurso->disponibilidad = $recurso->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
-        }
-
         return view('recursos.index');
     }
 
     public function data()
     {
         $data = Recurso::all();
-        // foreach ($data as $d) {
-        //     $d->disponibilidad = $d->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
-        // }
+        foreach ($data as $d) {
+             $d->disponibilidad = $d->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
+        }
 
         return datatables()->of($data)->toJson();
     }

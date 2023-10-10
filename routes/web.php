@@ -37,8 +37,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('usuarios', UsuarioController::class);
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
-    Route::resource('recursos', RecursoController::class);
     Route::get('recursos/data', [RecursoController::class, 'data'])->name('recursos.data');
+    Route::resource('recursos', RecursoController::class);
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
     Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
