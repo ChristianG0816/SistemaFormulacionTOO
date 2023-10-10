@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class RolController extends Controller
 {
@@ -113,4 +114,20 @@ class RolController extends Controller
         DB::table('roles')->where('id', $id)->delete();
         return redirect()->routes('roles.index');
     }
+
+    public function data() {
+        $roles = Role::all();
+        $data = [];
+    
+        foreach ($roles as $role) {
+            $data[] = [
+                'id' => $role->id,
+                'name' => $role->name,
+            ];
+        }
+    
+        return datatables()->of($data)->toJson();
+    }
+    
+
 }
