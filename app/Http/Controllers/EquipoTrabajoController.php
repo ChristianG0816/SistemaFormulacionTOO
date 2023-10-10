@@ -108,9 +108,9 @@ class EquipoTrabajoController extends Controller
                 return $row->mano_obra->telefono;
             })
             ->addColumn('action', function ($row) {
-                // Agregar botones de acciones (editar, eliminar, etc.) si es necesario
+                $btnDetalle = '<a href="' . route('miembros.show', $row->mano_obra->id) . '" class="edit btn btn-primary btn-sm">Detalle</a>';
                 $btnEliminar = '<button class="delete btn btn-danger btn-sm" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
-                return $btnEliminar;
+                return $btnDetalle . ' ' . $btnEliminar;
             })            
             ->rawColumns(['action'])
             ->make(true);

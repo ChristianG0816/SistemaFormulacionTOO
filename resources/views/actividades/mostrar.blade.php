@@ -145,6 +145,7 @@
     <script>
         var csrfToken = '{{ csrf_token() }}';
         var actividadId = {{ $actividad->id }};
+        var proyectoId = {{ $proyecto->id }};
     </script>
     <script src="{{ asset('js/miembrosActividad/main.js') }}"></script>
 @stop

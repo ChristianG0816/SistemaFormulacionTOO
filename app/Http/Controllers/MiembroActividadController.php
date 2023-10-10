@@ -20,7 +20,6 @@ class MiembroActividadController extends Controller
         ->with(['equipo_trabajo.mano_obra'])
         ->with(['equipo_trabajo.mano_obra.usuario'])
         ->get();
-
         return datatables()->of($data)
             ->addColumn('usuario_name', function ($row) {
                 // Acceder a la columna 'name' de la relación 'id_mano_obra.id_usuario'
@@ -41,20 +40,25 @@ class MiembroActividadController extends Controller
             })            
             ->addColumn('action', function ($row) {
                 // Agregar botones de acciones (editar, eliminar, etc.) si es necesario
+                $btnDetalle = '<a href="' . route('miembros.show', $row->equipo_trabajo->mano_obra->id) . '" class="edit btn btn-primary btn-sm">Detalle</a>';
                 $btnEliminar = '<button class="delete btn btn-danger btn-sm" data-id="' . $row->id . '">Eliminar</button>';
-                return $btnEliminar;
+                return $btnDetalle . ' ' . $btnEliminar;
             })            
             ->rawColumns(['action'])
             ->make(true);
     }
 
-    public function listMiembrosNoAsignados($actividadId)
+    public function listMiembrosNoAsignados($actividadId, $proyectoId)
     {
         // Convertir $actividadId a un entero
         $actividadId = (int)$actividadId;
+        $proyectoId = (int)$proyectoId;
 
-        // Obtener los registros de EquipoTrabajo que no están asociados a la actividad
-        $miembrosNoAsignados = EquipoTrabajo::whereDoesntHave('miembros', function ($query) use ($actividadId) {
+        // Obtener los registros de EquipoTrabajo que no están asociados a la actividad y que si pertenecen al proyecto al cual esta asociado la actividad
+        
+        // Obtener los registros de EquipoTrabajo que no están asociados a la actividad y que pertenecen al proyecto
+        $miembrosNoAsignados = EquipoTrabajo::where('id_proyecto', $proyectoId)
+        ->whereDoesntHave('miembros', function ($query) use ($actividadId) {
             $query->where('id_actividad', $actividadId);
         })
         ->get();
