@@ -8,6 +8,7 @@ use App\Http\Controllers\EquipoTrabajoController;
 use App\Http\Controllers\ManoObraController;
 use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\MiembroActividadController;
 
 
 /*
@@ -41,11 +42,19 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
-    //Route::post('/eliminar-equipos', [EquipoDeTrabajoController::class, 'eliminarEquipos']);
-    //Route::post('/crear-equipos-trabajo', [EquipoTrabajoController::class, 'crearEquiposTrabajo']);
+    Route::get('miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
+    Route::get('/miembrosactividades/nolist/{actividadId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
+    Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);
+    Route::post('/miembrosactividades/crear', [MiembroActividadController::class, 'crearMiembrosActividad']);
+    Route::post('/miembrosactividades/eliminar', [MiembroActividadController::class, 'eliminarMiembrosActividad']);
     // Ruta para mostrar la lista de equipos relacionados con un proyecto específico
     Route::get('/equipos/list/{proyectoId}', [EquipoTrabajoController::class, 'list']);
+    Route::get('/equipos/nolist/{proyectoId}', [EquipoTrabajoController::class, 'listMiembrosNoAsignados']);
+    Route::get('/equipos/detalle/{id}', [EquipoTrabajoController::class, 'getMiembro']);
+    Route::post('/equipos/crear', [EquipoTrabajoController::class, 'crearEquiposTrabajo']);
+    Route::post('/equipos/eliminar', [EquipoTrabajoController::class, 'eliminarEquipos']);
+
     // Ruta para las otras acciones CRUD (opcional)
-    Route::resource('equipos', EquipoTrabajoController::class)->except(['list']);
+    Route::resource('equipos', EquipoTrabajoController::class)->except(['list', 'listMiembrosNoAsignados', 'getMiembro', 'crearEquiposTrabajo']);
 
 });
