@@ -8,7 +8,7 @@
 
 @section('content')
     <a class="btn btn-sm btn-outline-warning" href="{{route('usuarios.create')}}">Nuevo</a>
-    <br>
+    <br><br>
 
     <table id="tabla-usuarios" class="table table-striped mt-2">
         <thread style="background-color: #6777ef;">

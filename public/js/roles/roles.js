@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    var table = $('#tabla-usuarios').DataTable({
-        ajax: '/usuarios/data/',
+    var table = $('#tabla-roles').DataTable({
+        ajax: '/roles/data/',
         processing: true,
         serverSide: true,
         order: [[0, 'asc']],
@@ -12,28 +12,35 @@ $(document).ready(function() {
         pageLength: 5, // Cantidad de registros por página por defecto
         
         columns: [
-            { data: 'name', title: 'Nombre', width: '25%' },
-            { data: 'email', title: 'Correo', width: '25%' },
-            { data: 'roles', title: 'Rol', width: '25%' },
+            { data: 'name', title: 'Nombre', width: '50%' },
             {
                 data: null,
                 title: 'Acciones',
                 sortable: false,
                 searchable: false,
-                width: '25%',
+                width: '50%',
                 render: function (data, type, row) {
-                    
                     var actionsHtml = '';
-                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/usuarios/'+row.id+'/edit">Editar</a>';
-    
+        
+                    if (canEditarRol) {
+                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/roles/'+row.id+'/edit">Editar</a>';
+                    } else {
+                        actionsHtml += '<span class="text-muted">' + mensajeNoTienesPermiso + '</span>';
+                    }
+        
+                    if (canEliminarRol) {
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
-
+                    } else {
+                        actionsHtml += '<span class="text-muted">' + mensajeNoTienesPermiso + '</span>';
+                    }
+        
                     return actionsHtml || '';
                 }
             }
         ],
+        
         language: {
             "sProcessing": "Procesando...",
             "sLengthMenu": "Mostrar _MENU_ registros",
@@ -78,32 +85,32 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         var tituloModal = modal.find('.modal-title');
         var cuerpoModal = modal.find('.modal-body');
-        var eliminarBtn = modal.find('#eliminarUsuarioBtn');
+        var eliminarBtn = modal.find('#eliminarRolBtn');
         tituloModal.text('Confirmar eliminación');
-        cuerpoModal.html('<strong>¿Estás seguro de eliminar al Usuario seleccionado?</strong><br>Ten en cuenta que se eliminarán \n\
-        los datos relacionados al usuario');
+        cuerpoModal.html('<strong>¿Estás seguro de eliminar al Rol seleccionado?</strong><br>Ten en cuenta que se eliminarán \n\
+        los datos relacionados al Rol');
         eliminarBtn.data('id', id);
         modal.modal('show');
     });
    
    //Método para enviar la solicitud de eliminar
-    $(document).on('click', '#eliminarUsuarioBtn', function () {
+    $(document).on('click', '#eliminarRolBtn', function () {
         var id = $(this).data('id');
         var modal = $('#confirmarEliminarModal');
         $.ajax({
-            url: '/usuarios/' + id,
+            url: '/roles/' + id,
             type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
                 modal.modal('hide');
-                var table = $('#tabla-usuarios').DataTable();
+                var table = $('#tabla-roles').DataTable();
                 table.ajax.reload(null, false);
             },
             error: function (error) {
                 modal.modal('hide');
-                var table = $('#tabla-usuarios').DataTable();
+                var table = $('#tabla-roles').DataTable();
                 table.ajax.reload(null, false);
             }
         });

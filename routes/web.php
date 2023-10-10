@@ -30,6 +30,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware' => ['auth']], function() {
+    Route::get('roles/data', [RolController::class, 'data'])->name('roles.data');
     Route::resource('roles', RolController::class);
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
     Route::resource('usuarios', UsuarioController::class);
