@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recurso;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RecursoController extends Controller
 {
@@ -20,7 +21,17 @@ class RecursoController extends Controller
             $recurso->disponibilidad = $recurso->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
         }
 
-        return view('recursos.index', compact('recursos'));
+        return view('recursos.index');
+    }
+
+    public function data()
+    {
+        $data = Recurso::all();
+        // foreach ($data as $d) {
+        //     $d->disponibilidad = $d->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
+        // }
+
+        return datatables()->of($data)->toJson();
     }
 
     /**
