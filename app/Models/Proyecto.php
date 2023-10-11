@@ -10,7 +10,6 @@ class Proyecto extends Model
     use HasFactory;
     protected $table = 'proyecto';
     protected $fillable = [
-        'cliente',
         'nombre',
         'objetivo',
         'descripcion',
@@ -20,12 +19,16 @@ class Proyecto extends Model
         'presupuesto',
         'prioridad',
         'id_estado_proyecto',
-        'id_dueño'
+        'id_dueno',
+        'id_cliente'
     ];
     public function estado_proyecto(){
         return $this->belongsTo(EstadoProyecto::class, 'id_estado_proyecto');
     }
-    public function dueño(){
-        return $this->belongsTo(User::class, 'id_dueño');
+    public function dueno(){
+        return $this->belongsTo(User::class, 'id_dueno');
+    }
+    public function cliente(){
+        return $this->belongsTo(User::class, 'id_cliente');
     }
 }

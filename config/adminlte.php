@@ -327,6 +327,11 @@ return [
         ['header' => 'Datos'],
         
         [
+            'text' => 'Proyectos',
+            'url'  => 'proyectos',
+            'icon' => 'fas fa-file-invoice',
+        ],
+        [
             'text' => 'Miembros',
             'url'  => 'miembros',
             'icon' => 'fas fa-fw fa-users',

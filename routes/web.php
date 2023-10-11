@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\EquipoTrabajoController;
@@ -35,6 +36,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles', RolController::class);
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
     Route::resource('usuarios', UsuarioController::class);
+    
+    Route::get('proyectos/data', [ProyectoController::class, 'data'])->name('proyectos.data');
+    Route::resource('proyectos', ProyectoController::class);
+    
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
     Route::get('recursos/data', [RecursoController::class, 'data'])->name('recursos.data');
