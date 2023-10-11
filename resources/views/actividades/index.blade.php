@@ -7,26 +7,32 @@
 @stop
 
 @section('content')
-    <a class="btn btn-outline-warning btn-sm" href="{{ route('actividades.create', $proyecto->id) }}">Nuevo</a>
-    <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
-    <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
-    <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button> 
-    <p id="id_proyecto" data-id-proyecto="{{ $proyecto->id }}" class="d-none"></p>
-
-    <table id="tabla-actividades" class="table table-striped mt-2">
-        <thread style="background-color: #6777ef;">
-            <th>Nombre</th>
-            <th>Prioridad</th>
-            <th>Fecha Inicio</th>
-            <th>Fecha Fin</th>
-            <th>Responsabilidades</th>
-            <th>Estado Actividad</th>
-            <th>Acciones</th>
-        </thread>
-
-        <tbody>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                <!--Sección de botones-->
+                <a class="btn btn-sm btn-outline-warning" href="{{ route('actividades.create', $proyecto->id) }}">Nuevo</a>
+                <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
+                <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
+                <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button> 
+                </h3>
+                <p id="id_proyecto" data-id-proyecto="{{ $proyecto->id }}" class="d-none"></p>
+            </div>
+            <div class="card-body">
+                <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="col-sm-12 card-body table-responsive p-0" style="height: 60vh;">
+                    <!--Sección de tabla-->
+                    <table id="tabla-actividades" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed text-nowrap"></table>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal de eliminar -->
     <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
