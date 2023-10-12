@@ -80,7 +80,7 @@ class ActividadController extends Controller
         $actividad = Actividad::find($id);
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
-        return view('actividades.mostrar', compact('actividad', 'estadosActividad'));
+        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto'));
     }
 
     /**

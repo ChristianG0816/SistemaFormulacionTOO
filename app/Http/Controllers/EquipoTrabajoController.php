@@ -35,7 +35,6 @@ class EquipoTrabajoController extends Controller
             $equipoTrabajo = EquipoTrabajo::create([
                 'id_proyecto' => $id_proyecto,
                 'id_mano_obra' => $id_mano_obra,
-                // Agrega más campos aquí según tus necesidades
             ]);
     
             return response()->json([
@@ -79,7 +78,7 @@ class EquipoTrabajoController extends Controller
             // Registra la excepción en el archivo de registro o devuelve un mensaje de error detallado
             return response()->json([
                 'success' => false,
-                'message' => 'Ocurrió un error al eliminar el miembro del equipo de trabajo: ' . $e->getMessage()
+                'message' => 'Ocurrió un error al eliminar el miembro del equipo de trabajo: ' . $e->getMessage() . 'Verifica que el miembro no esté asignado a una actividad.'
             ]);
         }
     }
@@ -108,9 +107,9 @@ class EquipoTrabajoController extends Controller
                 return $row->mano_obra->telefono;
             })
             ->addColumn('action', function ($row) {
-                // Agregar botones de acciones (editar, eliminar, etc.) si es necesario
+                $btnDetalle = '<a href="' . route('miembros.show', $row->mano_obra->id) . '" class="edit btn btn-primary btn-sm">Detalle</a>';
                 $btnEliminar = '<button class="delete btn btn-danger btn-sm" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
-                return $btnEliminar;
+                return $btnDetalle . ' ' . $btnEliminar;
             })            
             ->rawColumns(['action'])
             ->make(true);

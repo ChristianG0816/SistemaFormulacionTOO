@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
     Route::get('miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
-    Route::get('/miembrosactividades/nolist/{actividadId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
+    Route::get('/miembrosactividades/nolist/{actividadId}/{proyectoId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
     Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);
     Route::post('/miembrosactividades/crear', [MiembroActividadController::class, 'crearMiembrosActividad']);
     Route::post('/miembrosactividades/eliminar', [MiembroActividadController::class, 'eliminarMiembrosActividad']);

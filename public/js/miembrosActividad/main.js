@@ -3,7 +3,7 @@ $(document).ready(function(){
     $('#tableMiembrosActividad').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "/miembrosactividades/list/" + actividadId, // Agrega el proyectoId a la URL
+        "ajax": "/miembrosactividades/list/" + actividadId,
         "columns": [
             {data: 'usuario_name'},
             {data: 'usuario_email'},
@@ -25,7 +25,7 @@ $(document).ready(function(){
 
         // Realiza una solicitud Ajax para obtener los miembros disponibles
         $.ajax({
-            url: '/miembrosactividades/nolist/' + actividadId, // Reemplaza 'proyectoId' con el valor correcto
+            url: '/miembrosactividades/nolist/' + actividadId + "/" + proyectoId,
             method: 'GET',
             dataType: 'json',
             success: function (data) {
