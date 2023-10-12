@@ -1,70 +1,74 @@
 @extends('adminlte::page')
-
 @section('title', 'Actividad')
-
 @section('content_header')
-    <div class="container">
-        <div class="row col-xs-12 col-sm-12 col-md-12">
-            <h1 class="text-blue">Editar Actividad</h1>
-        </div>
-    </div>
+<h1 class="text-center">Editar Actividad</h1>
 @stop
-
 @section('content')
-    @if ($errors->any())
-    <div class="container">
-        <div class="row col-xs-12 col-sm-12 col-md-12">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="alert alert-dark alert-dismissible fade show" role="alert">
-                    <strong>Revise los campos</strong>
-                    @foreach ($errors->all() as $error)
-                        <span class="badge badge-danger">{{$error}}</span>
-                    @endforeach
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+@if ($errors->any())
+<div class="container">
+  <div class="col-xs-12 col-sm-12 col-md-12">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Revise los campos</strong>
+      @foreach ($errors->all() as $error)
+      <span class="text-danger">{{$error}}</span>
+      @endforeach
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-    @endif
-
-    {!! Form::model($actividad, ['method'=>'PATCH', 'route' => ['actividades.update', $actividad->id]]) !!}
-    <div class="container pb-5">
-        <div class="row col-xs-12 col-sm-12 col-md-12">
-            <div class="col-xs-6 col-sm-6 col-md-6">
+  </div>
+</div>
+@endif
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <div id="table_wrapper" class="wrapper dt-bootstrap4">
+          <div class="row">
+            <div class="col-lg-6 col-md-12 mb-3"><!-- Columna izquierda -->
+            {!! Form::model($actividad, ['method'=>'PATCH', 'route' => ['actividades.update', $actividad->id]]) !!}
                 {!! Form::text('id_proyecto', $actividad->id_proyecto, array('class'=>'form-control d-none')) !!}
                 <div class="form-group">
-                    <label for="nombre">Nombre</label>
+                    <label for="nombre" class="text-secondary">Nombre*</label>
                     {!! Form::text('nombre', null, array('class'=>'form-control')) !!}
                 </div>
                 <div class="form-group">
-                    <label for="prioridad">Prioridad</label>
+                    <label for="prioridad" class="text-secondary">Prioridad*</label>
                     {!! Form::text('prioridad', null, array('class'=>'form-control')) !!}
                 </div>
                 <div class="form-group">
-                    <label for="fecha_inicio">Fecha Inicio</label>
+                    <label for="fecha_inicio" class="text-secondary">Fecha Inicio*</label>
                     {!! Form::date('fecha_inicio', null, array('class'=>'form-control')) !!}
                 </div>
                 <div class="form-group">
-                    <label for="fecha_fin">Fecha Fin</label>
+                    <label for="fecha_fin" class="text-secondary">Fecha Fin*</label>
                     {!! Form::date('fecha_fin', null, array('class'=>'form-control')) !!}
                 </div>
                 <div class="form-group">
-                    <label for="id_estado_actividad">Estado Actividad</label>
+                    <label for="id_estado_actividad" class="text-secondary">Estado Actividad*</label>
                     {!! Form::select('id_estado_actividad', $estadosActividad, $actividad->estado_actividad->nombre, ['class' => 'form-control']) !!}
                 </div>
             </div>
-            <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
                 <div class="form-group">
-                    <label for="responsabilidades">Responsabilidades</label>
+                    <label for="responsabilidades" class="text-secondary">Responsabilidades*</label>
                     {!! Form::textarea('responsabilidades', null, array('class'=>'form-control')) !!}
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="row align-items-center">
+                <div class="col-md-6 col-6 text-left">
+                    <small>Los campos con (*) son requeridos</small>
+                </div>
+                <div class="col-md-6 col-6 text-right">
+                    <button type="submit" class="btn btn-info">Guardar</button>
                 </div>
             </div>
         </div>
+        {!! Form::close() !!}
+      </div>
     </div>
-    {!! Form::close() !!}
+  </div>
+</div>
 @stop
