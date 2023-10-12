@@ -20,64 +20,82 @@
 </div>
 @endif
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="card">
-        <div class="card-body">
-            <div id="table_wrapper" class="wrapper dt-bootstrap4">
-                <div class="row">
-                    <div class="col-lg-6 col-md-12 mb-3"><!-- Columna izquierda -->
-                        {!! Form::text('id_proyecto', $actividad->id_proyecto, ['class' => 'form-control d-none', 'readonly' => 'readonly']) !!}
-                        {!! Form::text('id_actividad', $actividad->id, ['class' => 'form-control d-none', 'readonly' => 'readonly']) !!}
-                        <div class="form-group">
-                            <label for="nombre" class="text-secondary">Nombre</label>
-                            {!! Form::text('nombre', $actividad->nombre, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+        <div class="card-body justify-content-center d-flex pl-0 pr-0">
+            <div  class="row col-lg-12 col-md-12">
+                <div class="col-lg-9 col-md-9">
+                    <div id="table_wrapper" class="wrapper dt-bootstrap4">
+                        <!--Sección de información de la actividad-->
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 mb-3"><!-- Columna izquierda -->
+                                {!! Form::text('id_proyecto', $actividad->id_proyecto, ['class' => 'form-control d-none', 'readonly' => 'readonly']) !!}
+                                {!! Form::text('id_actividad', $actividad->id, ['class' => 'form-control d-none', 'readonly' => 'readonly']) !!}
+                                <div class="form-group">
+                                    <label for="nombre" class="text-secondary">Nombre</label>
+                                    {!! Form::text('nombre', $actividad->nombre, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                </div>
+                                <div class="form-group">
+                                    <label for="prioridad" class="text-secondary">Prioridad</label>
+                                    {!! Form::text('prioridad', $actividad->prioridad, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                </div>
+                                <div class="form-group">
+                                    <label for="fecha_inicio" class="text-secondary">Fecha Inicio</label>
+                                    {!! Form::date('fecha_inicio', $actividad->fecha_inicio, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                </div>
+                                <div class="form-group">
+                                    <label for="fecha_fin" class="text-secondary">Fecha Fin</label>
+                                    {!! Form::date('fecha_fin', $actividad->fecha_fin, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                </div>
+                                <div class="form-group">
+                                    <label for="id_estado_actividad" class="text-secondary">Estado Actividad</label>
+                                    {!! Form::text('id_estado_actividad', $actividad->estado_actividad->nombre, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 mb-3"><!-- Columna derecha -->
+                                <div class="form-group">
+                                    <label for="responsabilidades" class="text-secondary">Responsabilidades</label>
+                                    {!! Form::textarea('responsabilidades', $actividad->responsabilidades, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="prioridad" class="text-secondary">Prioridad</label>
-                            {!! Form::text('prioridad', $actividad->prioridad, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                        <!--Sección de mano de obra-->
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 mb-3">
+                                <div class="card">
+                                    <div class="card-header d-flex align-items-center">
+                                        <h3 class="card-title">Mano de obra</h3>
+                                        <div class="card-tools ml-auto">
+                                            <input type="button" value="Agregar" class="btn btn-sm btn-outline-warning my-0" data-toggle="modal" data-target="#agregarMiembroModal">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                                        <div class="row">
+                                            <div class="col-sm-12 card-body table-responsive p-0" style="height: 40vh;">
+                                            <table id="tableMiembrosActividad" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed"></table>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="fecha_inicio" class="text-secondary">Fecha Inicio</label>
-                            {!! Form::date('fecha_inicio', $actividad->fecha_inicio, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
-                        </div>
-                        <div class="form-group">
-                            <label for="fecha_fin" class="text-secondary">Fecha Fin</label>
-                            {!! Form::date('fecha_fin', $actividad->fecha_fin, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
-                        </div>
-                        <div class="form-group">
-                            <label for="id_estado_actividad" class="text-secondary">Estado Actividad</label>
-                            {!! Form::text('id_estado_actividad', $actividad->estado_actividad->nombre, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
-                        <div class="form-group">
-                            <label for="responsabilidades" class="text-secondary">Responsabilidades</label>
-                            {!! Form::textarea('responsabilidades', $actividad->responsabilidades, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                        <!--Mas secciones-->
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 mb-3">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 mb-3">
-                        <div class="card">
-                            <div class="card-header d-flex align-items-center">
-                                <h3 class="card-title">Mano de obra</h3>
-                                <div class="card-tools ml-auto">
-                                    <input type="button" value="Agregar" class="btn btn-sm btn-outline-warning my-0" data-toggle="modal" data-target="#agregarMiembroModal">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                                <div class="row">
-                                    <div class="col-sm-12 card-body table-responsive p-0" style="height: 40vh;">
-                                    <!--Sección de tabla-->
-                                    <table id="tableMiembrosActividad" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed text-nowrap"></table>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
+                <!--Sección de comentarios-->
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="col-lg-12 card-body table-responsive" style="height: 40vh;">
+                            <h5 class="text-center font-weight-bold">Comentarios</h5>
                         </div>
                     </div>
                 </div>
