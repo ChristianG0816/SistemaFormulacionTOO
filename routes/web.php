@@ -64,4 +64,8 @@ Route::group(['middleware' => ['auth']], function() {
     // Ruta para las otras acciones CRUD (opcional)
     Route::resource('equipos', EquipoTrabajoController::class)->except(['list', 'listMiembrosNoAsignados', 'getMiembro', 'crearEquiposTrabajo']);
 
+    //Ruta de Calendario
+    Route::get('/calendario', [App\Http\Controllers\CalendarioController::class, 'index']);
+    Route::get('/calendario/mostrar', [App\Http\Controllers\CalendarioController::class, 'show']);
+    Route::post('/calendario/consultar/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarActividad']);
 });
