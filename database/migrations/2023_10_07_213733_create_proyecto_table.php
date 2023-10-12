@@ -15,7 +15,6 @@ class CreateProyectoTable extends Migration
     {
         Schema::create('proyecto', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('cliente', 100);
             $table->string('nombre', 255);
             $table->string('objetivo', 255);
             $table->text('descripcion');
