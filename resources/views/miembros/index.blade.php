@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-sm-12 card-body table-responsive p-0" style="height: 60vh;">
                     <!--Sección de tabla-->
-                    <table id="tabla-miembros" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed text-nowrap"></table>
+                    <table id="tabla-miembros" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed"></table>
                     </div>
                 </div>
                 </div>
