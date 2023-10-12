@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Proyecto;
+use App\Models\EstadoProyecto;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,7 @@ use Illuminate\Support\Arr;
 class ProyectoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Funcion para mostrar la vista de todos los proyectos.
      *
      * @return \Illuminate\Http\Response
      */
@@ -40,18 +41,14 @@ class ProyectoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Funcion para crear un nuevo proyecto
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        /*$roles = Role::pluck('name', 'name')->all();
-        $sexos = [
-            'Masculino' => 'Masculino',
-            'Femenino' => 'Femenino',
-        ];
-        return view('miembros.crear', compact('roles','sexos'));*/
+        $estado = EstadoProyecto::pluck('nombre', 'nombre')->all();
+        return view('proyectos.crear', compact('estado'));
     }
 
     /**
