@@ -132,6 +132,9 @@
         </div>
     </div>
 </div>
+
+@include('recursos.asignar')
+
 @stop
 
 @section('css')
