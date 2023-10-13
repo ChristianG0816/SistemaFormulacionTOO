@@ -9,6 +9,7 @@ use App\Http\Controllers\EquipoTrabajoController;
 use App\Http\Controllers\ManoObraController;
 use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\MiembroActividadController;
 
 
@@ -49,6 +50,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
+    Route::resource('comentarios', ComentarioController::class);
     Route::get('miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
     Route::get('/miembrosactividades/nolist/{actividadId}/{proyectoId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
     Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);

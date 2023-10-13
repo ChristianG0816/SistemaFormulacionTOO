@@ -9,10 +9,12 @@ use App\Models\User;
 use App\Models\Actividad;
 use App\Models\Proyecto;
 use App\Models\EstadoActividad;
+use App\Models\Comentario;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class ActividadController extends Controller
 {
@@ -80,7 +82,9 @@ class ActividadController extends Controller
         $actividad = Actividad::find($id);
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
-        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto'));
+        $usuario= Auth::user();
+        $comentarios = Comentario::where('id_actividad', $actividad->id)->orderBy('created_at', 'desc')->get();
+        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios'));
     }
 
     /**
