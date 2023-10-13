@@ -1,5 +1,21 @@
 @extends('adminlte::page')
 @section('title', 'Actividad')
+@section('css')
+<style>
+@media (max-width: 767px) {
+    #lista-comentarios {
+        max-height: none !important; /* Quita la propiedad max-height */
+        height: 100%; /* Establece la altura al 100% */
+        margin-top: 0; /* Modifica el margen superior si es necesario */
+    }
+    #informacion-actividad {
+        height: auto !important; /* Quita la propiedad max-height */
+        height: 100%; /* Establece la altura al 100% */
+        margin-top: 0; /* Modifica el margen superior si es necesario */
+    }
+}
+</style>
+@stop
 @section('content_header')
 <h1 class="text-center">Actividad</h1>
 @stop
@@ -24,7 +40,7 @@
         <div class="card" id="contenedor-informacion">
         <div class="card-body justify-content-center d-flex pl-0 pr-0">
             <div  class="row d-flex col-lg-12 col-md-12">
-                <div class="col-lg-9 col-md-9 table-responsive" style="height: 80vh;">
+                <div id="informacion-actividad" class="col-lg-9 col-md-9 table-responsive" style="height: 80vh;">
                     <div id="table_wrapper" class="wrapper dt-bootstrap4">
                         <!--Sección de información de la actividad-->
                         <div class="row">
@@ -64,7 +80,7 @@
                             <div class="col-lg-12 col-md-12 mb-3">
                                 <div class="card collapsed-card">
                                     <div class="card-header d-flex align-items-center">
-                                        <h3 class="card-title">Mano de obra</h3>
+                                        <h3 class="card-title mb-0">Mano de obra</h3>
                                         <div class="card-tools ml-auto">
                                             <input type="button" value="Agregar" class="btn btn-sm btn-outline-warning my-0" data-toggle="modal" data-target="#agregarMiembroModal">
                                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -97,8 +113,8 @@
                 <div class="col col-lg-3">
                     <div class="card bg-secondary" style="height: 100%;">
                         <div class="col-lg-12 card-body" style="z-index: 2; position: relative;">
-                            <div class="card bg-secondary border-0 shadow-none rounded-0 p-0 m-0 collapsed-card" style="z-index: 2; position: absolute; width:90%">
-                                <div class="card-header border-0 m-0 p-0 w-100">
+                            <div class="card bg-secondary border-0 shadow-none rounded-0 p-0 m-0 collapsed-card" style="z-index: 2; position: absolute; width:92%">
+                                <div class="card-header bg-secondary border-0 m-0 p-0 w-100">
                                     <div class="d-flex align-items-center m-1">
                                         <h5 class="text-center font-weight-bold">Comentarios</h5>
                                         <a type="button" class="btn btn-tool ml-auto" data-card-widget="collapse" title="Collapse">
