@@ -317,15 +317,13 @@ return [
             'route'  => 'home',
         ],
 
-        [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
-        ],
         ['header' => 'Datos'],
         
+        [
+            'text' => 'Calendario',
+            'url'  => 'calendario',
+            'icon' => 'fas fa-file-invoice',
+        ],
         [
             'text' => 'Proyectos',
             'url'  => 'proyectos',
@@ -348,11 +346,6 @@ return [
             'text' => 'Roles',
             'url'  => 'roles',
             'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
         ],
         [
             'text'    => 'multilevel',
