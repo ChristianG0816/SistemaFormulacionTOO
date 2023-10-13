@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
       eventClick:function(info){
         var actividad = info.event;
         //console.log(info.event.id);
-        //console.log(info.event.title);
+        //console.log(info.event.title); 
 
         axios.post(baseUrl + "/calendario/consultar/"+info.event.id).
         then(

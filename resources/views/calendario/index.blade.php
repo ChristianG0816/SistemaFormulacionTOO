@@ -47,8 +47,23 @@ aqui iria el filtro y boton
 @stop
 
 @section('js')
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    jQuery.noConflict();
+    (function($) {      
+      toastr.options = {"closeButton": true, "progressBar": true}
+      @if (Session::has('success'))
+        toastr.success("{{ session('success') }}");
+      @endif
+  
+      @if (Session::has('error'))
+        toastr.error("{{ session('error') }}");
+      @endif
+    })(jQuery);
+</script>
+
     <script src="{{ asset('js/Calendario/calendario.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!--Establecer una url general-->
     <script type="text/javascript">
