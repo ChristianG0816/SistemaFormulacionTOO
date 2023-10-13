@@ -1,7 +1,7 @@
 @extends('adminlte::page')
-@section('title', 'Proyecto')
+@section('title', 'Editar Proyecto')
 @section('content_header')
-<h1 class="text-center">Agregar Proyecto</h1>
+<h1 class="text-center">Editar Proyecto</h1>
 @stop
 @section('content')
 @if ($errors->any())
@@ -26,7 +26,8 @@
         <div id="table_wrapper" class="wrapper dt-bootstrap4">
           <div class="row">
             <div class="col-lg-6 col-md-12 mb-3"><!-- Columna izquierda -->
-            {!! Form::open(array('route'=>'proyectos.store', 'method'=>'POST')) !!}
+            {!! Form::model($proyecto, ['method'=>'PATCH', 'route' => ['proyectos.update', $proyecto->id]]) !!}
+              <input type="hidden" name="origin" value="{{ request('origin') }}">
               <div class="form-group">
                 <label for="nombre" class="text-secondary">Nombre*</label>
                 {!! Form::text('nombre', null, array('class'=>'form-control', 'maxlength' => 255)) !!}
@@ -71,7 +72,7 @@
               </div>
               <div class="form-group">
                 <label for="id_estado_proyecto" class="text-secondary">Estado*</label>
-                {!! Form::select('id_estado_proyecto', $estados, null, ['class' => 'form-control']) !!}
+                {!! Form::select('id_estado_proyecto', $estados, $proyecto->estado_proyecto->nombre,  ['class' => 'form-control']) !!}
               </div>
             </div>
           </div>

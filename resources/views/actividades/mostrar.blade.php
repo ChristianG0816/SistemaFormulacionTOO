@@ -89,6 +89,8 @@
                             <div class="col-lg-12 col-md-12 mb-3">
                             </div>
                         </div>
+                        {{--  Seccion para asignar mano de obra a las actividades --}}
+                        @include('recursos.asignar')
                     </div>
                 </div>
                 <!--Sección de comentarios-->
@@ -146,6 +148,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -182,6 +185,7 @@
         </div>
     </div>
 </div>
+
 @stop
 
 @section('js')
@@ -289,4 +293,5 @@
     window.addEventListener('resize', ajustarAlturaElemento1);
         });
     </script>
+    <script src="{{ asset('js/recursos/recursosAsignados.js') }}"></script>
 @stop

@@ -31,6 +31,22 @@ class SeederTablaPermisos extends Seeder
             //Roles referentes al administrador
             $roles
         ]);
+        $roleCliente = Role::create(['name' => 'Cliente'])->givePermissionTo([
+            //Roles referentes al cliente del proyecto
+            $roles
+        ]);
+        $roleSupervisor = Role::create(['name' => 'Supervisor'])->givePermissionTo([
+            //Roles referentes al supervisor de proyecto
+            $roles
+        ]);
+        $roleGerente = Role::create(['name' => 'Gerente'])->givePermissionTo([
+            //Roles referentes al gerente de proyecto
+            $roles
+        ]);
+        $roleColaborador = Role::create(['name' => 'Colaborador'])->givePermissionTo([
+            //Roles referentes al colaborador de proyecto
+            $roles
+        ]);
 
     }
 }

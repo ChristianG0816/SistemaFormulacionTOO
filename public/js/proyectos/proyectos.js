@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function() {
     var table = $('#tabla-proyectos').DataTable({
         ajax: '/proyectos/data/',
@@ -57,15 +61,15 @@ $(document).ready(function() {
                     
                     var actionsHtml = '';
                     
-                    //if(hasPrivilegeVerMiembro === true){
+                    //if(hasPrivilegeVerProyecto === true){
                         actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/proyectos/'+row.id+'">Mostrar</a>';
                     /*}
 
-                    if(hasPrivilegeEditarMiembro === true){*/
+                    if(hasPrivilegeEditarProyecto === true){*/
                         actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/proyectos/'+row.id+'/edit">Editar</a>';
                     /*}
                     
-                    if(hasPrivilegeEliminarMiembro === true){*/
+                    if(hasPrivilegeEliminarProyecto === true){*/
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
@@ -134,6 +138,7 @@ $(document).ready(function() {
 
         return year + month + day + '_' + hours + minutes + seconds;
     }
+    
    
    // Método para mostrar el modal de eliminación
     $(document).on('click', '.eliminarModal-btn', function () {
@@ -141,7 +146,7 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         var tituloModal = modal.find('.modal-title');
         var cuerpoModal = modal.find('.modal-body');
-        var eliminarBtn = modal.find('#eliminarMiembroBtn');
+        var eliminarBtn = modal.find('#eliminarProyectoBtn');
         tituloModal.text('Confirmar eliminación');
         cuerpoModal.html('<strong>¿Estás seguro de eliminar el proyecto seleccionado?</strong><br>Ten en cuenta que se eliminarán \n\
         los datos relacionados al proyecto');
@@ -156,7 +161,10 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         $.ajax({
             url: '/proyectos/' + id,
-            type: 'DELETE',
+            type: 'POST',
+            data: {
+                _method: 'DELETE' // Indica que es una solicitud DELETE
+            },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -164,6 +172,7 @@ $(document).ready(function() {
                 modal.modal('hide');
                 var table = $('#tabla-proyectos').DataTable();
                 table.ajax.reload(null, false);
+                toastr.success('Proyecto eliminado con éxito');
             },
             error: function (error) {
                 modal.modal('hide');
@@ -172,4 +181,22 @@ $(document).ready(function() {
             }
         });
     });    
+});
+
+$(document).ready(function() {
+    $('.edit-proyecto').on('click', function() {
+        var id = $(this).data('id');
+        var origin = $(this).data('origin');
+        
+        // Realizar una solicitud AJAX
+        $.ajax({
+            type: 'GET',
+            url: '/proyectos/' + id + '/edit',
+            data: { origin: origin },
+            success: function(data) {
+                // Manejar la respuesta, por ejemplo, redirigir a la página de edición
+                window.location.href = '/proyectos/' + id + '/edit';
+            }
+        });
+    });
 });

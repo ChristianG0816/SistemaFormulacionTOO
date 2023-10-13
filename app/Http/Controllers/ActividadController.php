@@ -68,7 +68,8 @@ class ActividadController extends Controller
         ]);
         $input = $request->all();
         $actividad = Actividad::create($input);
-        return redirect()->route('actividades.index', $actividad->id_proyecto);
+        $proyecto = Proyecto::find($actividad->id_proyecto);
+        return view('proyectos.mostrar', compact('proyecto'));
     }
 
     /**
@@ -121,7 +122,8 @@ class ActividadController extends Controller
         ]);
         $input = $request->all();
         $actividad->update($input);
-        return redirect()->route('actividades.index', $actividad->id_proyecto);
+        $proyecto = Proyecto::find($actividad->id_proyecto);
+        return view('proyectos.mostrar', compact('proyecto'));
     }
 
     /**
@@ -133,8 +135,8 @@ class ActividadController extends Controller
     public function destroy($id)
     {
         $actividad = Actividad::find($id);
-        $id_proyecto = $actividad->id_proyecto;
+        $proyecto = $actividad->id_proyecto;
         $actividad->delete();
-        return redirect()->route('actividades.index', $id_proyecto);
+        return view('proyectos.mostrar', compact('proyecto'));
     }
 }

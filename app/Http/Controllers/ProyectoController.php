@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
@@ -47,135 +47,86 @@ class ProyectoController extends Controller
      */
     public function create()
     {
-        $estado = EstadoProyecto::pluck('nombre', 'nombre')->all();
-        return view('proyectos.crear', compact('estado'));
+        $estados = EstadoProyecto::pluck('nombre', 'id')->all();
+        $prioridades = ['1' => '1','2' => '2','3' => '3','4' => '4','5' => '5',];
+
+        $dueno = Role::where('name', 'Supervisor')->first();
+        $usuariosDuenos = $dueno->users;
+        $duenos = $usuariosDuenos->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+
+        $cliente = Role::where('name', 'Cliente')->first();
+        $usuariosClientes = $cliente->users;        
+        $clientes = $usuariosClientes->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+        return view('proyectos.crear', compact('estados','duenos','prioridades','clientes'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Funcion para guardar proyecto.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        /*$this->validate($request, [
-            'name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password'=>'required|same:confirm-password',
-            'dui'=>['required', 'regex:/^\d{9}$/'],
-            'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'nacionalidad'=>'required',
-            'pasaporte'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
-            'profesion'=>'required',
-            'estado_civil'=>'required',
-            'sexo'=>'required',
-            'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
-            'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
+        $this->validate($request, [
+            'nombre' => 'required',
+            'objetivo' => 'required',
+            'id_cliente'=>['required'],
+            'id_dueno'=>['required'],
+            'descripcion'=>['required'],
+            'fecha_inicio'=>'required|fecha_menor_igual:fecha_fin',
+            'fecha_fin'=> 'required',
+            'presupuesto'=>['required', 'regex:/^\d+(\.\d+)?$/'],
+            'prioridad' => ['required'],
+            'entregable'=>'required',
+            'id_estado_proyecto'=>'required'
         ]);
-
-        $password=$request->input('password');
 
         $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
         
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
-        $manoObra = ManoObra::create([
-            'id_usuario' => $user->id,
-            'dui'=>$request->input('dui'),
-            'afp'=>$request->input('afp'),
-            'isss'=>$request->input('isss'),
-            'nacionalidad'=>$request->input('nacionalidad'),
-            'pasaporte'=>$request->input('pasaporte'),
-            'telefono'=>$request->input('telefono'),
-            'profesion'=>$request->input('profesion'),
-            'estado_civil'=>$request->input('estado_civil'),
-            'sexo'=>$request->input('sexo'),
-            'fecha_nacimiento'=>$request->input('fecha_nacimiento'),
-            'costo_servicio'=>$request->input('costo_servicio')
-        ]);
-        \Mail::to($user->email)->send(new NuevoUsuarioCreado($user->name." ".$user->last_name, $user->email, $password));
-        return redirect()->route('miembros.index');*/
+        $proyecto = Proyecto::create($input);
+        return redirect()->route('proyectos.index')->with('success', 'Proyecto creado con éxito');
+        
     }
 
     /**
-     * Display the specified resource.
+     * Funcion para mostrar gestion de proyecto
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        /*$manoObra = ManoObra::find($id);
-        $user = User::find($manoObra->id_usuario);
-        $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
-
-        $manoObraUser = (object) ([
-            'id_usuario' => $manoObra->usuario->id,
-            'name' => $manoObra->usuario->name,
-            'last_name' => $manoObra->usuario->last_name,
-            'email' => $manoObra->usuario->email,
-            'id' => $manoObra->id,
-            'dui'=> $manoObra->dui,
-            'afp'=> $manoObra->afp,
-            'isss'=> $manoObra->isss,
-            'nacionalidad'=> $manoObra->nacionalidad,
-            'pasaporte'=> $manoObra->pasaporte,
-            'telefono' => $manoObra->telefono,
-            'profesion'=> $manoObra->profesion,
-            'estado_civil'=> $manoObra->estado_civil,
-            'sexo'=> $manoObra->sexo,
-            'fecha_nacimiento'=> $manoObra->fecha_nacimiento,
-            'costo_servicio'=> $manoObra->costo_servicio
-        ]);
-        return view('miembros.mostrar', compact('manoObraUser'));*/
+        $proyecto = Proyecto::find($id);
+        return view('proyectos.mostrar', compact('proyecto'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Funcion para editar proyecto
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-       /* $manoObra = ManoObra::find($id);
-        $user = User::find($manoObra->id_usuario);
-        $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
-        $sexos = [
-            'Masculino' => 'Masculino',
-            'Femenino' => 'Femenino',
-        ];
+        $proyecto = Proyecto::find($id);
 
-        $manoObraUser = (object) ([
-            'id_usuario' => $manoObra->usuario->id,
-            'name' => $manoObra->usuario->name,
-            'last_name' => $manoObra->usuario->last_name,
-            'email' => $manoObra->usuario->email,
-            'id' => $manoObra->id,
-            'dui'=> $manoObra->dui,
-            'afp'=> $manoObra->afp,
-            'isss'=> $manoObra->isss,
-            'nacionalidad'=> $manoObra->nacionalidad,
-            'pasaporte'=> $manoObra->pasaporte,
-            'telefono' => $manoObra->telefono,
-            'profesion'=> $manoObra->profesion,
-            'estado_civil'=> $manoObra->estado_civil,
-            'sexo'=> $manoObra->sexo,
-            'fecha_nacimiento'=> $manoObra->fecha_nacimiento,
-            'costo_servicio'=> $manoObra->costo_servicio
-        ]);
-        return view('miembros.editar', compact('manoObraUser', 'sexos'));*/
+        $estados = EstadoProyecto::pluck('nombre', 'id')->all();
+        $prioridades = ['1' => '1','2' => '2','3' => '3','4' => '4','5' => '5',];
+
+        $dueno = Role::where('name', 'Supervisor')->first();
+        $usuariosDuenos = $dueno->users;
+        $duenos = $usuariosDuenos->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+
+        $cliente = Role::where('name', 'Cliente')->first();
+        $usuariosClientes = $cliente->users;        
+        $clientes = $usuariosClientes->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+        
+        return view('proyectos.editar', compact('proyecto','estados','duenos','prioridades','clientes'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Funcion para guardar edicion de proyecto
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -183,45 +134,29 @@ class ProyectoController extends Controller
      */
     public function update(Request $request, $id)
     {
-       /* $manoObra = ManoObra::find($id);
-        $user = User::find($manoObra->id_usuario);
         $this->validate($request, [
-            'name' => 'required',
-            'last_name' => 'required',
-            'dui'=>['required', 'regex:/^\d{9}$/'],
-            'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'nacionalidad'=>'required',
-            'pasaporte'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
-            'profesion'=>'required',
-            'estado_civil'=>'required',
-            'sexo'=>'required',
-            'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
-            'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
-        ]);
-        
-        $manoObra->update([
-            'id_usuario' => $user->id,
-            'dui'=>$request->input('dui'),
-            'afp'=>$request->input('afp'),
-            'isss'=>$request->input('isss'),
-            'nacionalidad'=>$request->input('nacionalidad'),
-            'pasaporte'=>$request->input('pasaporte'),
-            'telefono'=>$request->input('telefono'),
-            'profesion'=>$request->input('profesion'),
-            'estado_civil'=>$request->input('estado_civil'),
-            'sexo'=>$request->input('sexo'),
-            'fecha_nacimiento'=>$request->input('fecha_nacimiento'),
-            'costo_servicio'=>$request->input('costo_servicio')
-        ]);
-        $user->update([
-            'name' => $request->input('name'),
-            'last_name'=>$request->input('last_name')
+            'nombre' => 'required',
+            'objetivo' => 'required',
+            'id_cliente'=>['required'],
+            'id_dueno'=>['required'],
+            'descripcion'=>['required'],
+            'fecha_inicio'=>'required|fecha_menor_igual:fecha_fin',
+            'fecha_fin'=> 'required',
+            'presupuesto'=>['required', 'regex:/^\d+(\.\d+)?$/'],
+            'prioridad' => ['required'],
+            'entregable'=>'required',
+            'id_estado_proyecto'=>'required'
         ]);
 
-        $user->assignRole($request->input('roles'));
-        return redirect()->route('miembros.index');*/
+        $input = $request->all();
+        $proyecto = Proyecto::find($id);
+        $proyecto->update($input);
+
+        if ($request->input('origin') === 'detalle') {
+            return redirect()->route('proyectos.show', ['proyecto' => $proyecto->id])->with('success', 'Proyecto actualizado con éxito');
+        } else {
+            return redirect()->route('proyectos.index')->with('success', 'Proyecto actualizado con éxito');
+        }
     }
 
     /**
@@ -232,9 +167,8 @@ class ProyectoController extends Controller
      */
     public function destroy($id)
     {
-        /*$manoObra = ManoObra::find($id);
-        ManoObra::find($id)->delete();
-        User::find($manoObra->id_usuario)->delete();
-        return redirect()->route('miembros.index');*/
+        $proyecto = Proyecto::find($id);
+        $proyecto->delete();
+        return redirect()->route('proyectos.index');
     }
 }
