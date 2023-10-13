@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function(){
     // Inicializar el DataTable con AJAX
     var csrfToken = $('#csrf-token').data('token');
@@ -133,6 +137,7 @@ $(document).ready(function(){
                         $('#cantidadRecurso').val('');
                         // Cierra el modal después de agregar al miembro
                         $('#agregarRecursoModal').modal('hide');
+                        toastr.success('Se ha agregado un recurso a la actividad');
                     } else {
                         console.log('Error al agregar el recurso:', response.message);
                     }
@@ -160,6 +165,7 @@ $(document).ready(function(){
                         alert('Registro eliminado correctamente.');
                         // Actualizar la tabla después de la eliminación si es necesario
                         $('#tableMiembrosActividad').DataTable().ajax.reload();
+                        toastr.success('Se ha eliminado un recurso de la actividad');
                     } else {
                         alert('Error al eliminar el registro.');
                     }

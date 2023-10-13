@@ -48,6 +48,19 @@
 @stop
 
 @section('js')
+    <script>
+    jQuery.noConflict();
+    (function($) {      
+        toastr.options = {"closeButton": true, "progressBar": true}
+        @if (Session::has('success'))
+        toastr.success("{{ session('success') }}");
+        @endif
+
+        @if (Session::has('error'))
+        toastr.error("{{ session('error') }}");
+        @endif
+    })(jQuery);
+    </script>
     <script src="{{ asset('js/roles/roles.js') }}"></script>
 
     <!--Permisos-->

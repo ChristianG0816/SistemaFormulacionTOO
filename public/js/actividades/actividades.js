@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function() {
     var id_proyecto = $('#id_proyecto').data('id-proyecto');
     var table = $('#tabla-actividades').DataTable({

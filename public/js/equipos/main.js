@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function(){
     // Inicializar el DataTable con AJAX
     $('#tableEquipo').DataTable({
@@ -100,6 +104,7 @@ $(document).ready(function(){
                         $('#tableEquipo').DataTable().ajax.reload();
                         // Cierra el modal después de agregar al miembro
                         $('#agregarMiembroModal').modal('hide');
+                        toastr.success('Se ha agregado un miembro al equipo con éxito');
                     } else {
                         console.log('Error al agregar el miembro al equipo:', response.message);
                     }
@@ -128,6 +133,7 @@ $(document).ready(function(){
                         alert('Registro eliminado correctamente.');
                         // Actualizar la tabla después de la eliminación si es necesario
                         $('#tableEquipo').DataTable().ajax.reload();
+                        toastr.success('Se ha eliminado un miembro del equipo con éxito');
                     } else {
                         alert('Error al eliminar el registro.');
                     }

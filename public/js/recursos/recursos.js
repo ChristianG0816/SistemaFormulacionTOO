@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function() {
     var table = $('#tabla-recursos').DataTable({
         ajax: '/recursos/data/',
@@ -150,6 +154,7 @@ $(document).ready(function() {
                 modal.modal('hide');
                 var table = $('#tabla-recursos').DataTable();
                 table.ajax.reload(null, false);
+                toastr.success('Se ha eliminado un recurso con éxito');
             },
             error: function (error) {
                 modal.modal('hide');

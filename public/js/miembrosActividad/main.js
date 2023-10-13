@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function(){
     // Inicializar el DataTable con AJAX
     var csrfToken = '{{ csrf_token() }}';
@@ -131,6 +135,7 @@ $(document).ready(function(){
                         $('#tableMiembrosActividad').DataTable().ajax.reload();
                         // Cierra el modal después de agregar al miembro
                         $('#agregarMiembroModal').modal('hide');
+                        toastr.success('Se ha asignado un miembro a la actividad con éxito');
                     } else {
                         console.log('Error al agregar el miembro a la actividad:', response.message);
                     }
@@ -158,6 +163,7 @@ $(document).ready(function(){
                         alert('Registro eliminado correctamente.');
                         // Actualizar la tabla después de la eliminación si es necesario
                         $('#tableMiembrosActividad').DataTable().ajax.reload();
+                        toastr.success('EL miembro ha sido eliminado con éxito');
                     } else {
                         alert('Error al eliminar el registro.');
                     }
