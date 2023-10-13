@@ -182,3 +182,21 @@ $(document).ready(function() {
         });
     });    
 });
+
+$(document).ready(function() {
+    $('.edit-proyecto').on('click', function() {
+        var id = $(this).data('id');
+        var origin = $(this).data('origin');
+        
+        // Realizar una solicitud AJAX
+        $.ajax({
+            type: 'GET',
+            url: '/proyectos/' + id + '/edit',
+            data: { origin: origin },
+            success: function(data) {
+                // Manejar la respuesta, por ejemplo, redirigir a la página de edición
+                window.location.href = '/proyectos/' + id + '/edit';
+            }
+        });
+    });
+});
