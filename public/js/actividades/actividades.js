@@ -43,11 +43,10 @@ $(document).ready(function() {
         ],
         columns: [
             { data: 'nombre', title: 'Nombre', width: '30%' },
-            { data: 'prioridad', title: 'Prioridad', width: '5%' },
-            { data: 'fecha_inicio', title: 'Fecha Inicio', width: '10%' },
-            { data: 'fecha_fin', title: 'Fecha Fin', width: '10%' },
-            { data: 'responsabilidades', title: 'Responsabilidades', width: '15%' },
             { data: 'estado_actividad.nombre', title: 'Estado Actividad', width: '10%' },
+            { data: 'fecha_inicio', title: 'Fecha Inicio', width: '8%' },
+            { data: 'fecha_fin', title: 'Fecha Fin', width: '8%' },
+            { data: 'prioridad', title: 'Prioridad', width: '5%' },
             {
                 data: null,
                 title: 'Acciones',

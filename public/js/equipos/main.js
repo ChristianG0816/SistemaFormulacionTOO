@@ -131,6 +131,7 @@ $(document).ready(function(){
                     } else {
                         alert('Error al eliminar el registro.');
                     }
+                    toastr.success('Se ha eliminado un miembro del Equipo de trabajo con éxito');
                 },
                 error: function () {
                     alert('Ocurrió un error en la solicitud.');
