@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\EstadoActividad;
 
-class EstadoActividadSeeder extends Seeder
+class SeederTablaEstadoActividad extends Seeder
 {
     /**
      * Run the database seeds.
