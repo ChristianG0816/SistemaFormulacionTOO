@@ -545,6 +545,7 @@ return [
                 ],
             ],
         ],
+
         'Toastr' => [
             'active' => true,
             'files' => [
