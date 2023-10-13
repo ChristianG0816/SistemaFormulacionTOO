@@ -189,109 +189,20 @@
 @stop
 
 @section('js')
-    <script src="{{ asset('js/miembrosActividad/main.js') }}"></script>
     <script>
-        $(document).ready(function () {
-            var $id_actividad_comentario = $("#id_actividad").val();
-            $('#enviar-formulario').click(function (e) {
-                e.preventDefault();
-                var $form = $('#comentario-form-agregar');
-                var formData = $form.serialize();
-                $.ajax({
-                    type: 'POST',
-                    data: formData,
-                    url: $form.attr('action'),
-                    success: function (response) {
-                        var textarea = document.querySelector('textarea[name="linea_comentario_comentario"]');
-                        textarea.value = '';
-                        $.ajax({
-                            type: 'GET',
-                            url: "/actividades/show/" + $id_actividad_comentario,
-                            success: function (response) {
-                                var elementoActualizable = $(response).find('#lista-comentarios');
-                                $('#lista-comentarios').html(elementoActualizable.html());
-                            }
-                        });
-                    }
-                });
-            });
-            $('#lista-comentarios').on('click', 'a[data-comentario-id-eliminar]', function (e) {
-                e.preventDefault();
-                var comentarioId = $(this).data('comentario-id-eliminar');
-                var $form = $('#comentario-form-eliminar' + comentarioId);
-                var formData = $form.serialize();
-                $.ajax({
-                    type: 'POST',
-                    data: formData,
-                    url: $form.attr('action'),
-                    success: function (response) {
-                        $.ajax({
-                            type: 'GET',
-                            url: "/actividades/show/" + $id_actividad_comentario,
-                            success: function (response) {
-                                var elementoActualizable = $(response).find('#lista-comentarios');
-                                $('#lista-comentarios').html(elementoActualizable.html());
-                            }
-                        });
-                    }
-                });
-            });
-            $('#lista-comentarios').on('click', 'a[data-comentario-id-editar]', function (e) {
-                e.preventDefault();
-                var comentarioId = $(this).data('comentario-id-editar');
-                $("#parrafo-comentario"+comentarioId).hide();
-                $("#linea-comentario"+comentarioId).show();
-                $("#edi"+comentarioId).hide();
-                $("#del"+comentarioId).hide();
-                $("#upd"+comentarioId).show();
-                $("#cal"+comentarioId).show();
-            });
-            $('#lista-comentarios').on('click', 'a[data-comentario-id-cancelar]', function (e) {
-                e.preventDefault();
-                var comentarioId = $(this).data('comentario-id-cancelar');
-                $("#parrafo-comentario"+comentarioId).show();
-                $("#linea-comentario"+comentarioId).hide();
-                $("#edi"+comentarioId).show();
-                $("#del"+comentarioId).show();
-                $("#upd"+comentarioId).hide();
-                $("#cal"+comentarioId).hide();
-            });
-            $('#lista-comentarios').on('click', 'a[data-comentario-id-actualizar]', function (e) {
-                e.preventDefault();
-                var comentarioId = $(this).data('comentario-id-actualizar');
-                var $form = $('#comentario-form-actualizar' + comentarioId);
-                var formData = $form.serialize();
-                $.ajax({
-                    type: 'POST',
-                    data: formData,
-                    url: $form.attr('action'),
-                    success: function (response) {
-                        $.ajax({
-                            type: 'GET',
-                            url: "/actividades/show/" + $id_actividad_comentario,
-                            success: function (response) {
-                                var elementoActualizable = $(response).find('#lista-comentarios');
-                                $('#lista-comentarios').html(elementoActualizable.html());
-                            }
-                        });
-                    }
-                });
-            });
-            // Función para ajustar la altura de elemento1 a la altura de elemento2
-    function ajustarAlturaElemento1() {
-      var elemento1 = document.getElementById('columna-derecha');
-      var elemento2 = document.getElementById('columna-izquierda');
-      elemento1.style.height = elemento2.clientHeight + 'px';
-    }
+    jQuery.noConflict();
+    (function($) {      
+        toastr.options = {"closeButton": true, "progressBar": true}
+        @if (Session::has('success'))
+        toastr.success("{{ session('success') }}");
+        @endif
 
-    // Asegúrate de que el código se ejecute después de que el DOM esté completamente cargado
-    document.addEventListener('DOMContentLoaded', function() {
-      ajustarAlturaElemento1();
-    });
-
-    // Escucha el evento de cambio de tamaño de la ventana
-    window.addEventListener('resize', ajustarAlturaElemento1);
-        });
+        @if (Session::has('error'))
+        toastr.error("{{ session('error') }}");
+        @endif
+    })(jQuery);
     </script>
+    <script src="{{ asset('js/miembrosActividad/main.js') }}"></script>
+    <script src="{{ asset('js/actividades/comentarios.js') }}"></script>
     <script src="{{ asset('js/recursos/recursosAsignados.js') }}"></script>
 @stop

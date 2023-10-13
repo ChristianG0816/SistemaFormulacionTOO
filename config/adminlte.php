@@ -545,16 +545,7 @@ return [
                 ],
             ],
         ],
-        'FontAwesome' => [
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css',
-                ],
-            ],
-        ],
+
         'Toastr' => [
             'active' => true,
             'files' => [
