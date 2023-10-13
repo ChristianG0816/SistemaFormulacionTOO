@@ -570,6 +570,18 @@ return [
                 ],
             ],
         ],
+        'FullCalendar' => [
+            'active' => true,
+    
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js',
+                ],
+                
+            ],
+        ],
     ],
 
     /*

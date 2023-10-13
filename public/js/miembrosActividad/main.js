@@ -1,15 +1,48 @@
 $(document).ready(function(){
     // Inicializar el DataTable con AJAX
+    var csrfToken = '{{ csrf_token() }}';
+    var actividadId = $("#id_actividad");
+    var proyectoId = $("id_proyecto");
     $('#tableMiembrosActividad').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": "/miembrosactividades/list/" + actividadId,
-        "columns": [
-            {data: 'usuario_name'},
-            {data: 'usuario_email'},
-            {data: 'costo'},
-            {data: 'action', name: 'action', orderable: false, searchable: false}
-        ]
+        ajax: "/miembrosactividades/list/" + actividadId,
+        processing: true,
+        serverSide: true,
+        order: [[0, 'asc']],
+        lengthMenu: [[5, 25, 50, 100, -1], [5, 25, 50, 100, 'Todos']], // Opciones de selección para mostrar registros por página
+        pageLength: 5, // Cantidad de registros por página por defecto
+        columns: [
+            {data: 'usuario_name', title: 'Nombre'},
+            {data: 'usuario_email', title: 'Correo'},
+            {data: 'costo', title: 'Costo'},
+            {data: 'action', title: 'Accciones', name: 'action', orderable: false, searchable: false}
+        ],
+        language: {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        },
+        search: {
+            return: true
+        }
     });
 
     $('#agregarMiembroModal').on('show.bs.modal', function (event) {
