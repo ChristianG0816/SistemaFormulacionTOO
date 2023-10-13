@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function() {
     var table = $('#tabla-miembros').DataTable({
         ajax: '/miembros/data/',
@@ -165,6 +169,7 @@ $(document).ready(function() {
                 modal.modal('hide');
                 var table = $('#tabla-miembros').DataTable();
                 table.ajax.reload(null, false);
+                toastr.success('Proyecto eliminado con éxito');
             },
             error: function (error) {
                 modal.modal('hide');

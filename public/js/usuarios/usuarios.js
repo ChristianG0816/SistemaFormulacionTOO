@@ -1,3 +1,7 @@
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true
+};
 $(document).ready(function() {
     var table = $('#tabla-usuarios').DataTable({
         ajax: '/usuarios/data/',
@@ -100,6 +104,7 @@ $(document).ready(function() {
                 modal.modal('hide');
                 var table = $('#tabla-usuarios').DataTable();
                 table.ajax.reload(null, false);
+                toastr.success('Se ha eliminado un usuario con éxito');
             },
             error: function (error) {
                 modal.modal('hide');
