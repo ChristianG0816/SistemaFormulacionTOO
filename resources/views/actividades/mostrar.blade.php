@@ -1,5 +1,21 @@
 @extends('adminlte::page')
 @section('title', 'Actividad')
+@section('css')
+<style>
+@media (max-width: 767px) {
+    #lista-comentarios {
+        max-height: none !important; /* Quita la propiedad max-height */
+        height: 100%; /* Establece la altura al 100% */
+        margin-top: 0; /* Modifica el margen superior si es necesario */
+    }
+    #informacion-actividad {
+        height: auto !important; /* Quita la propiedad max-height */
+        height: 100%; /* Establece la altura al 100% */
+        margin-top: 0; /* Modifica el margen superior si es necesario */
+    }
+}
+</style>
+@stop
 @section('content_header')
 <h1 class="text-center">Actividad</h1>
 @stop
@@ -21,16 +37,16 @@
 @endif
 <div class="row justify-content-center">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card" id="contenedor-informacion">
         <div class="card-body justify-content-center d-flex pl-0 pr-0">
-            <div  class="row col-lg-12 col-md-12">
-                <div class="col-lg-9 col-md-9">
+            <div  class="row d-flex col-lg-12 col-md-12">
+                <div id="informacion-actividad" class="col-lg-9 col-md-9 table-responsive" style="height: 80vh;">
                     <div id="table_wrapper" class="wrapper dt-bootstrap4">
                         <!--Sección de información de la actividad-->
                         <div class="row">
                             <div class="col-lg-6 col-md-6 mb-3"><!-- Columna izquierda -->
-                                {!! Form::text('id_proyecto', $actividad->id_proyecto, ['class' => 'form-control d-none', 'readonly' => 'readonly']) !!}
-                                {!! Form::text('id_actividad', $actividad->id, ['class' => 'form-control d-none', 'readonly' => 'readonly']) !!}
+                                <input type="hidden" id="id_proyecto" name="id_proyecto" value="{{$actividad->id_proyecto}}">
+                                <input type="hidden" id="id_actividad" name="id_actividad" value="{{$actividad->id}}">
                                 <div class="form-group">
                                     <label for="nombre" class="text-secondary">Nombre</label>
                                     {!! Form::text('nombre', $actividad->nombre, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
@@ -62,21 +78,21 @@
                         <!--Sección de mano de obra-->
                         <div class="row">
                             <div class="col-lg-12 col-md-12 mb-3">
-                                <div class="card">
+                                <div class="card collapsed-card">
                                     <div class="card-header d-flex align-items-center">
-                                        <h3 class="card-title">Mano de obra</h3>
+                                        <h3 class="card-title mb-0">Mano de obra</h3>
                                         <div class="card-tools ml-auto">
                                             <input type="button" value="Agregar" class="btn btn-sm btn-outline-warning my-0" data-toggle="modal" data-target="#agregarMiembroModal">
                                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-minus"></i>
+                                                <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body" style="display: none;">
                                         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
                                         <div class="row">
                                             <div class="col-sm-12 card-body table-responsive p-0" style="height: 40vh;">
-                                            <table id="tableMiembrosActividad" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed"></table>
+                                            <table id="tableMiembrosActividad" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed w-100"></table>
                                             </div>
                                         </div>
                                         </div>
@@ -94,10 +110,57 @@
                     </div>
                 </div>
                 <!--Sección de comentarios-->
-                <div class="col-lg-3">
-                    <div class="card">
-                        <div class="col-lg-12 card-body table-responsive" style="height: 40vh;">
-                            <h5 class="text-center font-weight-bold">Comentarios</h5>
+                <div class="col col-lg-3">
+                    <div class="card bg-secondary" style="height: 100%;">
+                        <div class="col-lg-12 card-body" style="z-index: 2; position: relative;">
+                            <div class="card bg-secondary border-0 shadow-none rounded-0 p-0 m-0 collapsed-card" style="z-index: 2; position: absolute; width:92%">
+                                <div class="card-header bg-secondary border-0 m-0 p-0 w-100">
+                                    <div class="d-flex align-items-center m-1">
+                                        <h5 class="text-center font-weight-bold">Comentarios</h5>
+                                        <a type="button" class="btn btn-tool ml-auto" data-card-widget="collapse" title="Collapse">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body border-0 m-0 p-0 pr-1" style="display: none;">
+                                    <div class="card bg-white">
+                                        <div class="card-body">
+                                            {!! Form::open(['route' => 'comentarios.store', 'method' => 'POST', 'id' => 'comentario-form-agregar']) !!}
+                                                {!! Form::text('id_actividad_comentario', $actividad->id, ['class' => 'form-control d-none']) !!}
+                                                {!! Form::textarea('linea_comentario_comentario', null, ['class' => 'form-control', 'rows' => 3]) !!}
+                                                <p class="text-right m-0 mt-2">
+                                                    <a href="#" id="enviar-formulario" class="text-warning ml-auto">Agregar</a>
+                                                </p>
+                                            {!! Form::close() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="lista-comentarios" class="table-responsive" style="max-height: 70vh; margin-top:45px;">
+                                @foreach ($comentarios as $comentario)
+                                    <div class="card bg-white mr-1">
+                                        <div class="card-body pb-0">
+                                            <p class="font-weight-bold text-secondary m-0">{{ $comentario->usuario->name }} {{ $comentario->usuario->last_name }}</p>
+                                            <p id="parrafo-comentario{{$comentario->id}}" class="text-justify text-black mb-3">{{ $comentario->linea_comentario }}</p>
+                                            @if ($comentario->usuario->id == $usuario->id)
+                                                {!! Form::model($comentario, ['method' => 'PATCH', 'route' => ['comentarios.update', $comentario->id], 'id' => 'comentario-form-actualizar' . $comentario->id]) !!}
+                                                {!! Form::text('id-actividad-comentario-update'.$comentario->id, $actividad->id, ['class' => 'form-control d-none']) !!}
+                                                {!! Form::textarea('linea-comentario-update'.$comentario->id, $comentario->linea_comentario, ['class' => 'form-control', 'rows' => 3, 'style' => 'display: none;', 'id' => 'linea-comentario'.$comentario->id]) !!}
+                                                {!! Form::close() !!}
+                                                <p class="text-right m-0 p-0">
+                                                    <a href="#" id="edi{{ $comentario->id }}" class="text-info"  data-comentario-id-editar="{{ $comentario->id }}">Editar</a>
+                                                    <a href="#" id="upd{{ $comentario->id }}" class="text-warning"  data-comentario-id-actualizar="{{ $comentario->id }}" style="display:none">Guardar</a>
+                                                    <a href="#" id="del{{ $comentario->id }}" class="text-danger pl-2" data-comentario-id-eliminar="{{ $comentario->id }}">Eliminar</a>
+                                                    <a href="#" id="cal{{ $comentario->id }}" class="text-dark pl-2" data-comentario-id-cancelar="{{ $comentario->id }}" style="display:none">Cancelar</a>
+                                                    {!! Form::open(['route' => ['comentarios.destroy', $comentario->id], 'method' => 'DELETE', 'id' => 'comentario-form-eliminar' . $comentario->id]) !!}
+                                                    {!! Form::hidden('_token', csrf_token()) !!}
+                                                    {!! Form::close() !!}
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -142,6 +205,20 @@
 @stop
 
 @section('js')
+    <script>
+    jQuery.noConflict();
+    (function($) {      
+        toastr.options = {"closeButton": true, "progressBar": true}
+        @if (Session::has('success'))
+        toastr.success("{{ session('success') }}");
+        @endif
+
+        @if (Session::has('error'))
+        toastr.error("{{ session('error') }}");
+        @endif
+    })(jQuery);
+    </script>
     <script src="{{ asset('js/miembrosActividad/main.js') }}"></script>
+    <script src="{{ asset('js/actividades/comentarios.js') }}"></script>
     <script src="{{ asset('js/recursos/recursosAsignados.js') }}"></script>
 @stop
