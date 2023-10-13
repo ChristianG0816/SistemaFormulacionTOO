@@ -47,8 +47,17 @@ class ProyectoController extends Controller
      */
     public function create()
     {
-        $estado = EstadoProyecto::pluck('nombre', 'nombre')->all();
-        return view('proyectos.crear', compact('estado'));
+        $estados = EstadoProyecto::pluck('nombre', 'id')->all();
+        $prioridades = ['1' => '1','2' => '2','3' => '3','4' => '4','5' => '5',];
+
+        $dueno = Role::where('name', 'Supervisor')->first();
+        $usuariosDuenos = $dueno->users;
+        $duenos = $usuariosDuenos->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+
+        $cliente = Role::where('name', 'Cliente')->first();
+        $usuariosClientes = $cliente->users;        
+        $clientes = $usuariosClientes->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+        return view('proyectos.crear', compact('estados','duenos','prioridades','clientes'));
     }
 
     /**
@@ -59,47 +68,25 @@ class ProyectoController extends Controller
      */
     public function store(Request $request)
     {
-        /*$this->validate($request, [
-            'name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password'=>'required|same:confirm-password',
-            'dui'=>['required', 'regex:/^\d{9}$/'],
-            'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'nacionalidad'=>'required',
-            'pasaporte'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
-            'profesion'=>'required',
-            'estado_civil'=>'required',
-            'sexo'=>'required',
-            'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
-            'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
+        $this->validate($request, [
+            'nombre' => 'required',
+            'objetivo' => 'required',
+            'id_cliente'=>['required'],
+            'id_dueno'=>['required'],
+            'descripcion'=>['required'],
+            'fecha_inicio'=>'required|fecha_menor_igual:fecha_fin',
+            'fecha_fin'=> 'required',
+            'presupuesto'=>['required', 'regex:/^\d+(\.\d+)?$/'],
+            'prioridad' => ['required'],
+            'entregable'=>'required',
+            'id_estado_proyecto'=>'required'
         ]);
-
-        $password=$request->input('password');
 
         $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
         
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
-        $manoObra = ManoObra::create([
-            'id_usuario' => $user->id,
-            'dui'=>$request->input('dui'),
-            'afp'=>$request->input('afp'),
-            'isss'=>$request->input('isss'),
-            'nacionalidad'=>$request->input('nacionalidad'),
-            'pasaporte'=>$request->input('pasaporte'),
-            'telefono'=>$request->input('telefono'),
-            'profesion'=>$request->input('profesion'),
-            'estado_civil'=>$request->input('estado_civil'),
-            'sexo'=>$request->input('sexo'),
-            'fecha_nacimiento'=>$request->input('fecha_nacimiento'),
-            'costo_servicio'=>$request->input('costo_servicio')
-        ]);
-        \Mail::to($user->email)->send(new NuevoUsuarioCreado($user->name." ".$user->last_name, $user->email, $password));
-        return redirect()->route('miembros.index');*/
+        $proyecto = Proyecto::create($input);
+        return redirect()->route('proyectos.index')->with('success', 'Proyecto creado con éxito');
+        
     }
 
     /**
@@ -132,8 +119,8 @@ class ProyectoController extends Controller
             'sexo'=> $manoObra->sexo,
             'fecha_nacimiento'=> $manoObra->fecha_nacimiento,
             'costo_servicio'=> $manoObra->costo_servicio
-        ]);
-        return view('miembros.mostrar', compact('manoObraUser'));*/
+        ]);*/
+        return view('proyectos.gestionar');
     }
 
     /**
@@ -232,9 +219,8 @@ class ProyectoController extends Controller
      */
     public function destroy($id)
     {
-        /*$manoObra = ManoObra::find($id);
-        ManoObra::find($id)->delete();
-        User::find($manoObra->id_usuario)->delete();
-        return redirect()->route('miembros.index');*/
+        $proyecto = Proyecto::find($id);
+        $proyecto->delete();
+        return redirect()->route('proyectos.index');
     }
 }
