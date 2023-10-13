@@ -81,6 +81,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -118,10 +119,9 @@
     </div>
 </div>
 
-@include('recursos.asignar')
-
 @stop
 
 @section('js')
     <script src="{{ asset('js/miembrosActividad/main.js') }}"></script>
+
 @stop
