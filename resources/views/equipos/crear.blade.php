@@ -133,6 +133,19 @@
     <!-- <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script> -->
     <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
+    jQuery.noConflict();
+    (function($) {      
+        toastr.options = {"closeButton": true, "progressBar": true}
+        @if (Session::has('success'))
+        toastr.success("{{ session('success') }}");
+        @endif
+
+        @if (Session::has('error'))
+        toastr.error("{{ session('error') }}");
+        @endif
+    })(jQuery);
+    </script>
+    <script>
         var proyectoId = {{ $proyectoId }};
         var csrfToken = '{{ csrf_token() }}';
     </script>
