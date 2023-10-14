@@ -56,6 +56,8 @@
                     <label for="profesion" class="text-secondary">Profesión*</label>
                     {!! Form::text('profesion', null, array('class'=>'form-control')) !!}
                 </div>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
                 <div class="form-group">
                     <label for="estado_civil" class="text-secondary">Estado Civil*</label>
                     {!! Form::text('estado_civil', null, array('class'=>'form-control')) !!}
@@ -72,8 +74,6 @@
                     <label for="costo_servicio" class="text-secondary">Costo Servicio*</label>
                     {!! Form::text('costo_servicio', null, array('class'=>'form-control')) !!}
                 </div>
-            </div>
-            <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
                 <h4 class="text-secondary">Usuario de la Mano Obra*</h4>
                 <div class="form-group">
                     <label for="name" class="text-secondary">Nombre*</label>
@@ -86,18 +86,6 @@
                 <div class="form-group">
                     <label for="email" class="text-secondary">Correo*</label>
                     {!! Form::text('email', null, array('class'=>'form-control')) !!}
-                </div>
-                <div class="form-group">
-                    <label for="password" class="text-secondary">Contraseña*</label>
-                    {!! Form::password('password', array('class'=>'form-control')) !!}
-                </div>
-                <div class="form-group">
-                    <label for="confirm-password" class="text-secondary">Confirmar Contraseña*</label>
-                    {!! Form::password('confirm-password', array('class'=>'form-control')) !!}
-                </div>
-                <div class="form-group">
-                    <label for="roles" class="text-secondary">Roles*</label>
-                    {!! Form::select('roles[]', $roles, [], array('class' => 'form-control')) !!}
                 </div>
             </div>
           </div>

@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use App\Mail\NuevoUsuarioCreado;
 
 class ManoObraController extends Controller
@@ -39,12 +40,11 @@ class ManoObraController extends Controller
      */
     public function create()
     {
-        $roles = Role::pluck('name', 'name')->all();
         $sexos = [
             'Masculino' => 'Masculino',
             'Femenino' => 'Femenino',
         ];
-        return view('miembros.crear', compact('roles','sexos'));
+        return view('miembros.crear', compact('sexos'));
     }
 
     /**
@@ -59,7 +59,6 @@ class ManoObraController extends Controller
             'name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password'=>'required|same:confirm-password',
             'dui'=>['required', 'regex:/^\d{9}$/'],
             'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
             'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
@@ -73,13 +72,16 @@ class ManoObraController extends Controller
             'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
 
-        $password=$request->input('password');
+        $password=Str::random(12);
 
         $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
+        $user = User::create([
+            'name'=>$request->input('name'),
+            'last_name'=>$request->input('last_name'),
+            'email'=>$request->input('email'),
+            'password'=>Hash::make($password),
+        ]);
+        $user->assignRole(4);
         $manoObra = ManoObra::create([
             'id_usuario' => $user->id,
             'dui'=>$request->input('dui'),
