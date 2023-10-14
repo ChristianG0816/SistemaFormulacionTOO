@@ -9,10 +9,12 @@ use App\Models\User;
 use App\Models\Actividad;
 use App\Models\Proyecto;
 use App\Models\EstadoActividad;
+use App\Models\Comentario;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class ActividadController extends Controller
 {
@@ -66,7 +68,8 @@ class ActividadController extends Controller
         ]);
         $input = $request->all();
         $actividad = Actividad::create($input);
-        return redirect()->route('actividades.index', $actividad->id_proyecto);
+        $proyecto = Proyecto::find($actividad->id_proyecto);
+        return view('proyectos.mostrar', compact('proyecto'));
     }
 
     /**
@@ -80,7 +83,9 @@ class ActividadController extends Controller
         $actividad = Actividad::find($id);
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
-        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto'));
+        $usuario= Auth::user();
+        $comentarios = Comentario::where('id_actividad', $actividad->id)->orderBy('created_at', 'desc')->get();
+        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios'));
     }
 
     /**
@@ -117,7 +122,8 @@ class ActividadController extends Controller
         ]);
         $input = $request->all();
         $actividad->update($input);
-        return redirect()->route('actividades.index', $actividad->id_proyecto);
+        $proyecto = Proyecto::find($actividad->id_proyecto);
+        return view('proyectos.mostrar', compact('proyecto'));
     }
 
     /**
@@ -129,8 +135,8 @@ class ActividadController extends Controller
     public function destroy($id)
     {
         $actividad = Actividad::find($id);
-        $id_proyecto = $actividad->id_proyecto;
+        $proyecto = $actividad->id_proyecto;
         $actividad->delete();
-        return redirect()->route('actividades.index', $id_proyecto);
+        return view('proyectos.mostrar', compact('proyecto'));
     }
 }

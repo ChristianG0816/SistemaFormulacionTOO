@@ -9,6 +9,8 @@ use App\Http\Controllers\EquipoTrabajoController;
 use App\Http\Controllers\ManoObraController;
 use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\AsignacionRecursoController;
 use App\Http\Controllers\MiembroActividadController;
 
 
@@ -42,13 +44,21 @@ Route::group(['middleware' => ['auth']], function() {
     
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
+    
+    //Rutas para recursos
+    Route::get('recursos/detalle/{id}', [RecursoController::class, 'getRecurso']);
+    Route::get('recursos/disponibles', [RecursoController::class, 'RecursosDisponibles']);
     Route::get('recursos/data', [RecursoController::class, 'data'])->name('recursos.data');
     Route::resource('recursos', RecursoController::class);
+    Route::post('asignacionrecurso/crear', [AsignacionRecursoController::class,'crearAsignacionRecurso']);
+    Route::get('asignacionrecurso/list/{id}', [AsignacionRecursoController::class, 'list']);
+
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
     Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
+    Route::resource('comentarios', ComentarioController::class);
     Route::get('miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
     Route::get('/miembrosactividades/nolist/{actividadId}/{proyectoId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
     Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);

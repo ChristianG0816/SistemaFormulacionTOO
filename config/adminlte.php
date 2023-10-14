@@ -317,15 +317,13 @@ return [
             'route'  => 'home',
         ],
 
-        [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
-        ],
         ['header' => 'Datos'],
         
+        [
+            'text' => 'Calendario',
+            'url'  => 'calendario',
+            'icon' => 'fas fa-file-invoice',
+        ],
         [
             'text' => 'Proyectos',
             'url'  => 'proyectos',
@@ -348,11 +346,6 @@ return [
             'text' => 'Roles',
             'url'  => 'roles',
             'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
         ],
         [
             'text'    => 'multilevel',
@@ -545,31 +538,6 @@ return [
                 ],
             ],
         ],
-        'Toastr' => [
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css',
-                ],
-                [
-                    'type' => 'js',
-                    'asset' => false,
-                    'location' => '//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js',
-                ],
-                [
-                    'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
-                ],
-                [
-                    'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js',
-                ],
-            ],
-        ],
         'FullCalendar' => [
             'active' => true,
     
@@ -580,6 +548,26 @@ return [
                     'location' => 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js',
                 ],
                 
+            ],
+        ],
+        'Toastr' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js',
+                ],
             ],
         ],
     ],

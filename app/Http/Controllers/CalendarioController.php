@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Actividad;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EquipoTrabajo;
+use App\Models\ManoObra;
+use App\Models\MiembroActividad;
 
 class CalendarioController extends Controller
 {
@@ -44,12 +48,26 @@ class CalendarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show() {
-    
-    //en este metodo tendria que filtrar en base a usuario y proyecto 
-    //para que me los muestre en el calendario.    
 
-    $actividades = Actividad::all();
+/*http://127.0.0.1:8000/calendario/mostrar ruta*/
+
+/*public function show() {
+
+    //Debo de obtener el idManodeObra del usuario que esta en el sistema
+    $usuarioLogueado = Auth::user();
+    // Busca la mano de obra asociada al usuario logueado
+    $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
+
+    
+    //Busco el equipo al cual esta asociado la mano de obra
+    $equipoTrabajo = EquipoTrabajo::where('id_mano_obra', $manoObra->id)->first();
+    //miembro de la actividad
+    $miembroDeActividad = MiembroActividad::where('id_equipo_trabajo', $equipoTrabajo->id)->first();
+    //actividades
+    $actividades = Actividad::where('id', $miembroDeActividad->id)->first();
+    
+
+    //$actividades = Actividad::all();
 
     $eventos = [];
     foreach ($actividades as $actividad) {
@@ -57,14 +75,50 @@ class CalendarioController extends Controller
             //aqui me traigo todo lo relacionado a la actividad y mostrarlo en el formulario
             'id' => $actividad->id,
             'title' => $actividad->nombre,
-            'start' => $actividad->fecha_inicio,
+            'start' => $actividad->fecha_fin,
             'end' => $actividad->fecha_fin,
         ];
         array_push($eventos, $evento);
     }
+    
 
-    return response()->json($eventos);
+    return response()->json($actividades);
+}*/
+
+public function show() {
+    //Debo de obtener el idManodeObra del usuario que esta en el sistema
+    $usuarioLogueado = Auth::user();
+    $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
+
+    if ($manoObra) {
+        $equipoTrabajo = EquipoTrabajo::where('id_mano_obra', $manoObra->id)->get();
+
+        $eventos = [];
+
+        foreach ($equipoTrabajo as $equipo) {
+            $miembrosActividad = MiembroActividad::where('id_equipo_trabajo', $equipo->id)->get();
+            foreach ($miembrosActividad as $miembroActividad) {
+                $actividad = Actividad::where('id', $miembroActividad->id)->first();
+                if ($actividad) {
+                    $evento = [
+                        'id' => $actividad->id,
+                        'title' => $actividad->nombre,
+                        'start' => $actividad->fecha_fin,
+                        'end' => $actividad->fecha_fin,
+                    ];
+                    array_push($eventos, $evento);
+                }
+            }
+        }
+
+        return response()->json($eventos);
+    }
+
+    return response()->json([]); // En caso de que no se encuentren datos.
 }
+
+
+
 
 
     /**

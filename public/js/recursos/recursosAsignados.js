@@ -4,19 +4,18 @@ toastr.options = {
 };
 $(document).ready(function(){
     // Inicializar el DataTable con AJAX
-    var csrfToken = '{{ csrf_token() }}';
-    var actividadId = $("#id_actividad");
-    var proyectoId = $("id_proyecto");
-    $('#tableMiembrosActividad').DataTable({
-        ajax: "/miembrosactividades/list/" + actividadId,
+    var csrfToken = $('#csrf-token').data('token');
+    var actividadId = $("#actividad-id").data("id");
+    $('#tableRecursosActividad').DataTable({
+        ajax: "/asignacionrecurso/list/" + actividadId,
         processing: true,
         serverSide: true,
         order: [[0, 'asc']],
         lengthMenu: [[5, 25, 50, 100, -1], [5, 25, 50, 100, 'Todos']], // Opciones de selección para mostrar registros por página
         pageLength: 5, // Cantidad de registros por página por defecto
         columns: [
-            {data: 'usuario_name', title: 'Nombre'},
-            {data: 'usuario_email', title: 'Correo'},
+            {data: 'nombre', title: 'Nombre'},
+            {data: 'cantidad', title: 'Cantidad'},
             {data: 'costo', title: 'Costo'},
             {data: 'action', title: 'Accciones', name: 'action', orderable: false, searchable: false}
         ],
@@ -49,28 +48,28 @@ $(document).ready(function(){
         }
     });
 
-    $('#agregarMiembroModal').on('show.bs.modal', function (event) {
+    $('#agregarRecursoModal').on('show.bs.modal', function (event) {
         var modal = $(this);
 
-        // Agregar la opción "Seleccione un miembro del equipo"
-        var select = modal.find('#miembroSelect');
+        // Agregar la opción "Seleccione un recurso"
+        var select = modal.find('#recursoSelect');
         select.empty(); // Limpia cualquier opción previa
         select.append($('<option>', {
             value: '',
-            text: 'Seleccione un miembro del equipo'
+            text: 'Seleccione un recurso'
         }));
 
-        // Realiza una solicitud Ajax para obtener los miembros disponibles
+        // Realiza una solicitud Ajax para obtener los recursos disponibles
         $.ajax({
-            url: '/miembrosactividades/nolist/' + actividadId + "/" + proyectoId,
+            url: '/recursos/disponibles/',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
-                // Llena el select con los datos de los miembros disponibles
-                $.each(data, function (index, member) {
+                // Llena el select con los datos de los recursos disponibles
+                $.each(data, function (index, recurso) {
                     select.append($('<option>', {
-                        value: member.id,
-                        text: member.full_name // Ajusta esto para reflejar el campo que deseas mostrar en el select
+                        value: recurso.id,
+                        text: recurso.nombre // Ajusta esto para reflejar el campo que deseas mostrar en el select
                     }));
                 });
             },
@@ -80,74 +79,77 @@ $(document).ready(function(){
         });
     });
 
-    $('#agregarMiembroModal').on('hide.bs.modal', function (event) {
+    $('#agregarRecursoModal').on('hide.bs.modal', function (event) {
         // Restablece el valor del select cuando se cierra el modal
         var modal = $(this);
-        var select = modal.find('#miembroSelect');
+        var select = modal.find('#recursoSelect');
         select.val('');
-        $('#nombreMiembro').text("");
-        $('#correoMiembro').text("");
-        $('#telefonoMiembro').text("");
+        $('#nombreRecurso').text("");
+        $('#cantidadRecurso').val('');
+        $('#costoRecurso').text("");
     });
 
-    $('#miembroSelect').change(function () {
-        var selectedMiembro = $('#miembroSelect').val();
+    $('#recursoSelect').change(function () {
+        var selectedRecurso = $('#recursoSelect').val();
     
-        if (selectedMiembro !== '') {
+        if (selectedRecurso !== '') {
             // Realiza una solicitud Ajax para obtener los detalles del miembro seleccionado
             $.ajax({
-                url: '/miembrosactividades/detalle/' + selectedMiembro,
+                url: '/recursos/detalle/' + selectedRecurso,
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    $('#nombreMiembro').text(data.full_name);
-                    $('#correoMiembro').text(data.mano_obra.usuario.email);
-                    $('#telefonoMiembro').text(data.mano_obra.costo_servicio);
+                    $('#nombreRecurso').text(data.nombre);
+                    $('#costoRecurso').text(data.costo);
                 },
                 error: function (error) {
                     console.log('Error al obtener los detalles del miembro:', error);
                 }
             });
         } else {
-            $('#nombreMiembro').text("");
-            $('#correoMiembro').text("");
-            $('#telefonoMiembro').text("");
+            $('#nombreRecurso').text("");
+            $('#costoRecurso').text("");
         }
     });
 
-    $('#agregarMiembroBtn').click(function () {
-        var selectedMiembro = $('#miembroSelect').val();
-        // Verifica si se seleccionó un miembro
-        if (selectedMiembro !== '') {
-            // Realiza una solicitud Ajax para agregar el miembro al equipo
+    $('#agregarRecursoBtn').click(function () {
+        var selectedRecurso = $('#recursoSelect').val();
+        var cantidadRecurso = $('#cantidadRecurso').val();
+        // Verifica si se seleccionó un recurso
+        if (selectedRecurso !== '') {
+            console.log('entre');
+            // Realiza una solicitud Ajax para agregar un recurso
             $.ajax({
-                url: '/miembrosactividades/crear', // URL para agregar el miembro
+                url: '/asignacionrecurso/crear', // URL para asignar el recurso
                 method: 'POST', // Utiliza el método POST para enviar datos al servidor
                 dataType: 'json',
                 data: {
                     _token: csrfToken, // Agrega el token CSRF aquí
-                    id_actividad: actividadId, // Reemplaza 'proyectoId' con el valor correcto
-                    id_equipo_trabajo: selectedMiembro // Envía el ID del miembro seleccionado
+                    id_actividad: actividadId,
+                    id_recurso: selectedRecurso,
+                    cantidad: cantidadRecurso
                 },
                 success: function (response) {
                     if (response.success) {
                         // Recarga el DataTable después de agregar el miembro
-                        $('#tableMiembrosActividad').DataTable().ajax.reload();
+                        $('#tableRecursosActividad').DataTable().ajax.reload();
+                        //limpia la cantidad
+                        $('#cantidadRecurso').val('');
                         // Cierra el modal después de agregar al miembro
-                        $('#agregarMiembroModal').modal('hide');
-                        toastr.success('Se ha asignado un miembro a la actividad con éxito');
+                        $('#agregarRecursoModal').modal('hide');
+                        toastr.success('Se ha agregado un recurso a la actividad');
                     } else {
-                        console.log('Error al agregar el miembro a la actividad:', response.message);
+                        console.log('Error al agregar el recurso:', response.message);
                     }
                 },
                 error: function (error) {
-                    console.log('Error al agregar el miembro a la actividad:', error);
+                    console.log('Error al agregar el recurso:', error);
                 }
             });
         }
     });
 
-    $('#tableMiembrosActividad').on('click', '.delete', function () {
+    $('#tableRecursosActividad').on('click', '.delete', function () {
         var id = $(this).data('id');
         
         if (confirm('¿Estás seguro de eliminar este registro?')) {
@@ -163,7 +165,7 @@ $(document).ready(function(){
                         alert('Registro eliminado correctamente.');
                         // Actualizar la tabla después de la eliminación si es necesario
                         $('#tableMiembrosActividad').DataTable().ajax.reload();
-                        toastr.success('EL miembro ha sido eliminado con éxito');
+                        toastr.success('Se ha eliminado un recurso de la actividad');
                     } else {
                         alert('Error al eliminar el registro.');
                     }
