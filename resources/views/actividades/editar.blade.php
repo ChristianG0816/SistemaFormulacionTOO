@@ -46,7 +46,7 @@
                 </div>
                 <div class="form-group">
                     <label for="id_estado_actividad" class="text-secondary">Estado Actividad*</label>
-                    {!! Form::select('id_estado_actividad', $estadosActividad, $actividad->estado_actividad->nombre, ['class' => 'form-control']) !!}
+                    {!! Form::select('id_estado_actividad', $estadosActividad, null, ['class' => 'form-control']) !!}
                 </div>
             </div>
             <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->

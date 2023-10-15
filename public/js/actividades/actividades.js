@@ -47,7 +47,32 @@ $(document).ready(function() {
         ],
         columns: [
             { data: 'nombre', title: 'Nombre', width: '30%' },
-            { data: 'estado_actividad.nombre', title: 'Estado Actividad', width: '10%' },
+            {
+                data: 'estado_actividad.nombre',
+                title: 'Estado Actividad',
+                width: '10%',
+                render: function (data, type, row) {
+                    var estado = data;
+                    var claseCSS = '';
+            
+                    switch (estado) {
+                        case 'Pendiente':
+                            claseCSS = 'badge badge-warning';
+                            break;
+                        case 'En Proceso':
+                            claseCSS = 'badge badge-info';
+                            break;
+                        case 'Finalizada':
+                            claseCSS = 'badge badge-success';
+                            break;
+                        default:
+                            claseCSS = 'badge badge-secondary';
+                            break;
+                    }
+            
+                    return '<span class="' + claseCSS + '">' + estado + '</span>';
+                }
+            },            
             { data: 'fecha_inicio', title: 'Fecha Inicio', width: '8%' },
             { data: 'fecha_fin', title: 'Fecha Fin', width: '8%' },
             { data: 'prioridad', title: 'Prioridad', width: '5%' },
@@ -174,6 +199,7 @@ $(document).ready(function() {
                 modal.modal('hide');
                 var table = $('#tabla-actividades').DataTable();
                 table.ajax.reload(null, false);
+                toastr.error('Ocurrió un error al eliminar la actividad.');
             }
         });
     });    
