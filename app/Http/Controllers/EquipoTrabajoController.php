@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Proyecto;
 use App\Models\EquipoTrabajo;
 use App\Models\ManoObra;
 use App\Models\User;
@@ -16,73 +17,6 @@ class EquipoTrabajoController extends Controller
         //$this->middleware('permission:crear-equipo-trabajo')->only(['create', 'store']);
         //$this->middleware('permission:eliminar-equipo-trabajo')->only(['destroy']);
     }
-
-    public function index()
-    {
-        $proyectoId = 1; // Aquí debes recuperar el ID del proyecto actual
-        return view('equipos.crear', compact('proyectoId'));
-    }
-
-    public function crearEquiposTrabajo(Request $request)
-    {
-        $data = $request->all();
-    
-        if (!empty($data['id_proyecto']) && !empty($data['id_mano_obra'])) {
-            $id_proyecto = intval($data['id_proyecto']);
-            $id_mano_obra = intval($data['id_mano_obra']);
-            
-            // Crea un registro en el modelo EquipoTrabajo con los datos recibidos
-            $equipoTrabajo = EquipoTrabajo::create([
-                'id_proyecto' => $id_proyecto,
-                'id_mano_obra' => $id_mano_obra,
-            ]);
-    
-            return response()->json([
-                'success' => true,
-                'message' => 'Equipo de trabajo creado correctamente',
-                'equipo_creado' => $equipoTrabajo
-            ]);
-        }
-    
-        return response()->json([
-            'success' => false,
-            'message' => 'Datos inválidos para crear equipo de trabajo'
-        ]);
-    }
-       
-    
-    public function eliminarEquipos(Request $request)
-    {
-        try {
-            $id_proyecto = intval($request->input('id_proyecto'));
-            $id_mano_obra = intval($request->input('id_mano_obra'));
-
-            if (!empty($id_proyecto) && !empty($id_mano_obra)) {
-                // Busca y elimina el equipo de trabajo correspondiente según los IDs recibidos
-                $equipoTrabajo = EquipoTrabajo::where('id_proyecto', $id_proyecto)
-                    ->where('id_mano_obra', $id_mano_obra)
-                    ->delete();
-
-                if ($equipoTrabajo) {
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Miembro del equipo de trabajo eliminado correctamente'
-                    ]);
-                }
-            }
-            return response()->json([
-                'success' => false,
-                'message' => 'No se encontró ningún miembro del equipo de trabajo para eliminar'
-            ]);
-        } catch (\Exception $e) {
-            // Registra la excepción en el archivo de registro o devuelve un mensaje de error detallado
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un error al eliminar el miembro del equipo de trabajo: ' . $e->getMessage() . 'Verifica que el miembro no esté asignado a una actividad.'
-            ]);
-        }
-    }
-
 
     public function list(Request $request, $proyectoId)
     {
@@ -107,8 +41,8 @@ class EquipoTrabajoController extends Controller
                 return $row->mano_obra->telefono;
             })
             ->addColumn('action', function ($row) {
-                $btnDetalle = '<a href="' . route('miembros.show', $row->mano_obra->id) . '" class="edit btn btn-primary btn-sm">Detalle</a>';
-                $btnEliminar = '<button class="delete btn btn-danger btn-sm" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
+                $btnDetalle = '<a href="' . route('miembros.show', $row->mano_obra->id) . '" class="btn btn-outline-secondary btn-sm">Mostrar</a>';
+                $btnEliminar = '<button class="delete btn btn-outline-danger btn-sm ml-1" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
                 return $btnDetalle . ' ' . $btnEliminar;
             })            
             ->rawColumns(['action'])
@@ -145,4 +79,81 @@ class EquipoTrabajoController extends Controller
 
         return response()->json($miembro);
     }
+
+    public function crearEquiposTrabajo(Request $request)
+    {
+        $data = $request->all();
+        try {
+        if (!empty($data['id_proyecto']) && !empty($data['id_mano_obra'])) {
+            $id_proyecto = intval($data['id_proyecto']);
+            $id_mano_obra = intval($data['id_mano_obra']);
+
+            $proyecto = Proyecto::find($id_proyecto);
+            $costo_mano_obra = ManoObra::where('id', $id_mano_obra)->sum('costo_servicio');
+            $costo_equipo_trabajo = EquipoTrabajo::where('id_proyecto', $id_proyecto)
+            ->with('mano_obra') // Cargar la relación miembros
+            ->get()
+            ->pluck('mano_obra.costo_servicio') // Obtener los valores de costo_servicio de la relación
+            ->sum();
+            $costo_total = intval($costo_mano_obra) + intval($costo_equipo_trabajo);
+            if (intval($proyecto->presupuesto) >= intval($costo_total)) {
+                // Crea un registro en el modelo EquipoTrabajo con los datos recibidos
+                $equipoTrabajo = EquipoTrabajo::create([
+                    'id_proyecto' => $id_proyecto,
+                    'id_mano_obra' => $id_mano_obra,
+                ]);
+        
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Se ha agregado un miembro al equipo de trabajo con éxito',
+                    'equipo_creado' => $equipoTrabajo
+                ]);
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al agregar el miembro al equipo de trabajo. El presupuesto del proyecto no es suficiente'
+            ]);
+        }
+        } catch (\Exception $e) {
+            // Registra la excepción en el archivo de registro o devuelve un mensaje de error detallado
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al agregar el miembro al equipo de trabajo'
+            ]);
+        }
+    }
+       
+    
+    public function eliminarEquipos(Request $request)
+    {
+        try {
+            $id_proyecto = intval($request->input('id_proyecto'));
+            $id_mano_obra = intval($request->input('id_mano_obra'));
+
+            if (!empty($id_proyecto) && !empty($id_mano_obra)) {
+                // Busca y elimina el equipo de trabajo correspondiente según los IDs recibidos
+                $equipoTrabajo = EquipoTrabajo::where('id_proyecto', $id_proyecto)
+                    ->where('id_mano_obra', $id_mano_obra)
+                    ->delete();
+
+                if ($equipoTrabajo) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Se ha eliminado el miembro del equipo de trabajo con éxito'
+                    ]);
+                }
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontró ningún miembro del equipo de trabajo para eliminar'
+            ]);
+        } catch (\Exception $e) {
+            // Registra la excepción en el archivo de registro o devuelve un mensaje de error detallado
+            return response()->json([
+                'success' => false,
+                'message' => 'Ocurrió un error al eliminar el miembro del equipo de trabajo. Verifica que el miembro no esté asignado a una actividad'
+            ]);
+        }
+    }
+    
 }

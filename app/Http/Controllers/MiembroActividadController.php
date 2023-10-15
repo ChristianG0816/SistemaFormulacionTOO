@@ -40,8 +40,8 @@ class MiembroActividadController extends Controller
             })            
             ->addColumn('action', function ($row) {
                 // Agregar botones de acciones (editar, eliminar, etc.) si es necesario
-                $btnDetalle = '<a href="' . route('miembros.show', $row->equipo_trabajo->mano_obra->id) . '" class="edit btn btn-primary btn-sm">Detalle</a>';
-                $btnEliminar = '<button class="delete btn btn-danger btn-sm" data-id="' . $row->id . '">Eliminar</button>';
+                $btnDetalle = '<a href="' . route('miembros.show', $row->equipo_trabajo->mano_obra->id) . '" class="btn btn-outline-secondary btn-sm">Mostrar</a>';
+                $btnEliminar = '<button class="delete btn btn-outline-danger btn-sm ml-1" data-id="' . $row->id . '">Eliminar</button>';
                 return $btnDetalle . ' ' . $btnEliminar;
             })            
             ->rawColumns(['action'])
@@ -83,8 +83,8 @@ class MiembroActividadController extends Controller
     
     public function crearMiembrosActividad(Request $request)
     {
+        try {
         $data = $request->all();
-    
         if (!empty($data['id_actividad']) && !empty($data['id_equipo_trabajo'])) {
             $id_actividad = intval($data['id_actividad']);
             $id_equipo_trabajo = intval($data['id_equipo_trabajo']);
@@ -105,8 +105,15 @@ class MiembroActividadController extends Controller
     
         return response()->json([
             'success' => false,
-            'message' => 'Datos inválidos para agregar el miembro a la actividad'
+            'message' => 'Ocurrió un error al agregar el miembro a la actividad'
         ]);
+        } catch (\Exception $e) {
+            // Registra la excepción en el archivo de registro o devuelve un mensaje de error detallado
+            return response()->json([
+                'success' => false,
+                'message' => 'Ocurrió un error al agregar el miembro a la actividad'
+            ]);
+        }
     }
 
     public function eliminarMiembrosActividad(Request $request)
@@ -134,7 +141,7 @@ class MiembroActividadController extends Controller
             // Registra la excepción en el archivo de registro o devuelve un mensaje de error detallado
             return response()->json([
                 'success' => false,
-                'message' => 'Ocurrió un error al eliminar el miembro de la actividad: ' . $e->getMessage()
+                'message' => 'Ocurrió un error al eliminar el miembro de la actividad'
             ]);
         }
     }

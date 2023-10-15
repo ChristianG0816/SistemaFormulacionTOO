@@ -101,30 +101,7 @@
                             </div>
                         </div>
                         <!--Sección de mano de obra-->
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 mb-3">
-                                <div class="card collapsed-card">
-                                    <div class="card-header d-flex align-items-center">
-                                        <h3 class="card-title mb-0">Mano de obra</h3>
-                                        <div class="card-tools ml-auto">
-                                            <input type="button" value="Agregar" class="btn btn-sm btn-outline-warning my-0" data-toggle="modal" data-target="#agregarMiembroModal">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body" style="display: none;">
-                                        <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                                        <div class="row">
-                                            <div class="col-sm-12 card-body table-responsive p-0" style="height: 40vh;">
-                                            <table id="tableMiembrosActividad" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed w-100"></table>
-                                            </div>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('miembrosActividad.asignar')
                         <!--Mas secciones-->
                         <div class="row">
                             <div class="col-lg-12 col-md-12 mb-3">
@@ -195,37 +172,6 @@
     </div>
 </div>
 
-<!-- Modal Agregar Miembro -->
-<div class="modal fade" id="agregarMiembroModal" tabindex="-1" role="dialog" aria-labelledby="agregarMiembroModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="agregarMiembroModalLabel" class="text-secondary">Agregar Miembro a la Actividad</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="agregarMiembroForm">
-                    <div class="form-group">
-                        <label for="miembroSelect" class="text-secondary">Selecciona un miembro:</label>
-                        <select class="form-control" id="miembroSelect" name="miembroSelect">
-                        </select>
-                    </div>
-                </form>
-                <div id="miembroDetalle">
-                    <p class="text-secondary"><strong>Nombre:</strong> <span id="nombreMiembro"></span></p>
-                    <p class="text-secondary"><strong>Correo:</strong> <span id="correoMiembro"></span></p>
-                    <p class="text-secondary"><strong>Costo por Servicio:</strong> <span id="telefonoMiembro"></span></p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="agregarMiembroBtn">Agregar</button>
-                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Agregar Tarea -->
 <div class="modal fade" id="agregarTareaModal" tabindex="-1" role="dialog" aria-labelledby="agregarTareaModalLabel" aria-hidden="true">
@@ -325,8 +271,11 @@
         toastr.error("{{ session('error') }}");
         @endif
     })(jQuery);
+    var actividadId = {{ $actividad->id }};
+    var proyectoId = {{$actividad->id_proyecto}};
+    var csrfToken = '{{ csrf_token() }}';
     </script>
-    <script src="{{ asset('js/miembrosActividad/main.js') }}"></script>
+    <script src="{{ asset('js/miembrosActividad/miembrosActividad.js') }}"></script>
     <script src="{{ asset('js/actividades/comentarios.js') }}"></script>
     <script src="{{ asset('js/actividades/tareas.js') }}"></script>
     <script src="{{ asset('js/recursos/recursosAsignados.js') }}"></script>
