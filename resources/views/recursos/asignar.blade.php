@@ -14,7 +14,7 @@
             <div class="card-body" style="display: none;">
                 <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
                 <div class="row">
-                    <div class="col-sm-12 card-body table-responsive p-0" style="height: 40vh;">
+                    <div class="col-sm-12 card-body table-responsive p-0">
                     <!--Sección de tabla-->
                     <table id="tableRecursosActividad" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed w-100"></table>
                     </div>

@@ -174,6 +174,7 @@ $(document).ready(function() {
                 modal.modal('hide');
                 var table = $('#tabla-actividades').DataTable();
                 table.ajax.reload(null, false);
+                toastr.error('Error al eliminar la actividad');
             }
         });
     });    

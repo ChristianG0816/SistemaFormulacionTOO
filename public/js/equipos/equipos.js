@@ -4,16 +4,56 @@ toastr.options = {
 };
 $(document).ready(function(){
     // Inicializar el DataTable con AJAX
-    $('#tableEquipo').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": "/equipos/list/" + proyectoId, // Agrega el proyectoId a la URL
-        "columns": [
+    var table = $('#tableEquipo').DataTable({
+        ajax: '/equipos/list/' + proyectoId, // Agrega el proyectoId a la URL
+        processing: true,
+        serverSide: true,
+        dom: "<'row w-100'<'col-sm-6'l><'col-sm-6'f>>" +
+             "<'row w-100'<'col-sm-12 my-4'tr>>" +
+             "<'row w-100'<'col-sm-5'i><'col-sm-7'p>>",
+        lengthMenu: [[5, 25, 50, 100, -1], [5, 25, 50, 100, 'Todos']], // Opciones de selección para mostrar registros por página
+        pageLength: 5, // Cantidad de registros por página por defecto
+        columns: [
             {data: 'usuario_name'},
             {data: 'usuario_email'},
             {data: 'telefono'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
-        ]
+        ],
+        language: {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "copyTitle": "Copiar al portapapeles",
+                copySuccess: {
+                  _: "%d filas copiadas al portapapeles",
+                  1: "1 fila copiada al portapapeles"
+                }
+            }
+        },
+        search: {
+            return: true
+        }
     });
 
     $('#agregarMiembroModal').on('show.bs.modal', function (event) {
@@ -42,7 +82,7 @@ $(document).ready(function(){
                 });
             },
             error: function (error) {
-                console.log('Error al obtener los miembros disponibles:', error);
+                toastr.error('Error al obtener los miembros disponibles');
             }
         });
     });
@@ -73,7 +113,7 @@ $(document).ready(function(){
                     $('#telefonoMiembro').text(data.telefono); // Ajusta el campo según tu estructura de datos
                 },
                 error: function (error) {
-                    console.log('Error al obtener los detalles del miembro:', error);
+                    toastr.error('Error al obtener los detalles del miembro');
                 }
             });
         } else {
@@ -104,13 +144,13 @@ $(document).ready(function(){
                         $('#tableEquipo').DataTable().ajax.reload();
                         // Cierra el modal después de agregar al miembro
                         $('#agregarMiembroModal').modal('hide');
-                        toastr.success('Se ha agregado un miembro al equipo con éxito');
+                        toastr.success(response.message);
                     } else {
-                        console.log('Error al agregar el miembro al equipo:', response.message);
+                        toastr.error(response.message);
                     }
                 },
-                error: function (error) {
-                    console.log('Error al agregar el miembro al equipo:', error);
+                error: function ( response) {
+                    toastr.error(response.message);
                 }
             });
         }
@@ -118,31 +158,37 @@ $(document).ready(function(){
 
     $('#tableEquipo').on('click', '.delete', function () {
         var id = $(this).data('id');
-        
-        if (confirm('¿Estás seguro de eliminar este registro?')) {
-            $.ajax({
-                url: '/equipos/eliminar',
-                method: 'POST',
-                data: { 
-                    _token: csrfToken, 
-                    id_proyecto: parseInt(proyectoId), // Convertir a entero
-                    id_mano_obra: parseInt(id) // Convertir a entero
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert('Registro eliminado correctamente.');
-                        // Actualizar la tabla después de la eliminación si es necesario
-                        $('#tableEquipo').DataTable().ajax.reload();
-                        toastr.success('Se ha eliminado un miembro del equipo con éxito');
-                    } else {
-                        alert('Error al eliminar el registro.');
-                    }
-                    toastr.success('Se ha eliminado un miembro del Equipo de trabajo con éxito');
-                },
-                error: function () {
-                    alert('Ocurrió un error en la solicitud.');
-                }
-            });
-        }
+        $('#confirmarEliminarMiembroModal').modal('show');
+        $('#eliminarEqipoBtn').data('id', id);
     });
+
+    // Manejador de eventos para el botón "Eliminar" dentro del modal
+    $('#eliminarEqipoBtn').on('click', function () {
+        var id = $(this).data('id');
+        
+        // Realiza la solicitud AJAX para eliminar el registro
+        $.ajax({
+        url: '/equipos/eliminar',
+        method: 'POST',
+        data: { 
+            _token: csrfToken, 
+            id_proyecto: parseInt(proyectoId),
+            id_mano_obra: parseInt(id)
+        },
+        success: function (response) {
+            if (response.success) {
+            $('#tableEquipo').DataTable().ajax.reload();
+            toastr.success(response.message);
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function (response) {
+            toastr.error(response.message);
+        }
+        });
+        $('#confirmarEliminarMiembroModal').modal('hide');
+    });
+
+
 });
