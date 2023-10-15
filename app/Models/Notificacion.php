@@ -11,6 +11,8 @@ class Notificacion extends Model
     protected $table = 'notificacion';
     protected $fillable = [
         'leida',
+        'descripcion',
+        'ruta',
         'id_tipo_notificacion',
         'id_proyecto',
         'id_evento',
