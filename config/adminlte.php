@@ -307,7 +307,7 @@ return [
             'url'          => 'notifications/show',
             'topnav_right' => true,
             'dropdown_mode'   => true,
-            'dropdown_flabel' => 'All notifications',
+            'dropdown_flabel' => 'Todas las notificaciones',
             'update_cfg'   => [
                 'url' => 'notifications/get',
                 'period' => 30,
