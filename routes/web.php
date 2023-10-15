@@ -76,6 +76,6 @@ Route::group(['middleware' => ['auth']], function() {
 
     //Ruta de Calendario
     Route::get('/calendario', [App\Http\Controllers\CalendarioController::class, 'index']);
-    Route::get('/calendario/mostrar', [App\Http\Controllers\CalendarioController::class, 'show']);
+    Route::get('/calendario/mostrar/{idProyecto}', [App\Http\Controllers\CalendarioController::class, 'show']);
     Route::post('/calendario/consultar/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarActividad']);
 });

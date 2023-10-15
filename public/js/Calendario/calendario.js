@@ -16,15 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       
       //Recuperar las actividades en el calendario [las de azul]
-      events: baseUrl + "/calendario/mostrar",
-
-      /*eventSources:{
-        url: baseUrl + "/calendario/mostrar",
-        method:"POST",
-        extraParams:{
-          _token: formulario._token.value,
-        }
-      },*/
+      //events: baseUrl + "/calendario/mostrar",
 
       //al momento de presionar la actividad con esto se mostrara la información
       eventClick:function(info){
@@ -71,6 +63,43 @@ document.addEventListener('DOMContentLoaded', function() {
         error=>{if(error.response){console.log(error.response.data)}}
       )
     }
+
+    // Cargar todas las actividades por defecto
+    cargarActividadesPorProyecto(0);
+
+    function cargarActividadesPorProyecto(proyectoId) {
+      calendar.removeAllEvents(); // Limpia los eventos existentes
+  
+      // Si proyectoId es 0, obtén todas las actividades
+      if (proyectoId === 0) {
+          axios.get(baseUrl + "/calendario/mostrar/0")
+              .then(function (response) {
+                  const actividades = response.data;
+                  calendar.addEventSource(actividades);
+              })
+              .catch(function (error) {
+                  console.log(error);
+              });
+      } else {
+          // Si proyectoId no es 0, obtén las actividades del proyecto específico
+          axios.get(baseUrl + "/calendario/mostrar/" + proyectoId)
+              .then(function (response) {
+                  const actividades = response.data;
+                  calendar.addEventSource(actividades);
+              })
+              .catch(function (error) {
+                  console.log(error);
+              });
+      }
+  }
+  
+  // Escucha cambios en el select de proyecto
+  const proyectoSelect = document.querySelector('#proyectoSelect');
+  proyectoSelect.addEventListener('change', function() {
+      const proyectoId = proyectoSelect.value;
+      cargarActividadesPorProyecto(proyectoId);
+  });
+
 
     calendar.render();
   });

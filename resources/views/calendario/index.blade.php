@@ -3,14 +3,21 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-aqui iria el filtro y boton
 @stop
 
 @section('content')
-    <div class="container">
-        <div id="calendario">
-        </div>
+<div class="container">
+    <div class="form-group" style="margin: 5px;"> 
+        <label for="proyectoSelect"></label>
+        <select class="form-control" id="proyectoSelect" style="margin: 5px;">
+            <option value="0">Selecciona un proyecto</option>
+            @foreach ($proyectos as $proyecto)
+                <option value="{{ $proyecto->id }}">{{ $proyecto->nombre }}</option>
+            @endforeach
+        </select>
     </div>
+    <div id="calendario"></div>
+</div>
 
     <!--Creación de modal para consultar la actividad que se presione -->
     

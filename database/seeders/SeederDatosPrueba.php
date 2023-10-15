@@ -121,6 +121,36 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
+        Actividad::create([
+            'nombre' => 'Actividad 3 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/10',
+            'fecha_fin' => '2023/11/12',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 3,
+            'id_estado_actividad' => 1,
+        ]);
+
+        Actividad::create([
+            'nombre' => 'Actividad 4 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/2',
+            'fecha_fin' => '2023/11/8',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 3,
+            'id_estado_actividad' => 1,
+        ]);
+
+        Actividad::create([
+            'nombre' => 'Actividad 5 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/05',
+            'fecha_fin' => '2023/11/15',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 3,
+            'id_estado_actividad' => 1,
+        ]);
+
         ManoObra::create([
             'dui' => '060803147',
             'afp' => '1235466',
@@ -151,6 +181,22 @@ class SeederDatosPrueba extends Seeder
             'id_usuario' => 4,
         ]);
 
+        ManoObra::create([
+            'dui' => '080803147',
+            'afp' => '1635466',
+            'isss' => '9757325',
+            'nacionalidad' => 'Canandiense',
+            'pasaporte' => '4318741',
+            'telefono' => '64281475',
+            'profesion' => 'Tester',
+            'estado_civil' => 'Casado',
+            'sexo' => 'F',
+            'fecha_nacimiento' => '2000/08/24',
+            'costo_servicio' => 400.00,
+            'id_usuario' => 5,
+        ]);
+
+
         EquipoTrabajo::Create([
             'id_proyecto' => 1,
             'id_mano_obra' => 1,
@@ -164,6 +210,11 @@ class SeederDatosPrueba extends Seeder
         EquipoTrabajo::Create([
             'id_proyecto' => 3,
             'id_mano_obra' => 2,
+        ]);
+
+        EquipoTrabajo::Create([
+            'id_proyecto' => 3,
+            'id_mano_obra' => 3,
         ]);
 
         MiembroActividad::create([
@@ -194,6 +245,21 @@ class SeederDatosPrueba extends Seeder
         MiembroActividad::create([
             'id_actividad' => 6 ,
             'id_equipo_trabajo' => 3,
+        ]);
+
+        MiembroActividad::create([
+            'id_actividad' => 7 ,
+            'id_equipo_trabajo' => 3,
+        ]);
+
+        MiembroActividad::create([
+            'id_actividad' => 8 ,
+            'id_equipo_trabajo' => 3,
+        ]);
+
+        MiembroActividad::create([
+            'id_actividad' => 9 ,
+            'id_equipo_trabajo' => 4,
         ]);
 
     }
