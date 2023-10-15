@@ -38,7 +38,7 @@ class CalendarioController extends Controller
         
         // Obtener la mano de obra del usuario logueado
         $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
-        
+
         if ($manoObra) {
             $equipoTrabajo = EquipoTrabajo::where('id_mano_obra', $manoObra->id)->get();
             
@@ -54,7 +54,7 @@ class CalendarioController extends Controller
                             'title' => $actividad->nombre,
                             'start' => $actividad->fecha_fin,
                             'end' => $actividad->fecha_fin,
-                            'proyecto' => $actividad->id_proyecto,
+                            //'proyecto' => $actividad->id_proyecto,
                         ];
                         array_push($eventos, $evento);
                     }

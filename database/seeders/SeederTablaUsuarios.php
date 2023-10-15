@@ -60,6 +60,26 @@ class SeederTablaUsuarios extends Seeder
 
         $usuario4->assignRole('Colaborador');
 
+        $usuario5 = User::create([
+            'name'=> 'Cliente',
+            'last_name'=> 'apellido',
+            'email' => 'cliente@gmail.com',
+            'password' => bcrypt('123')
+        ]);
+
+        $usuario5->assignRole('Cliente');
+
+        $usuario6 = User::create([
+            'name'=> 'Supervisor',
+            'last_name'=> 'apellido',
+            'email' => 'Supervisor@gmail.com',
+            'password' => bcrypt('123')
+        ]);
+
+        $usuario5->assignRole('Supervisor');
+
+
+        
 
     }
 }

@@ -56,8 +56,8 @@ class SeederDatosPrueba extends Seeder
             'presupuesto' => 2500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_dueno' => 1,
-            'id_cliente' => 2,
+            'id_dueno' => 6,
+            'id_cliente' => 7,
         ]);
 
         Actividad::create([
