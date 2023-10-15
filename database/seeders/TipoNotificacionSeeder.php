@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\TipoNotificacion;
+use Illuminate\Support\Facades\DB;
 
 class TipoNotificacionSeeder extends Seeder
 {
@@ -14,62 +15,65 @@ class TipoNotificacionSeeder extends Seeder
      */
     public function run()
     {
+        //eliminar datos
+        TipoNotificacion::truncate();
+        DB::statement('ALTER SEQUENCE tipo_notificacion_id_seq RESTART WITH 1');
         $tiposNotificacion = [
             [
-                'nombre' => 'Creación de un proyecto',
-                'descripcion' => 'Notificación de creación de un nuevo proyecto.',
+                'nombre' => 'Creación de proyecto.',
+                'descripcion' => 'Se ha creado el proyecto "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-file',
                 'color' => '#FF5733',
-                'ruta' => '/proyectos/crear',
+                'ruta' => '/proyectos/{{id}}',
             ],
             [
-                'nombre' => 'Aprobación de un proyecto',
-                'descripcion' => 'Notificación de aprobación de un proyecto.',
+                'nombre' => 'Aprobación de proyecto.',
+                'descripcion' => 'Se ha aprobado el proyecto "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-check-circle',
                 'color' => '#55AA33',
-                'ruta' => '/proyectos/aprobar',
+                'ruta' => '/proyectos/{{id}}',
             ],
             [
-                'nombre' => 'Rechazo de un proyecto',
-                'descripcion' => 'Notificación de rechazo de un proyecto.',
+                'nombre' => 'Rechazo de proyecto.',
+                'descripcion' => 'Se ha rechazado el proyecto "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-times-circle',
                 'color' => '#FF3333',
-                'ruta' => '/proyectos/rechazar',
+                'ruta' => '/proyectos/{{id}}',
             ],
             [
-                'nombre' => 'Asignación en un proyecto',
-                'descripcion' => 'Notificación de asignación en un proyecto.',
+                'nombre' => 'Asignación en proyecto.',
+                'descripcion' => 'Se ha asignado en el proyecto "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-user',
                 'color' => '#3366FF',
-                'ruta' => '/proyectos/asignar',
+                'ruta' => '/proyectos/{{id}}',
             ],
             [
                 'nombre' => 'Recordatorio de actividad',
-                'descripcion' => 'Notificación de recordatorio de actividad.',
+                'descripcion' => 'Recordatorio de actividad "{{nombre}}" en proyecto "{{nombre_proyecto}}".',
                 'icono' => 'fas fa-fw fa-bell',
                 'color' => '#FF9933',
-                'ruta' => '/actividades/recordar',
+                'ruta' => '/actividades/show/{id}',
             ],
             [
-                'nombre' => 'Finalización de actividad',
-                'descripcion' => 'Notificación de finalización de una actividad.',
+                'nombre' => 'Finalización de actividad.',
+                'descripcion' => 'Finalización de actividad "{{nombre}}" en proyecto "{{nombre_proyecto}}".',
                 'icono' => 'fas fa-fw fa-check',
                 'color' => '#33CC33',
-                'ruta' => '/actividades/finalizar',
+                'ruta' => '/actividades/show/{id}',
             ],
             [
-                'nombre' => 'Finalización de todas las actividades de un proyecto',
-                'descripcion' => 'Notificación de finalización de todas las actividades de un proyecto.',
+                'nombre' => 'Finalización de proyecto.',
+                'descripcion' => 'Finalización de proyecto "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-tasks',
                 'color' => '#3366CC',
-                'ruta' => '/proyectos/finalizar',
+                'ruta' => '/proyectos/{{id}}',
             ],
             [
-                'nombre' => 'Invitación a evento',
-                'descripcion' => 'Notificación de invitación a un evento.',
+                'nombre' => 'Invitación a evento.',
+                'descripcion' => 'Te han invitado al evento "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-calendar',
                 'color' => '#FF33CC',
-                'ruta' => '/eventos/invitar',
+                'ruta' => '/eventos/{{id}}',
             ],
         ];
 
