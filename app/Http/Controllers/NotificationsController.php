@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Notificacion;
+use Carbon\Carbon;
 
 class NotificationsController extends Controller
 {
@@ -23,43 +25,37 @@ class NotificationsController extends Controller
         // At next, we define a hardcoded variable with the explained format,
         // but you can assume this data comes from a database query.
 
-        $notifications = [
-            [
-                'icon' => 'fas fa-fw fa-envelope',
-                'text' => rand(0, 10) . ' new messages',
-                'time' => rand(0, 10) . ' minutes',
-            ],
-            [
-                'icon' => 'fas fa-fw fa-users text-primary',
-                'text' => rand(0, 10) . ' friend requests',
-                'time' => rand(0, 60) . ' minutes',
-            ],
-            [
-                'icon' => 'fas fa-fw fa-file text-danger',
-                'text' => rand(0, 10) . ' new reports',
-                'time' => rand(0, 60) . ' minutes',
-            ],
-        ];
+        //otener id de usuario logeado
+        $id = auth()->user()->id;
+        //obtener notificaciones no leidas
+        $notifications = Notificacion::where('leida', false)->where('id_usuario', $id)->get();
 
-        // Now, we create the notification dropdown main content.
+        Carbon::setLocale('es');
+        //con la relacion tipo_notificacion obtener el icono y el texto
+        foreach ($notifications as $key => $not) {
+            $not['id'] = $not->id;
+            $not['icon'] = $not->tipo_notificacion->icono;
+            $not['text'] = $not->tipo_notificacion->nombre;
+            $not['time'] = $not->created_at->diffForHumans();
+            $not['color'] = $not->tipo_notificacion->color;
+            $not['ruta'] = $not->tipo_notificacion->ruta;
+        }
 
         $dropdownHtml = '';
 
         foreach ($notifications as $key => $not) {
-            $icon = "<i class='mr-2 {$not['icon']}'></i>";
-
+            $icon = "<i class='mr-2 {$not['icon']}' style='color:{$not['color']}'></i>";
             $time = "<span class='float-right text-muted text-sm'>
-                    {$not['time']}
+                        {$not['time']}
                     </span>";
-
-            $dropdownHtml .= "<a href='#' class='dropdown-item'>
-                                {$icon}{$not['text']}{$time}
-                            </a>";
-
+            $dropdownHtml .= "<a class='dropdown-item text-sm' href='/marcar_notificacion/{$not['id']}' data-method='post'>
+                               {$icon}{$not['text']}{$time}
+                           </a>";
             if ($key < count($notifications) - 1) {
                 $dropdownHtml .= "<div class='dropdown-divider'></div>";
             }
         }
+        
 
         // Return the new notification data.
 
@@ -70,4 +66,17 @@ class NotificationsController extends Controller
             'dropdown'    => $dropdownHtml,
         ];
     }
+
+    public function marcarComoLeida($id)
+    {
+        $notificacionId = $id;
+        // Marcar la notificación como leída en la base de datos
+        $notificacion = Notificacion::find($notificacionId);
+        $notificacion->leida = true;
+        $notificacion->save();
+
+        // Utiliza la función redirect() para redirigir a la URL de la notificación
+        return redirect($notificacion->tipo_notificacion->ruta);
+    }
+
 }
