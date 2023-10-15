@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
 
 //spatie
 use Spatie\Permission\Traits\HasRoles;
@@ -56,14 +57,29 @@ class User extends Authenticatable
     }
 
     //aqui hay que recuperar el rol del usuario
-    public function adminlte_desc()
-    {
-        return 'Recupere el nombre del rol';
+    public function adminlte_desc(){
+    // Verifica si el usuario está autenticado
+    if (Auth::check()) {
+        // Obtiene la instancia del usuario autenticado
+        $user = Auth::user();
+        
+        // Verifica si el usuario tiene al menos un rol
+        if ($user->roles->count() > 0) {
+            // Recupera el primer rol asignado al usuario (puedes ajustar esto según tus necesidades)
+            $role = $user->roles->first();
+            // Recupera el nombre del rol
+            $roleName = $role->name;
+            return "Rol actual: $roleName";
+        }
     }
+    
+    return "Usuario no autenticado o sin roles asignados";
+}
+
 
     //acceder al perfil del usuario
-    public function adminlte_profile_url()
+   /* public function adminlte_profile_url()
     {
         return 'profile/username';
-    }
+    }*/
 }
