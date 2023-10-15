@@ -164,30 +164,7 @@
               </div>
             </div>
             <!--Sección de equipo de trabajo-->
-            <div class="row">
-              <div class="col-lg-12 col-md-12 mb-3">
-                <div class="card collapsed-card">
-                  <div class="card-header d-flex align-items-center">
-                    <h3 class="card-title">Equipo de Trabajo</h3>
-                    <div class="card-tools ml-auto">
-                      <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('equipos.create', $proyecto->id) }}">Agregar</a>
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                      <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="card-body" style="display:none">
-                    <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                      <div class="row">
-                        <div class="col-sm-12 card-body table-responsive p-0" style="height: 60vh;">
-                          <table id="" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed w-100"></table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            @include('equipos.asignar')
             <!--Sección de actividades-->
             <div class="row">
               <div class="col-lg-12 col-md-12 mb-3">
@@ -204,7 +181,7 @@
                   <div class="card-body" style="display:none">
                     <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
                       <div class="row">
-                        <div class="col-sm-12 card-body table-responsive p-0" style="height: 60vh;">
+                        <div class="col-sm-12 card-body table-responsive p-0">
                           <!--Sección de tabla-->
                             <table id="tabla-actividades" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed w-100"></table>
                         </div>
@@ -230,7 +207,7 @@
       </div>
       <div class="modal-body">
         <strong>¿Estás seguro de eliminar la actividad seleccionada?</strong>
-        <p>Ten en cuenta que se eliminarán los datos relacionados a la actividad.</p>
+        <p>Ten en cuenta que no se eliminará si ya ha sido asignado a una o más actividades.</p>
       </div>
       <div class="modal-footer">
         <button id="eliminarActividadBtn" class="btn btn-outline-danger btn-sm">Eliminar</button>
@@ -240,6 +217,7 @@
   </div>
 </div>
 <!-- /.Modal de eliminar -->
+
 @stop
 @section('js')
 <script>
@@ -254,7 +232,10 @@
       toastr.error("{{ session('error') }}");
       @endif
   })(jQuery);
+  var proyectoId = {{ $proyecto->id }};
+  var csrfToken = '{{ csrf_token() }}';
 </script>
 <script src="{{ asset('js/proyectos/proyectos.js') }}"></script>
 <script src="{{ asset('js/actividades/actividades.js') }}"></script>
+<script src="{{ asset('js/equipos/equipos.js') }}"></script>
 @stop

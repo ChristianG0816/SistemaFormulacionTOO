@@ -17,8 +17,12 @@ $(document).ready(function () {
                     success: function (response) {
                         var elementoActualizable = $(response).find('#lista-comentarios');
                         $('#lista-comentarios').html(elementoActualizable.html());
+                        toastr.success('Comentario creado con éxito.');
                     }
                 });
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Ocurrió en error al agregar el comentario.');
             }
         });
     });
@@ -38,8 +42,12 @@ $(document).ready(function () {
                     success: function (response) {
                         var elementoActualizable = $(response).find('#lista-comentarios');
                         $('#lista-comentarios').html(elementoActualizable.html());
+                        toastr.success('Comentario eliminado con éxito.');
                     }
                 });
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Ocurrió un error al eliminar el comentario.');
             }
         });
     });
@@ -79,8 +87,12 @@ $(document).ready(function () {
                     success: function (response) {
                         var elementoActualizable = $(response).find('#lista-comentarios');
                         $('#lista-comentarios').html(elementoActualizable.html());
+                        toastr.success('Comentario actualizado con éxito.');
                     }
                 });
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Ocurrió un error al actualizar el comentario.');
             }
         });
     });

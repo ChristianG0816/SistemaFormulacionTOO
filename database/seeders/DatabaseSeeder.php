@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this -> call([SeederTablaEstadoProyecto::class]);
         $this -> call([SeederTablaEstadoActividad::class]);
         $this -> call([SeederDatosPrueba::class]);
+        $this -> call([TipoNotificacionSeeder::class]);
     }
 }

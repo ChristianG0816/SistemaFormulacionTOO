@@ -11,6 +11,9 @@ class TipoNotificacion extends Model
     protected $table = 'tipo_notificacion';
     protected $fillable = [
         'nombre',
-        'descripcion'
+        'descripcion',
+        'icono',
+        'color',
+        'ruta'
     ];
 }

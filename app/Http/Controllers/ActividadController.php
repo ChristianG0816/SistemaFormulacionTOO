@@ -69,7 +69,7 @@ class ActividadController extends Controller
         $input = $request->all();
         $actividad = Actividad::create($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        return view('proyectos.mostrar', compact('proyecto'));
+        return view('proyectos.mostrar', compact('proyecto'))->with('success', 'Actividad creada con éxito');;
     }
 
     /**
@@ -83,9 +83,13 @@ class ActividadController extends Controller
         $actividad = Actividad::find($id);
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
+        $estadosTarea = [
+            '0' => 'Sin Iniciar',
+            '1' => 'Finalizada',
+        ];
         $usuario= Auth::user();
         $comentarios = Comentario::where('id_actividad', $actividad->id)->orderBy('created_at', 'desc')->get();
-        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios'));
+        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'estadosTarea', 'proyecto', 'usuario', 'comentarios'));
     }
 
     /**
@@ -123,7 +127,7 @@ class ActividadController extends Controller
         $input = $request->all();
         $actividad->update($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        return view('proyectos.mostrar', compact('proyecto'));
+        return view('proyectos.mostrar', compact('proyecto'))->with('success', 'Actividad actualizada con éxito');;
     }
 
     /**

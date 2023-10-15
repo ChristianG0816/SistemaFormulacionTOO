@@ -4,21 +4,20 @@ toastr.options = {
 };
 $(document).ready(function(){
     // Inicializar el DataTable con AJAX
-    var csrfToken = '{{ csrf_token() }}';
-    var actividadId = $("#id_actividad");
-    var proyectoId = $("id_proyecto");
-    $('#tableMiembrosActividad').DataTable({
-        ajax: "/miembrosactividades/list/" + actividadId,
+    var table = $('#tableMiembrosActividad').DataTable({
+        ajax: '/miembrosactividades/list/' + actividadId, // Agrega el proyectoId a la URL
         processing: true,
         serverSide: true,
-        order: [[0, 'asc']],
+        dom: "<'row w-100'<'col-sm-6'l><'col-sm-6'f>>" +
+                "<'row w-100'<'col-sm-12 my-4'tr>>" +
+                "<'row w-100'<'col-sm-5'i><'col-sm-7'p>>",
         lengthMenu: [[5, 25, 50, 100, -1], [5, 25, 50, 100, 'Todos']], // Opciones de selección para mostrar registros por página
         pageLength: 5, // Cantidad de registros por página por defecto
         columns: [
             {data: 'usuario_name', title: 'Nombre'},
             {data: 'usuario_email', title: 'Correo'},
-            {data: 'costo', title: 'Costo'},
-            {data: 'action', title: 'Accciones', name: 'action', orderable: false, searchable: false}
+            {data: 'costo', title: 'Costo por servicio'},
+            {data: 'action', name: 'action', orderable: false, searchable: false}
         ],
         language: {
             "sProcessing": "Procesando...",
@@ -49,6 +48,7 @@ $(document).ready(function(){
         }
     });
 
+
     $('#agregarMiembroModal').on('show.bs.modal', function (event) {
         var modal = $(this);
 
@@ -75,7 +75,7 @@ $(document).ready(function(){
                 });
             },
             error: function (error) {
-                console.log('Error al obtener los miembros disponibles:', error);
+                toastr.error('Error al obtener los miembros disponibles:');
             }
         });
     });
@@ -105,7 +105,7 @@ $(document).ready(function(){
                     $('#telefonoMiembro').text(data.mano_obra.costo_servicio);
                 },
                 error: function (error) {
-                    console.log('Error al obtener los detalles del miembro:', error);
+                    toastr.error('Error al obtener los detalles del miembro seleccionado');
                 }
             });
         } else {
@@ -135,13 +135,13 @@ $(document).ready(function(){
                         $('#tableMiembrosActividad').DataTable().ajax.reload();
                         // Cierra el modal después de agregar al miembro
                         $('#agregarMiembroModal').modal('hide');
-                        toastr.success('Se ha asignado un miembro a la actividad con éxito');
+                        toastr.success(response.message);
                     } else {
-                        console.log('Error al agregar el miembro a la actividad:', response.message);
+                        toastr.error(response.message);
                     }
                 },
-                error: function (error) {
-                    console.log('Error al agregar el miembro a la actividad:', error);
+                error: function (error, response) {
+                    toastr.error(response.message);
                 }
             });
         }
@@ -149,30 +149,32 @@ $(document).ready(function(){
 
     $('#tableMiembrosActividad').on('click', '.delete', function () {
         var id = $(this).data('id');
-        
-        if (confirm('¿Estás seguro de eliminar este registro?')) {
-            $.ajax({
-                url: '/miembrosactividades/eliminar',
-                method: 'POST',
-                data: { 
-                    _token: csrfToken, 
-                    id: parseInt(id) // Convertir a entero
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert('Registro eliminado correctamente.');
-                        // Actualizar la tabla después de la eliminación si es necesario
-                        $('#tableMiembrosActividad').DataTable().ajax.reload();
-                        toastr.success('EL miembro ha sido eliminado con éxito');
-                    } else {
-                        alert('Error al eliminar el registro.');
-                    }
-                },
-                error: function () {
-                    alert('Ocurrió un error en la solicitud.');
+        $('#confirmarEliminarMiembroModal').modal('show');
+        $('#eliminarMiembroBtn').data('id', id);
+    });
+
+    $('#eliminarMiembroBtn').on('click', function () {
+        var id = $(this).data('id');
+        $.ajax({
+            url: '/miembrosactividades/eliminar',
+            method: 'POST',
+            data: { 
+                _token: csrfToken, 
+                id: parseInt(id) // Convertir a entero
+            },
+            success: function (response) {
+                if (response.success) {
+                    $('#tableMiembrosActividad').DataTable().ajax.reload();
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message);
                 }
-            });
-        }
+            },
+            error: function (response) {
+                toastr.error(response.message);
+            }
+        });
+        $('#confirmarEliminarMiembroModal').modal('hide');
     });
 
 });

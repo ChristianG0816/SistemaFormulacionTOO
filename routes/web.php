@@ -10,6 +10,7 @@ use App\Http\Controllers\ManoObraController;
 use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\TareaController;
 use App\Http\Controllers\AsignacionRecursoController;
 use App\Http\Controllers\MiembroActividadController;
 
@@ -34,6 +35,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware' => ['auth']], function() {
+
     Route::get('roles/data', [RolController::class, 'data'])->name('roles.data');
     Route::resource('roles', RolController::class);
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
@@ -59,6 +61,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
     Route::resource('comentarios', ComentarioController::class);
+    Route::get('tareas/data/{id}', [TareaController::class, 'data'])->name('tareas.data');
+    Route::resource('tareas', TareaController::class);
+
     Route::get('miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
     Route::get('/miembrosactividades/nolist/{actividadId}/{proyectoId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
     Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);
@@ -78,4 +83,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/calendario', [App\Http\Controllers\CalendarioController::class, 'index']);
     Route::get('/calendario/mostrar/{idProyecto}', [App\Http\Controllers\CalendarioController::class, 'show']);
     Route::post('/calendario/consultar/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarActividad']);
+
+    //Ruta de Notificaciones
+    Route::get('notifications/get', [App\Http\Controllers\NotificationsController::class, 'getNotificationsData'])->name('notifications.get');
+    Route::get('notifications/{id}', [App\Http\Controllers\NotificationsController::class, 'update'])->name('notifications.update');
+    Route::get('/marcar_notificacion/{id}', [App\Http\Controllers\NotificationsController::class, 'marcarComoLeida'])->name('notifications.marcarComoLeida');
 });
