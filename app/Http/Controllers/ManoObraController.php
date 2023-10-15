@@ -59,7 +59,7 @@ class ManoObraController extends Controller
             'name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'dui'=>['required', 'regex:/^\d{9}$/'],
+            'dui'=>['required', 'regex:/^\d{9}$/','unique:mano_obra,dui'],
             'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
             'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
             'nacionalidad'=>'required',
@@ -97,7 +97,7 @@ class ManoObraController extends Controller
             'costo_servicio'=>$request->input('costo_servicio')
         ]);
         \Mail::to($user->email)->send(new NuevoUsuarioCreado($user->name." ".$user->last_name, $user->email, $password));
-        return redirect()->route('miembros.index');
+        return redirect()->route('miembros.index')->with('success', 'Mano de obra creada con éxito');
     }
 
     /**
@@ -219,7 +219,7 @@ class ManoObraController extends Controller
         ]);
 
         $user->assignRole($request->input('roles'));
-        return redirect()->route('miembros.index');
+        return redirect()->route('miembros.index')->with('success', 'Mano obra actualizada con éxito');
     }
 
     /**
