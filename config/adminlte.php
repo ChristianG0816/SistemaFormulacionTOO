@@ -259,7 +259,7 @@ return [
     'register_url' => 'register',
     'password_reset_url' => 'password/reset',
     'password_email_url' => 'password/email',
-    'profile_url' => false,
+    'profile_url' => 'perfil',
 
     /*
     |--------------------------------------------------------------------------
@@ -364,7 +364,7 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
-            'text'    => 'multilevel',
+            'text'    => 'Reportes',
             'icon'    => 'fas fa-fw fa-share',
             'submenu' => [
                 [
@@ -400,22 +400,6 @@ return [
                     'url'  => '#',
                 ],
             ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
         ],
     ],
 

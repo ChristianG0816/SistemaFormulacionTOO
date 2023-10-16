@@ -13,6 +13,8 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\AsignacionRecursoController;
 use App\Http\Controllers\MiembroActividadController;
+use App\Http\Controllers\Auth\TwoFactorController;
+use App\Http\Controllers\Auth\PerfilController;
 use App\Http\Controllers\NotificationsController;
 
 
@@ -27,16 +29,25 @@ use App\Http\Controllers\NotificationsController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => ['auth']], function() {
+    Route::get('/autenticar', [TwoFactorController::class, 'index'])->name('autenticar');
+    Route::post('/verificarFA', [TwoFactorController::class, 'verificarCodigo'])->name('verificar');
+    Route::get('/cancelTwoFactor', [TwoFactorController::class, 'cancelTwoFactorResponse'])->name('cancel');
+});
 
 Route::group(['middleware' => ['auth']], function() {
-
+    
+    Route::get('/', function () {return view('home');});
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
+    Route::get('/perfil/desFA', [PerfilController::class, 'disableFA'])->name('deshabilitarFA');
+    Route::get('/perfil/habFA', [PerfilController::class, 'enableFA'])->name('habilitarFA');
+    Route::patch('/perfil/updateInfo/{id}', [PerfilController::class, 'updateInfo'])->name('perfil.updateInfo');
+    Route::post('/perfil/updatePass', [PerfilController::class, 'updatePass'])->name('perfil.updatePass');
+    
     Route::get('roles/data', [RolController::class, 'data'])->name('roles.data');
     Route::resource('roles', RolController::class);
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
