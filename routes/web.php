@@ -15,6 +15,7 @@ use App\Http\Controllers\AsignacionRecursoController;
 use App\Http\Controllers\MiembroActividadController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\PerfilController;
+use App\Http\Controllers\NotificationsController;
 
 
 /*
@@ -75,7 +76,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('tareas/data/{id}', [TareaController::class, 'data'])->name('tareas.data');
     Route::resource('tareas', TareaController::class);
 
-    Route::get('miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
+    Route::get('/miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
     Route::get('/miembrosactividades/nolist/{actividadId}/{proyectoId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
     Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);
     Route::post('/miembrosactividades/crear', [MiembroActividadController::class, 'crearMiembrosActividad']);
@@ -87,17 +88,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/equipos/crear', [EquipoTrabajoController::class, 'crearEquiposTrabajo']);
     Route::post('/equipos/eliminar', [EquipoTrabajoController::class, 'eliminarEquipos']);
 
-    // Ruta para las otras acciones CRUD (opcional)
-    Route::resource('equipos', EquipoTrabajoController::class)->except(['list', 'listMiembrosNoAsignados', 'getMiembro', 'crearEquiposTrabajo']);
-
     //Ruta de Calendario
     Route::get('/calendario', [App\Http\Controllers\CalendarioController::class, 'index']);
     Route::get('/calendario/mostrar/{idProyecto}', [App\Http\Controllers\CalendarioController::class, 'show']);
     Route::post('/calendario/consultar/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarActividad']);
 
     //Ruta de Notificaciones
-    Route::get(
-        'notifications/get',
-        [App\Http\Controllers\NotificationsController::class, 'getNotificationsData']
-    )->name('notifications.get');
+    Route::get('/notificaciones/get', [NotificationsController::class, 'getNotificationsData'])->name('notifications.get');
+    Route::get('abrir_notificacion/{id}', [NotificationsController::class, 'abrirNotificacion'])->name('notifications.abrirNotificacion');
+    Route::get('/notificaciones/data', [NotificationsController::class, 'getNotificationsTable'])->name('notifications.data');
+    Route::post('/notificaciones/eliminar/{id}', [NotificationsController::class, 'eliminarNotificacion'])->name('notifications.eliminarNotificacion');
+    Route::post('/notificaciones/eliminar', [NotificationsController::class, 'eliminarTodasNotificacion'])->name('notifications.eliminarTodasNotificacion');
+    Route::post('/notificaciones/marcar_leida/{id}', [NotificationsController::class, 'marcarLeida'])->name('notifications.marcarLeidaNotificacion');
+    Route::post('/notificaciones/marcar_leida', [NotificationsController::class, 'marcarTodasLeida'])->name('notifications.marcarTodasLeidaNotificacion');
+    Route::resource('notificaciones', NotificationsController::class)->except(['show', 'eliminarNotificacion', 'marcarLeida', 'eliminarTodasNotificacion', 'marcarTodasLeida']);
 });
