@@ -155,7 +155,6 @@ class ManoObraController extends Controller
             'id_usuario' => $manoObra->usuario->id,
             'name' => $manoObra->usuario->name,
             'last_name' => $manoObra->usuario->last_name,
-            'email' => $manoObra->usuario->email,
             'id' => $manoObra->id,
             'dui'=> $manoObra->dui,
             'afp'=> $manoObra->afp,
