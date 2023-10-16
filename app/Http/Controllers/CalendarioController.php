@@ -65,7 +65,7 @@ class CalendarioController extends Controller
 
             foreach ($equipoTrabajo as $equipo) {
                 $miembrosActividad = MiembroActividad::where('id_equipo_trabajo', $equipo->id)->get();
-                foreach ($miembroActividad as $miembroActividad) {
+                foreach ($miembrosActividad as $miembroActividad) {
                     $actividad = Actividad::find($miembroActividad->id_actividad);
                     if ($idProyecto == 0 || ($actividad && $actividad->id_proyecto == $idProyecto)) {
                         $evento = [
