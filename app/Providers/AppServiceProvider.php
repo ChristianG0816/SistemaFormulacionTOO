@@ -29,12 +29,12 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('fecha_menor_igual', function ($attribute, $value, $parameters, $validator) {
             $fechaFin = $validator->getData()[$parameters[0]];
             return strtotime($value) <= strtotime($fechaFin);
-        }, 'The :attribute must be less');
+        }, 'La :attribute debe ser menor.');
 
         Validator::extend('validateFechaMayorDe18', function ($attribute, $value, $parameters, $validator) {
             $fechaNacimiento = new DateTime($value);
             $hace18Anios = new DateTime('-18 years');
             return $fechaNacimiento <= $hace18Anios;
-        }, 'The :attribute not correspond to a person over 18 years of age.');
+        }, 'La :attribute no corresponder a una persona mayor de 18 años.');
     }
 }
