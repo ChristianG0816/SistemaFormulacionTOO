@@ -28,8 +28,8 @@ class SeederDatosPrueba extends Seeder
             'presupuesto' => 4500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_dueno' => 1,
-            'id_cliente' => 2,
+            'id_dueno' => 7,
+            'id_cliente' => 8,
         ]);
 
         Proyecto::create([
@@ -42,8 +42,8 @@ class SeederDatosPrueba extends Seeder
             'presupuesto' => 2500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_dueno' => 1,
-            'id_cliente' => 2,
+            'id_dueno' => 9,
+            'id_cliente' => 8,
         ]);
 
         Proyecto::create([
@@ -56,8 +56,8 @@ class SeederDatosPrueba extends Seeder
             'presupuesto' => 2500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_dueno' => 6,
-            'id_cliente' => 7,
+            'id_dueno' => 7,
+            'id_cliente' => 6,
         ]);
 
         Actividad::create([
@@ -188,7 +188,7 @@ class SeederDatosPrueba extends Seeder
             'nacionalidad' => 'Canandiense',
             'pasaporte' => '4318741',
             'telefono' => '64281475',
-            'profesion' => 'Tester',
+            'profesion' => 'Ayudante',
             'estado_civil' => 'Casado',
             'sexo' => 'F',
             'fecha_nacimiento' => '2000/08/24',
