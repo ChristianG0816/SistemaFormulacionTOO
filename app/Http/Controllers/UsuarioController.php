@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use PragmaRX\Google2FA\Google2FA;
 
 class UsuarioController extends Controller
 {
@@ -112,6 +113,7 @@ class UsuarioController extends Controller
         }
 
         $user = User::find($id);
+        
         $user->update($input);
         DB::table('model_has_roles')->where('model_id', $id)->delete();
 

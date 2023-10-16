@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
+use PragmaRX\Google2FA\Contracts\Google2FA;
 
 //spatie
 use Spatie\Permission\Traits\HasRoles;
@@ -27,6 +28,8 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'two_factor_key',
+        'two_factor_enabled',
     ];
 
     /**
@@ -36,6 +39,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'two_factor_key',
         'remember_token',
     ];
 
@@ -47,6 +51,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //Verifica autenticación de dos pasos
+    public function is2FAVerified()
+    {
+        // Verifica si el usuario ha verificado la autenticación de dos pasos
+        $google2fa = app(Google2FA::class);
+        return $this->two_factor_key_verified && $google2fa->verifyKey($this->two_factor_key, request('2fa_code'));
+    }
 
     //En caso que le pongamos imagen al usuario se 
     //debe de usar este metodo para recuperarlo de la base

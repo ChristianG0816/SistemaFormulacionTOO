@@ -19,7 +19,8 @@ class SeederTablaUsuarios extends Seeder
             'name'=> 'admin',
             'last_name'=> 'apellido',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('12345678')
+            'password' => bcrypt('12345678'),
+            'two_factor_enabled' => false,
         ]);
 
         $administrador->assignRole('Administrador');
@@ -28,7 +29,8 @@ class SeederTablaUsuarios extends Seeder
             'name'=> 'nombre',
             'last_name'=> 'apellido',
             'email' => 'user@gmail.com',
-            'password' => bcrypt('123')
+            'password' => bcrypt('123'),
+            'two_factor_enabled' => false,
         ]);
 
         $usuario1->assignRole('Colaborador');
@@ -37,7 +39,8 @@ class SeederTablaUsuarios extends Seeder
             'name'=> 'Ingeniero',
             'last_name'=> 'apellido',
             'email' => 'ingeniero@gmail.com',
-            'password' => bcrypt('123')
+            'password' => bcrypt('123'),
+            'two_factor_enabled' => false,
         ]);
 
         $usuario2->assignRole('Colaborador');
@@ -46,7 +49,8 @@ class SeederTablaUsuarios extends Seeder
             'name'=> 'Tester',
             'last_name'=> 'apellido',
             'email' => 'tester@gmail.com',
-            'password' => bcrypt('123')
+            'password' => bcrypt('123'),
+            'two_factor_enabled' => false,
         ]);
 
         $usuario3->assignRole('Colaborador');
@@ -55,7 +59,8 @@ class SeederTablaUsuarios extends Seeder
             'name'=> 'Ayudante1',
             'last_name'=> 'apellido',
             'email' => 'ayudante1@gmail.com',
-            'password' => bcrypt('123')
+            'password' => bcrypt('123'),
+            'two_factor_enabled' => false,
         ]);
 
         $usuario4->assignRole('Colaborador');
