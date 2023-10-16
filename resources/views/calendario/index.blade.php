@@ -8,9 +8,9 @@
 @section('content')
 <div class="container">
     <div class="form-group" style="margin: 5px;"> 
-        <label for="proyectoSelect"></label>
+        <label for="proyectoSelect">Seleccione un Proyecto:</label>
         <select class="form-control" id="proyectoSelect" style="margin: 5px;">
-            <option value="0">Selecciona un proyecto</option>
+            <option value="0">Todos los proyectos</option>
             @foreach ($proyectos as $proyecto)
                 <option value="{{ $proyecto->id }}">{{ $proyecto->nombre }}</option>
             @endforeach
