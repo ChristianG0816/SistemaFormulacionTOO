@@ -16,6 +16,7 @@ use App\Http\Controllers\MiembroActividadController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\PerfilController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\EventoController;
 
 
 /*
@@ -92,6 +93,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/calendario', [App\Http\Controllers\CalendarioController::class, 'index']);
     Route::get('/calendario/mostrar/{idProyecto}', [App\Http\Controllers\CalendarioController::class, 'show']);
     Route::post('/calendario/consultar/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarActividad']);
+    Route::post('/calendario/agregar', [App\Http\Controllers\CalendarioController::class, 'GuardarEvento']);
+    Route::get('/calendario/mostrarEvento/{idProyecto}', [App\Http\Controllers\CalendarioController::class, 'showEvento']);
+    Route::post('/calendario/consultarEvento/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarEvento']);
+    Route::post('/calendario/ActualizarEvento/{evento}', [App\Http\Controllers\CalendarioController::class, 'actualizarEvento']);
+    Route::post('/calendario/eliminarEvento/{id}', [App\Http\Controllers\CalendarioController::class, 'eliminarEvento']);
 
     //Ruta de Notificaciones
     Route::get('/notificaciones/get', [NotificationsController::class, 'getNotificationsData'])->name('notifications.get');
