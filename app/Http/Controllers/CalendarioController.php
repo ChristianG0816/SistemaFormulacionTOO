@@ -11,6 +11,7 @@ use App\Models\MiembroActividad;
 use App\Models\Proyecto;
 use App\Models\User;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Evento;
 
 class CalendarioController extends Controller
 {
@@ -73,6 +74,7 @@ class CalendarioController extends Controller
                             'title' => $actividad->nombre,
                             'start' => $actividad->fecha_fin,
                             'end' => $actividad->fecha_fin,
+                            'tipo' => 'actividad',
                             //'proyecto' => $actividad->id_proyecto,
                         ];
                         array_push($eventos, $evento);
@@ -97,6 +99,7 @@ class CalendarioController extends Controller
                     'title' => $actividad->nombre,
                     'start' => $actividad->fecha_fin,
                     'end' => $actividad->fecha_fin,
+                    'tipo' => 'actividad',
                 ];
                 array_push($eventos, $evento);
             }
@@ -124,6 +127,7 @@ class CalendarioController extends Controller
                     'title' => $actividad->nombre,
                     'start' => $actividad->fecha_fin,
                     'end' => $actividad->fecha_fin,
+                    'tipo' => 'actividad',
                 ];
                 array_push($eventos, $evento);
             }
@@ -141,4 +145,63 @@ class CalendarioController extends Controller
         $actividad = Actividad::find($id);
         return response()->json($actividad);
     }
+
+    //Funcionalidades de Eventos
+
+    public function GuardarEvento(Request $request){
+    request()->validate(Evento::$rules);
+
+    // Obtiene el valor seleccionado del select en el formulario.
+    $id_proyecto = $request->input('proyecto');
+
+    // Crea un nuevo evento con "id_proyecto" establecido.
+    $evento = new Evento($request->all());
+    $evento->id_proyecto = $id_proyecto;
+    $evento->save();
+}
+
+public function showEvento($idProyecto){
+    
+    // Obtener los eventos relacionados con el proyecto
+    $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+    
+    $eventosData = [];
+    foreach ($eventos as $evento) {
+        $eventoData = [
+            'id' => $evento->id,
+            'title' => $evento->nombre,
+            'start' => $evento->fecha_fin,
+            'end' => $evento->fecha_fin,
+            'descripcion' => $evento->descripcion,
+            'tipo' => 'evento', // Se agrega para que abra el modal dependiendo del evento que tenga
+            
+        ];
+        array_push($eventosData, $eventoData);
+    }
+
+    return response()->json($eventosData);
+}
+
+public function consultarEvento($id)
+    {
+        $evento = Evento::find($id);
+        return response()->json($evento);
+    }
+
+    public function eliminarEvento($id)
+    {
+        $evento = Evento::find($id)->delete();
+        return response()->json($evento);
+    }
+
+    public function actualizarEvento(Request $request, Evento $evento)
+    {
+        request()->validate(Evento::$rules);
+        $evento->update($request->all());
+        return response()->json($evento);
+
+    }
+
+
+
 }
