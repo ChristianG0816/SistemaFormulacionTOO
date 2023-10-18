@@ -146,7 +146,7 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         $.ajax({
             url: '/recursos/' + id,
-            type: 'DELETE',
+            type: 'GET',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -162,5 +162,12 @@ $(document).ready(function() {
                 table.ajax.reload(null, false);
             }
         });
-    });    
+    }); 
+
+    $('.edit-recurso').on('click', function() {
+        var id = $(this).data('id');
+        window.location.href = '/recursos/' + id + '/edit';
+    });
+
+
 });
