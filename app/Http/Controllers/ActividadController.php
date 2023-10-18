@@ -10,6 +10,9 @@ use App\Models\Actividad;
 use App\Models\Proyecto;
 use App\Models\EstadoActividad;
 use App\Models\Comentario;
+use App\Models\Notificacion;
+use App\Models\TipoNotificacion;
+use App\Models\EquipoTrabajo;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -69,7 +72,8 @@ class ActividadController extends Controller
         $input = $request->all();
         $actividad = Actividad::create($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        return view('proyectos.mostrar', compact('proyecto'))->with('success', 'Actividad creada con éxito');;
+        $this->envio_notificacion_actividad(9, $actividad);
+        return redirect()->route('proyectos.show', ['proyecto' => $proyecto])->with('success', 'Actividad creada con éxito');
     }
 
     /**
@@ -103,7 +107,7 @@ class ActividadController extends Controller
         $actividad = Actividad::find($id);
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
-        return view('actividades.editar', compact('actividad', 'estadosActividad'));
+        return view('actividades.editar', compact('proyecto','actividad','estadosActividad'));
     }
 
     /**
@@ -127,7 +131,8 @@ class ActividadController extends Controller
         $input = $request->all();
         $actividad->update($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        return view('proyectos.mostrar', compact('proyecto'))->with('success', 'Actividad actualizada con éxito');;
+        $this->envio_notificacion_actividad(10, $actividad);
+        return redirect()->route('proyectos.show', ['proyecto' => $proyecto])->with('success', 'Actividad actualizada con éxito');
     }
 
     /**
@@ -139,8 +144,41 @@ class ActividadController extends Controller
     public function destroy($id)
     {
         $actividad = Actividad::find($id);
-        $proyecto = $actividad->id_proyecto;
+        $Notificaciones = Notificacion::where("id_actividad",$actividad->id)->delete();
         $actividad->delete();
-        return view('proyectos.mostrar', compact('proyecto'));
+    }
+
+    public function envio_notificacion_actividad($tipo_notificacion_valor, $actividad)
+    {
+        //Envío de notificacion a supervisor
+        $notificacion = new Notificacion();
+        $notificacion->id_usuario = $actividad->proyecto->id_dueno;
+        $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+        $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+        if ($tipoNotificacion) {
+            $descripcion = str_replace(['{{nombre}}', '{{nombre_proyecto}}'], [$actividad->nombre, $actividad->proyecto->nombre], $tipoNotificacion->descripcion);
+            $notificacion->descripcion = $descripcion;
+            $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
+        }
+        $notificacion->id_actividad = $actividad->id;
+        $notificacion->leida = false;
+        $notificacion->save();
+        //Envío de notificacion a equipo de trabajo
+        $EquipoTrabajo = EquipoTrabajo::where("id_proyecto",$actividad->proyecto->id);
+        foreach ($EquipoTrabajo as $miembro) {
+            // Crear notificación para cada miembro
+            $notificacion = new Notificacion();
+            $notificacion->id_usuario = $miembro->id;
+            $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+            $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+            if ($tipoNotificacion) {
+                $descripcion = str_replace(['{{nombre}}', '{{nombre_proyecto}}'], [$actividad->nombre, $actividad->proyecto->nombre], $tipoNotificacion->descripcion);
+                $notificacion->descripcion = $descripcion;
+                $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
+            }
+            $notificacion->id_actividad = $actividad->id;
+            $notificacion->leida = false;
+            $notificacion->save();
+        }
     }
 }
