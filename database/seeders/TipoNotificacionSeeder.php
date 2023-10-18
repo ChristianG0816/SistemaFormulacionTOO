@@ -75,6 +75,41 @@ class TipoNotificacionSeeder extends Seeder
                 'color' => '#FF33CC',
                 'ruta' => '/eventos/{{id}}',
             ],
+            [
+                'nombre' => 'Actividad pendiente.',
+                'descripcion' => 'Se ha agregado la actividad "{{nombre}}" en el proyecto "{{nombre_proyecto}}", se encuentra pendiente de realizar.',
+                'icono' => 'fas fa-fw fa-clipboard-list',
+                'color' => '#1F618D',
+                'ruta' => '/actividades/show/{{id}}',
+            ],
+            [
+                'nombre' => 'Actividad en proceso',
+                'descripcion' => 'La actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}", se encuentra en proceso de realización.',
+                'icono' => 'fas fa-fw fa-clipboard-list',
+                'color' => '#1F618D',
+                'ruta' => '/actividades/show/{{id}}',
+            ],
+            [
+                'nombre' => 'Actividad finalizada',
+                'descripcion' => 'La actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}", se encuentra finalizada.',
+                'icono' => 'fas fa-fw fa-clipboard-list',
+                'color' => '#1F618D',
+                'ruta' => '/actividades/show/{{id}}',
+            ],
+            [
+                'nombre' => 'Tarea agregada',
+                'descripcion' => 'Se ha agregado una tarea a la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
+                'icono' => 'fas fa-fw fa-comments',
+                'color' => '#D6EAF8',
+                'ruta' => '/actividades/show/{{id}}',
+            ],
+            [
+                'nombre' => 'Tarea finalizada',
+                'descripcion' => 'La tarea {{nombre_tarea}} de la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}", se encuentra finalizada.',
+                'icono' => 'fas fa-fw fa-file-signature',
+                'color' => '#D6EAF8',
+                'ruta' => '/actividades/show/{{id}}',
+            ],
         ];
 
         foreach ($tiposNotificacion as $tipo) {
