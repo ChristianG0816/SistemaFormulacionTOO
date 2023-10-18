@@ -55,13 +55,6 @@ class TipoNotificacionSeeder extends Seeder
                 'ruta' => '/actividades/show/{id}',
             ],
             [
-                'nombre' => 'Finalización de actividad.',
-                'descripcion' => 'Finalización de actividad "{{nombre}}" en proyecto "{{nombre_proyecto}}".',
-                'icono' => 'fas fa-fw fa-check',
-                'color' => '#33CC33',
-                'ruta' => '/actividades/show/{id}',
-            ],
-            [
                 'nombre' => 'Finalización de proyecto.',
                 'descripcion' => 'Finalización de proyecto "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-tasks',
@@ -97,17 +90,24 @@ class TipoNotificacionSeeder extends Seeder
                 'ruta' => '/actividades/show/{{id}}',
             ],
             [
-                'nombre' => 'Tarea agregada',
-                'descripcion' => 'Se ha agregado una tarea a la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
+                'nombre' => 'Comentario agregado',
+                'descripcion' => 'Se ha agregado un comentario a la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
                 'icono' => 'fas fa-fw fa-comments',
                 'color' => '#D6EAF8',
+                'ruta' => '/actividades/show/{{id}}',
+            ],
+            [
+                'nombre' => 'Tarea agregada',
+                'descripcion' => 'Se ha agregado una tarea a la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
+                'icono' => 'fas fa-fw fa-file-signature',
+                'color' => '#0B5345',
                 'ruta' => '/actividades/show/{{id}}',
             ],
             [
                 'nombre' => 'Tarea finalizada',
                 'descripcion' => 'La tarea {{nombre_tarea}} de la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}", se encuentra finalizada.',
                 'icono' => 'fas fa-fw fa-file-signature',
-                'color' => '#D6EAF8',
+                'color' => '#0B5345',
                 'ruta' => '/actividades/show/{{id}}',
             ],
         ];
