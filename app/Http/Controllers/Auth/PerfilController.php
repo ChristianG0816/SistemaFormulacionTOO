@@ -43,7 +43,7 @@ class PerfilController extends Controller
         $user = User::find($id);
         
         $user->update($input);
-        return redirect()->route('perfil')->with('success', 'Has actualizado la información general de tu perfil');
+        return redirect()->route('perfil')->witch('user', $user)->with('success', 'Has actualizado la información general de tu perfil');
 
     }
     public function updatePass(Request $request)
@@ -62,7 +62,7 @@ class PerfilController extends Controller
 
         $user->password = Hash::make($input['password']);
         $user->save();
-        return redirect()->route('perfil')->with('success', 'Contraseña actualizada');
+        return redirect()->route('perfil')->witch('user', $user)->with('success', 'Contraseña actualizada');
     }
 
     public function enableFA(Request $request)

@@ -42,19 +42,29 @@ Route::group(['middleware' => ['auth']], function() {
     
     Route::get('/', function () {return view('home');});
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    //Rutas para perfil
     Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
     Route::get('/perfil/desFA', [PerfilController::class, 'disableFA'])->name('deshabilitarFA');
     Route::get('/perfil/habFA', [PerfilController::class, 'enableFA'])->name('habilitarFA');
     Route::patch('/perfil/updateInfo/{id}', [PerfilController::class, 'updateInfo'])->name('perfil.updateInfo');
     Route::post('/perfil/updatePass', [PerfilController::class, 'updatePass'])->name('perfil.updatePass');
     
+    //Rutas para seguridad
     Route::get('roles/data', [RolController::class, 'data'])->name('roles.data');
     Route::resource('roles', RolController::class);
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
     Route::resource('usuarios', UsuarioController::class);
     
+    //Rutas para proyecto
     Route::get('proyectos/data', [ProyectoController::class, 'data'])->name('proyectos.data');
     Route::resource('proyectos', ProyectoController::class);
+    Route::get('/proyectos/{id}/backup', [ProyectoController::class, 'backup'])->name('proyectos.backup');
+    Route::get('/proyectos/{id}/revision', [ProyectoController::class, 'revision'])->name('proyectos.revision');
+    Route::get('/proyectos/{id}/aprobar', [ProyectoController::class, 'aprobar'])->name('proyectos.aprobar');
+    Route::get('/proyectos/{id}/rechazar', [ProyectoController::class, 'rechazar'])->name('proyectos.rechazar');
+    Route::get('/proyectos/{id}/iniciar', [ProyectoController::class, 'iniciar'])->name('proyectos.iniciar');
+    Route::get('/proyectos/{id}/finalizar', [ProyectoController::class, 'finalizar'])->name('proyectos.finalizar');
     
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
@@ -67,6 +77,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('asignacionrecurso/crear', [AsignacionRecursoController::class,'crearAsignacionRecurso']);
     Route::get('asignacionrecurso/list/{id}', [AsignacionRecursoController::class, 'list']);
 
+    //Rutas de actividades
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
     Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
@@ -76,6 +87,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('tareas/data/{id}', [TareaController::class, 'data'])->name('tareas.data');
     Route::resource('tareas', TareaController::class);
 
+    //Rutas de mano de obra
     Route::get('/miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
     Route::get('/miembrosactividades/nolist/{actividadId}/{proyectoId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
     Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);

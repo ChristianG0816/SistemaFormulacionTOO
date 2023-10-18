@@ -46,7 +46,38 @@ $(document).ready(function() {
         ],
         columns: [
             { data: 'nombre', title: 'Nombre Proyecto', width: '20%' },
-            { data: 'estado_proyecto.nombre', title: 'Estado', width: '8%' },
+            { data: 'estado_proyecto.nombre', title: 'Estado', width: '8%'},
+            { data: null, title: 'Cambiar Estado', width: '10%',
+                sortable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    var estado = row.estado_proyecto.nombre; // Obtener el nombre del estado del proyecto
+        
+                    var actionsHtml = '';
+        
+                    switch (estado) {
+                        case 'Formulacion':
+                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/revision">Enviar a Revisión</a>';
+                            break;
+                        case 'Revision':
+                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/aprobar">Aprobar</a>' + '<span>&nbsp;</span>';
+                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/rechazar">Rechazar</a>';
+                            break;
+                        case 'Aprobado':
+                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/iniciar">Iniciar</a>';
+                            break;
+                        case 'Rechazado':
+                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/revision">Enviar a Revisión</a>';
+                            break;
+                        case 'Iniciado':
+                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/finalizar">Finalizar</a>';
+                            break;
+                    }
+
+                    actionsHtml += '</td></tr></table>';
+                    return actionsHtml || '';
+                }
+            },
             { data: 'fecha_inicio', title: 'Fecha Inicio', width: '8%' },
             { data: 'fecha_fin', title: 'Fecha Fin', width: '8%' },
             { data: 'cliente_nombre', title: 'Cliente', width: '20%' },
@@ -73,7 +104,11 @@ $(document).ready(function() {
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
-                   //}
+                   /*}
+                    
+                    if(hasPrivilegeEditarProyecto === true){*/
+                        actionsHtml += '<a class="btn btn-outline-warning btn-sm ml-1 backup-btn" href="#" data-url="/proyectos/'+row.id+'/backup">Backup</a>';
+                    //}
                     
                     return actionsHtml || '';
                 }
@@ -138,8 +173,40 @@ $(document).ready(function() {
 
         return year + month + day + '_' + hours + minutes + seconds;
     }
-    
-   
+    // Método para generar backup de proyecto
+    $(document).on('click', '.backup-btn', function () {
+        var url = $(this).data('url');
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                table.ajax.reload();
+                toastr.success('Se ha creado una copia del proyecto');
+            },
+            error: function (error) {
+                table.ajax.reload();
+                toastr.error('No se ha podido crear una copia del proyecto');
+            }
+        });
+    });
+
+    // Método para cambiar estado de proyecto
+    $(document).on('click', '.estado-proyecto-btn', function () {
+        var url = $(this).data('url');
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                table.ajax.reload();
+                toastr.success('Se ha actualizado el estado del proyecto');
+            },
+            error: function (error) {
+                table.ajax.reload();
+                toastr.error('No se ha podido actualizar el estado del proyecto');
+            }
+        });
+    });
+
    // Método para mostrar el modal de eliminación
     $(document).on('click', '.eliminarModal-btn', function () {
         var id = $(this).data('id');
