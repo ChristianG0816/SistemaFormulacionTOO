@@ -570,6 +570,16 @@ return [
                 ],
             ],
         ],
+        'CustomCss' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/css/custom.css',
+                ],
+            ],
+        ],
     ],
 
     /*

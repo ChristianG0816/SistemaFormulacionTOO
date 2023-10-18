@@ -1,0 +1,4 @@
+#my-notification .dropdown-menu {
+    max-height: 45rem;
+    overflow-y: scroll;
+}

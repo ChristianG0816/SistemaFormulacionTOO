@@ -7,7 +7,8 @@ $(document).ready(function() {
         ajax: '/notificaciones/data/',
         processing: true,
         serverSide: true,
-        order: [],
+        //order por fecha y hora
+        order: [ [2, 'desc'], [3, 'desc'] ],
         dom: "<'row w-100'<'col-sm-6'l><'col-sm-6'f>>" +
              "<'row w-100'<'col-sm-12 my-4'tr>>" +
              "<'row w-100'<'col-sm-5'i><'col-sm-7'p>>",

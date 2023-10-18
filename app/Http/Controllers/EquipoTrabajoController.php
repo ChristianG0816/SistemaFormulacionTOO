@@ -7,6 +7,9 @@ use App\Models\Proyecto;
 use App\Models\EquipoTrabajo;
 use App\Models\ManoObra;
 use App\Models\User;
+use App\Models\Actividad;
+use App\Models\Recurso;
+use App\Models\AsignacionRecurso;
 use DataTables;
 
 class EquipoTrabajoController extends Controller
@@ -87,15 +90,35 @@ class EquipoTrabajoController extends Controller
         if (!empty($data['id_proyecto']) && !empty($data['id_mano_obra'])) {
             $id_proyecto = intval($data['id_proyecto']);
             $id_mano_obra = intval($data['id_mano_obra']);
+            $costo_recurso = 0;
+            $costo_mano_obra = 0;
+            $costo_equipo_trabajo = 0;
 
             $proyecto = Proyecto::find($id_proyecto);
+            
             $costo_mano_obra = ManoObra::where('id', $id_mano_obra)->sum('costo_servicio');
+
             $costo_equipo_trabajo = EquipoTrabajo::where('id_proyecto', $id_proyecto)
             ->with('mano_obra') // Cargar la relación miembros
             ->get()
             ->pluck('mano_obra.costo_servicio') // Obtener los valores de costo_servicio de la relación
             ->sum();
-            $costo_total = intval($costo_mano_obra) + intval($costo_equipo_trabajo);
+
+            //Obtener actividades por id_proyecto
+            $actividades = Actividad::where('id_proyecto', $id_proyecto)->get();
+            if($actividades){
+                foreach($actividades as $actividad){
+                    $recursos = AsignacionRecurso::where('id_actividad', $actividad->id)->get();
+                    if($recursos){
+                        foreach($recursos as $recurso){
+                            $costo_recurso_individual = Recurso::where('id', $recurso->id_recurso)->sum('costo');
+                            $costo_recurso += $costo_recurso_individual * $recurso->cantidad;
+                        }
+                    }
+                }
+            }
+
+            $costo_total = intval($costo_mano_obra) + intval($costo_equipo_trabajo) + intval($costo_recurso);
             if (intval($proyecto->presupuesto) >= intval($costo_total)) {
                 // Crea un registro en el modelo EquipoTrabajo con los datos recibidos
                 $equipoTrabajo = EquipoTrabajo::create([
