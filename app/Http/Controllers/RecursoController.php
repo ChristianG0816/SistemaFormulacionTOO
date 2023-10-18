@@ -21,9 +21,9 @@ class RecursoController extends Controller
     public function data()
     {
         $data = Recurso::all();
-        foreach ($data as $d) {
-             $d->disponibilidad = $d->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
-        }
+        // foreach ($data as $d) {
+        //      $d->disponibilidad = $d->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
+        // }
 
         return datatables()->of($data)->toJson();
     }
@@ -36,12 +36,7 @@ class RecursoController extends Controller
     // Mostrar el formulario para crear un nuevo recurso
     public function create()
     {
-        $disponibilidades = [
-            'Disponible' => 'Disponible',
-            'No Disponible' => 'No Disponible',
-        ];
-
-        return view('recursos.create',compact('disponibilidades'));
+        return view('recursos.create');
     }
 
     /**
@@ -54,22 +49,23 @@ class RecursoController extends Controller
     {
         $this->validate($request, [
             'nombre' => 'required',
-            'disponibilidad'=>'required',
+            'disponibilidad'=> ['required', 'regex:/^\d+(\.\d+)?$/'],
             'costo'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
 
         // Obten el valor de disponibilidad del request
-        $disponibilidad = $request->input('disponibilidad')[0] == 'Disponible' ? 1 : 0;
+        //$disponibilidad = $request->input('disponibilidad')[0] == 'Disponible' ? 1 : 0;
 
         // Crear un nuevo recurso utilizando el modelo Recurso
         Recurso::create([
             'nombre' => $request->input('nombre'),
-            'disponibilidad' => $disponibilidad,
+            'disponibilidad' =>  $request->input('disponibilidad'),
             'costo' => $request->input('costo')
         ]);
 
         // Redirigir a alguna ruta después de guardar los datos
-        return redirect()->route('recursos.index')->with('success', 'Recurso creado correctamente');
+        return redirect()->route('recursos.index')->with('success', 'Recurso creado con éxito');
+        //dd($request->request);
     }
 
     /**
@@ -81,8 +77,6 @@ class RecursoController extends Controller
     public function show($id)
     {
         $recurso = Recurso::find($id);
-        $recurso->disponibilidad = $recurso->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
-        //dd($recurso);
 
         return view('recursos.show', compact('recurso'));
     }
@@ -97,15 +91,7 @@ class RecursoController extends Controller
     {
         $recurso = Recurso::find($id);
 
-        $disponibilidades = [
-            'Disponible' => 'Disponible',
-            'No Disponible' => 'No Disponible',
-        ];
-
-        // Convierte el valor numérico de disponibilidad a texto para la opción seleccionada en el formulario
-        $recurso->disponibilidad = $recurso->disponibilidad == 1 ? 'Disponible' : 'No Disponible';
-
-        return view('recursos.edit', compact('recurso','disponibilidades'));
+        return view('recursos.edit', compact('recurso'));
     }
 
     /**
@@ -119,7 +105,7 @@ class RecursoController extends Controller
     {
         $this->validate($request, [
             'nombre' => 'required',
-            'disponibilidad'=>'required',
+            'disponibilidad'=> ['required', 'regex:/^\d+(\.\d+)?$/'],
             'costo'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
 
@@ -127,14 +113,14 @@ class RecursoController extends Controller
 
          // Actualiza el objeto $recurso con los datos del request
         $recurso->nombre = $request->input('nombre');
-        $recurso->disponibilidad = $request->input('disponibilidad') == 'Disponible' ? 1 : 0;
+        $recurso->disponibilidad = $request->input('disponibilidad');
         $recurso->costo = $request->input('costo');
 
         // Guarda el objeto $recurso actualizado en la base de datos
         $recurso->save();
 
         // Redirige a alguna ruta después de actualizar los datos
-        return redirect()->route('recursos.index');
+        return redirect()->route('recursos.index')->with('success', 'Recurso editado con éxito');;
     }
 
     public function RecursosDisponibles(){
@@ -157,6 +143,6 @@ class RecursoController extends Controller
     {
         Recurso::find($id)->delete();
         
-        return redirect()->route('recursos.index');
+        return redirect()->route('recursos.index')->with('success', 'Recurso eliminado con éxito');
     }
 }
