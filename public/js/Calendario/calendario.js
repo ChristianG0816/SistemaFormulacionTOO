@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
       //al momento de presionar la actividad con esto se mostrara la información
       eventClick: function(info) {
         var evento = info.event;
+        var $modal = $("#evento");
+
         //console.log(evento.extendedProps.tipo);
         if (evento.extendedProps.tipo === 'evento') {
           
@@ -40,9 +42,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     formularioEvento.hora_inicio.value = respuesta.data.hora_inicio;
                     formularioEvento.hora_fin.value = respuesta.data.hora_fin;
                     formularioEvento.fecha_recordatorio.value = respuesta.data.fecha_recordatorio;
-                    
                     formularioEvento.link_reunion.value = respuesta.data.link_reunion;
-                    $("#evento").modal("show");
+                    
+                    // Cambiar el contenido del modal
+                    $modal.find(".modal-title").text("Modificar Evento");
+                    $modal.find("#btnGuardar").hide();
+                    $modal.find("#btnModificar, #btnEliminar").show();
+
+                    // Mostrar el modal
+                    $modal.modal("show");
 
                 })
                 .catch((error) => {
@@ -127,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   //Agregar un evento
     document.getElementById("btnGuardar").addEventListener("click",function(){
-      enviarDatos("/calendario/eliminarEvento/"+formularioEvento.id.value)
+      enviarDatos("/calendario/agregar")
     });
 
     //Eliminar un evento
@@ -159,6 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Agrega un listener al botón "Crear Evento"
 document.getElementById("btnCrearEvento").addEventListener("click", function() {
+  
+  var $modal = $("#evento");
+  
   // Limpiar los campos del formulario antes de mostrarlo
   formularioEvento.id.value = "";
   formularioEvento.nombre.value = "";
@@ -172,10 +183,20 @@ document.getElementById("btnCrearEvento").addEventListener("click", function() {
   formularioEvento.fecha_recordatorio.value = "";
   formularioEvento.link_reunion.value = "";
 
-  // Mostrar el modal para crear un nuevo evento
-  $("#evento").modal("show");
+  // Cambiar el contenido del modal
+  $modal.find(".modal-title").text("Crear Evento");
+  $modal.find("#btnGuardar").show();
+  $modal.find("#btnModificar, #btnEliminar").hide();
+
+  // Mostrar el modal
+  $modal.modal("show");
 });
 
     calendar.render();
+
+    
+
+
+
 
   });
