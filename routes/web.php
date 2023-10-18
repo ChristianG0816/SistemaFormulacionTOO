@@ -72,7 +72,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
+
     Route::resource('comentarios', ComentarioController::class);
+   
     Route::get('tareas/data/{id}', [TareaController::class, 'data'])->name('tareas.data');
     Route::resource('tareas', TareaController::class);
 

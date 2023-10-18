@@ -10,6 +10,9 @@ use App\Models\Actividad;
 use App\Models\Proyecto;
 use App\Models\EstadoActividad;
 use App\Models\Comentario;
+use App\Models\EquipoTrabajo;
+use App\Models\Notificacion;
+use App\Models\TipoNotificacion;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -54,6 +57,7 @@ class ComentarioController extends Controller
                 'linea_comentario'=>$request->input('linea_comentario_comentario'),
                 'id_actividad'=>$request->input('id_actividad_comentario')
             ]);
+            $this->envio_notificacion_comentario(11, $comentario);
         }
     }
 
@@ -109,5 +113,48 @@ class ComentarioController extends Controller
     {
         $comentario = Comentario::find($id);
         $comentario->delete();
+    }
+
+    public function envio_notificacion_comentario($tipo_notificacion_valor, $comentario)
+    {
+        //Envío de notificacion a supervisor
+        $notificacion = new Notificacion();
+        $notificacion->id_usuario = $comentario->actividad->proyecto->id_dueno;
+        $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+        $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+        if ($tipoNotificacion) {
+            $nombre_usuario=$comentario->usuario->name . " " . $comentario->usuario->last_name;
+            $descripcion=$tipoNotificacion->descripcion;
+            $descripcion2 = str_replace('{{usuario}}', $nombre_usuario, $descripcion);
+            $descripcion3 = str_replace('{{nombre}}', $comentario->actividad->nombre, $descripcion2);
+            $descripcion4  = str_replace('{{nombre_proyecto}}', $comentario->actividad->proyecto->nombre, $descripcion3);
+            $notificacion->descripcion = $descripcion4;
+            $notificacion->ruta = str_replace('{{id}}', $comentario->actividad->id, $tipoNotificacion->ruta);
+        }
+        $notificacion->id_actividad = $comentario->actividad->id;
+        $notificacion->leida = false;
+        $notificacion->save();
+        //Envío de notificacion a equipo de trabajo
+        $EquipoTrabajo = EquipoTrabajo::where("id_proyecto",$comentario->actividad->proyecto->id);
+        foreach ($EquipoTrabajo as $miembro) {
+            // Crear notificación para cada miembro
+            $notificacion = new Notificacion();
+            $notificacion->id_usuario = $miembro->id;
+            $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+            $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+            if ($tipoNotificacion) {
+                $nombre_usuario=$comentario->usuario->name . " " . $comentario->usuario->last_name;
+                $descripcion=$tipoNotificacion->descripcion;
+                $descripcion2 = str_replace('{{usuario}}', $nombre_usuario, $descripcion);
+                $descripcion3 = str_replace('{{nombre}}', $comentario->actividad->nombre, $descripcion2);
+                $descripcion4  = str_replace('{{nombre_proyecto}}', $comentario->actividad->proyecto->nombre, $descripcion3);
+                $notificacion->descripcion = $descripcion4;
+                $notificacion->ruta = str_replace('{{id}}', $comentario->actividad->id, $tipoNotificacion->ruta);
+            }
+            $notificacion->id_actividad = $comentario->actividad->id;
+            $notificacion->id_proyecto = $comentario->actividad->proyecto->id;
+            $notificacion->leida = false;
+            $notificacion->save();
+        }
     }
 }

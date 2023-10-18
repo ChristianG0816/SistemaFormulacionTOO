@@ -232,6 +232,5 @@ class ManoObraController extends Controller
         $manoObra = ManoObra::find($id);
         ManoObra::find($id)->delete();
         User::find($manoObra->id_usuario)->delete();
-        return redirect()->route('miembros.index');
     }
 }

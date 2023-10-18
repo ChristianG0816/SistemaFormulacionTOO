@@ -72,7 +72,13 @@ class ActividadController extends Controller
         $input = $request->all();
         $actividad = Actividad::create($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        $this->envio_notificacion_actividad(9, $actividad);
+        if($actividad->estado_actividad->nombre == "Pendiente"){
+            $this->envio_notificacion_actividad(8, $actividad);
+        }else if($actividad->estado_actividad->nombre == "En Proceso"){
+            $this->envio_notificacion_actividad(9, $actividad);
+        }else if($actividad->estado_actividad->nombre == "Finalizada"){
+            $this->envio_notificacion_actividad(10, $actividad);
+        }
         return redirect()->route('proyectos.show', ['proyecto' => $proyecto])->with('success', 'Actividad creada con éxito');
     }
 
@@ -131,7 +137,13 @@ class ActividadController extends Controller
         $input = $request->all();
         $actividad->update($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        $this->envio_notificacion_actividad(10, $actividad);
+        if($actividad->estado_actividad->nombre == "Pendiente"){
+            $this->envio_notificacion_actividad(8, $actividad);
+        }else if($actividad->estado_actividad->nombre == "En Proceso"){
+            $this->envio_notificacion_actividad(9, $actividad);
+        }else if($actividad->estado_actividad->nombre == "Finalizada"){
+            $this->envio_notificacion_actividad(10, $actividad);
+        }
         return redirect()->route('proyectos.show', ['proyecto' => $proyecto])->with('success', 'Actividad actualizada con éxito');
     }
 
@@ -163,6 +175,19 @@ class ActividadController extends Controller
         $notificacion->id_actividad = $actividad->id;
         $notificacion->leida = false;
         $notificacion->save();
+        //Envío de notificacion al cliente
+        $notificacion = new Notificacion();
+        $notificacion->id_usuario = $actividad->proyecto->id_cliente;
+        $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+        $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+        if ($tipoNotificacion) {
+            $descripcion = str_replace(['{{nombre}}', '{{nombre_proyecto}}'], [$actividad->nombre, $actividad->proyecto->nombre], $tipoNotificacion->descripcion);
+            $notificacion->descripcion = $descripcion;
+            $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
+        }
+        $notificacion->id_actividad = $actividad->id;
+        $notificacion->leida = false;
+        $notificacion->save();
         //Envío de notificacion a equipo de trabajo
         $EquipoTrabajo = EquipoTrabajo::where("id_proyecto",$actividad->proyecto->id);
         foreach ($EquipoTrabajo as $miembro) {
@@ -177,6 +202,7 @@ class ActividadController extends Controller
                 $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
             }
             $notificacion->id_actividad = $actividad->id;
+            $notificacion->id_proyecto = $actividad->proyecto->id;
             $notificacion->leida = false;
             $notificacion->save();
         }
