@@ -17,7 +17,27 @@ $(document).ready(function(){
             {data: 'nombre', title: 'Nombre'},
             {data: 'cantidad', title: 'Cantidad'},
             {data: 'costo', title: 'Costo'},
-            {data: 'action', title: 'Accciones', name: 'action', orderable: false, searchable: false}
+            {
+                data: null,
+                title: 'Acciones',
+                sortable: false,
+                searchable: false,
+                width: '25%',
+                render: function (data, type, row) {
+                    
+                    var actionsHtml = '';
+
+                    actionsHtml += '<button id="type="button" class="btn btn-outline-info editarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                    actionsHtml += 'data-cod="' + row.id + '">';
+                    actionsHtml += 'Editar</button>';
+
+                    actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                    actionsHtml += 'data-cod="' + row.id + '">';
+                    actionsHtml += 'Eliminar</button>';
+                   
+                    return actionsHtml || '';
+                }
+            }
         ],
         language: {
             "sProcessing": "Procesando...",
@@ -79,14 +99,44 @@ $(document).ready(function(){
         });
     });
 
+    // Método para mostrar el modal de eliminación
+    $(document).on('click', '.eliminarModalRecurso-btn', function () {
+        var id = $(this).data('id');
+        var modal = $('#confirmarEliminarModalRecurso');
+        var eliminarBtn = modal.find('#eliminarRecursoBtn');
+        eliminarBtn.data('id', id);
+        modal.modal('show');
+    });
+
+    // Método para mostrar el modal de editar
+    $(document).on('click', '.editarModalRecurso-btn', function () {
+        var id = $(this).data('id');
+        var modal = $('#editarRecursoModal');
+        var editarBtn = modal.find('#editarRecursoBtn');
+        editarBtn.data('id', id);
+        /*$.ajax({
+            type: 'GET',
+            url: '/asignacionrecurso/' + id + '/edit',
+            dataType: 'json',
+            success: function(data) {
+                $("#nombre-tarea-editar").val(data.nombre);
+                if (data.finalizada === true) {
+                    $("#finalizada-tarea-editar").val(1);
+                } else {
+                    $("#finalizada-tarea-editar").val(0);
+                }
+                modal.modal('show');
+            }
+        });*/
+    });
+
     $('#agregarRecursoModal').on('hide.bs.modal', function (event) {
         // Restablece el valor del select cuando se cierra el modal
         var modal = $(this);
         var select = modal.find('#recursoSelect');
         select.val('');
-        $('#nombreRecurso').text("");
         $('#cantidadRecurso').val('');
-        $('#costoRecurso').text("");
+        $('#costoRecurso').val("");
     });
 
     $('#recursoSelect').change(function () {
@@ -99,15 +149,14 @@ $(document).ready(function(){
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    $('#nombreRecurso').text(data.nombre);
-                    $('#costoRecurso').text(data.costo);
+                    $('#disponibilidadRecurso').val(data.disponibilidad);
+                    $('#costoRecurso').val(data.costo);
                 },
                 error: function (error) {
                     console.log('Error al obtener los detalles del miembro:', error);
                 }
             });
         } else {
-            $('#nombreRecurso').text("");
             $('#costoRecurso').text("");
         }
     });
@@ -117,7 +166,6 @@ $(document).ready(function(){
         var cantidadRecurso = $('#cantidadRecurso').val();
         // Verifica si se seleccionó un recurso
         if (selectedRecurso !== '') {
-            console.log('entre');
             // Realiza una solicitud Ajax para agregar un recurso
             $.ajax({
                 url: '/asignacionrecurso/crear', // URL para asignar el recurso
@@ -140,6 +188,7 @@ $(document).ready(function(){
                         toastr.success('Se ha agregado un recurso a la actividad');
                     } else {
                         console.log('Error al agregar el recurso:', response.message);
+                        toastr.error('Error al agregar el recurso: '+response.message);
                     }
                 },
                 error: function (error) {
@@ -149,32 +198,26 @@ $(document).ready(function(){
         }
     });
 
-    $('#tableRecursosActividad').on('click', '.delete', function () {
+    //Método para enviar la solicitud de eliminar
+    $(document).on('click', '#eliminarRecursoBtn', function () {
         var id = $(this).data('id');
-        
-        if (confirm('¿Estás seguro de eliminar este registro?')) {
-            $.ajax({
-                url: '/miembrosactividades/eliminar',
-                method: 'POST',
-                data: { 
-                    _token: csrfToken, 
-                    id: parseInt(id) // Convertir a entero
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert('Registro eliminado correctamente.');
-                        // Actualizar la tabla después de la eliminación si es necesario
-                        $('#tableMiembrosActividad').DataTable().ajax.reload();
-                        toastr.success('Se ha eliminado un recurso de la actividad');
-                    } else {
-                        alert('Error al eliminar el registro.');
-                    }
-                },
-                error: function () {
-                    alert('Ocurrió un error en la solicitud.');
-                }
-            });
-        }
-    });
-
+        var modal = $('#confirmarEliminarModalRecurso');
+        $.ajax({
+            url: '/asignacionrecurso/' + id, //asignacionrecurso/{id}
+            type: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken, // Agrega el token CSRF aquí
+            },
+            success: function (response) {
+                modal.modal('hide');
+                $('#tableRecursosActividad').DataTable().ajax.reload();
+                toastr.success('Recurso eliminado con éxito.');
+            },
+            error: function (error) {
+                modal.modal('hide');
+                tableTareas.ajax.reload(null, false);
+                toastr.error('Ocurrió un error al eliminar.');
+            }
+        });
+    });    
 });

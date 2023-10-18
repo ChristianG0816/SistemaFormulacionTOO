@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AsignacionRecurso;
+use App\Models\Recurso;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -20,6 +21,15 @@ class AsignacionRecursoController extends Controller
         //     'id_recurso'=>'required',
         //     'cantidad'=> ['required', 'regex:/^\d+$/']
         // ]);
+
+        $recurso = Recurso::find($request->input('id_recurso'));
+
+        if( $recurso->disponibilidad - intval($request->input('cantidad')) < 0){
+            return response()->json(['message' => 'Mensaje de error'], 200);
+        }
+        
+        $recurso->disponibilidad -= intval($request->input('cantidad'));
+        $recurso->save();
 
         AsignacionRecurso::create([
             'id_actividad' => $request->input('id_actividad'),
@@ -48,12 +58,6 @@ class AsignacionRecursoController extends Controller
             ->addColumn('costo', function ($row) {
                 return $row->recurso->costo;
             })
-            ->addColumn('action', function ($row) {
-                // Agregar botones de acciones (editar, eliminar, etc.) si es necesario
-                /*$btnDetalle = '<a href="' . route('asignacionrecurso.show', $row->recurso->id) . '" class="edit btn btn-primary btn-sm">Detalle</a>';*/
-                $btnEliminar = '<button class="delete btn btn-danger btn-sm" data-id="' . $row->id . '">Eliminar</button>';
-                return /*$btnDetalle .*/ ' ' . $btnEliminar;
-            })           
             ->rawColumns(['action'])
             ->make(true);
     }
@@ -98,8 +102,13 @@ class AsignacionRecursoController extends Controller
      * @param  \App\Models\AsignacionRecurso  $asignacionRecurso
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AsignacionRecurso $asignacionRecurso)
+    public function destroy($id)
     {
-        //
+        $ar = AsignacionRecurso::find($id);
+        $recurso = Recurso::find($ar->id_recurso);
+        $recurso->disponibilidad += $ar->cantidad;
+        $recurso->save();
+        $ar->delete();
+        //AsignacionRecurso::find($id)->delete();
     }
 }
