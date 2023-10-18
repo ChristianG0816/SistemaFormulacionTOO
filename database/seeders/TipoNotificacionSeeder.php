@@ -69,7 +69,7 @@ class TipoNotificacionSeeder extends Seeder
                 'ruta' => '/eventos/{{id}}',
             ],
             [
-                'nombre' => 'Actividad pendiente.',
+                'nombre' => 'Actividad pendiente',
                 'descripcion' => 'Se ha agregado la actividad "{{nombre}}" en el proyecto "{{nombre_proyecto}}", se encuentra pendiente de realizar.',
                 'icono' => 'fas fa-fw fa-clipboard-list',
                 'color' => '#1F618D',
@@ -91,7 +91,7 @@ class TipoNotificacionSeeder extends Seeder
             ],
             [
                 'nombre' => 'Comentario agregado',
-                'descripcion' => 'Se ha agregado un comentario a la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
+                'descripcion' => 'El usuario {{usuario}} ha agregado un comentario a la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
                 'icono' => 'fas fa-fw fa-comments',
                 'color' => '#D6EAF8',
                 'ruta' => '/actividades/show/{{id}}',

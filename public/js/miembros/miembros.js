@@ -167,14 +167,15 @@ $(document).ready(function() {
             },
             success: function (response) {
                 modal.modal('hide');
+                toastr.success('Mano de obra eliminada con éxito.');
                 var table = $('#tabla-miembros').DataTable();
                 table.ajax.reload(null, false);
-                toastr.success('Proyecto eliminado con éxito');
             },
             error: function (error) {
                 modal.modal('hide');
                 var table = $('#tabla-miembros').DataTable();
                 table.ajax.reload(null, false);
+                toastr.error('Ocurrió un error al eliminar la mano de obra.');
             }
         });
     });    

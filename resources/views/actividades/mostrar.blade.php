@@ -129,7 +129,7 @@
                                         <div class="card-body">
                                             {!! Form::open(['route' => 'comentarios.store', 'method' => 'POST', 'id' => 'comentario-form-agregar']) !!}
                                                 {!! Form::text('id_actividad_comentario', $actividad->id, ['class' => 'form-control d-none']) !!}
-                                                {!! Form::textarea('linea_comentario_comentario', null, ['class' => 'form-control', 'rows' => 3]) !!}
+                                                {!! Form::textarea('linea_comentario_comentario', null, ['id' => 'linea_comentario_comentario', 'class' => 'form-control', 'rows' => 3]) !!}
                                                 <p class="text-right m-0 mt-2">
                                                     <a href="#" id="enviar-formulario" class="text-warning ml-auto">Agregar</a>
                                                 </p>
