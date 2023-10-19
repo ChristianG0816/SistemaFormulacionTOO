@@ -13,7 +13,7 @@ class ManoObra extends Model
         'dui',
         'afp',
         'isss',
-        'nacionalidad',
+        'id_nacionalidad',
         'pasaporte',
         'telefono',
         'profesion',
@@ -33,4 +33,8 @@ class ManoObra extends Model
         return $this->hasMany(EquipoTrabajo::class, 'id_mano_obra');
     }
 
+    public function nacionalidad()
+    {
+        return $this->belongsTo(Nacionalidad::class, 'id_nacionalidad');
+    }
 }

@@ -57,25 +57,59 @@ class TareaController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
+        $cantidad_tareas_completadas=0;
+        $cantidad_tareas_sin_iniciar=0;
+        $cantidad_tareas_iniciadas=0;
         if(!empty($input['nombre-tarea'])){
             $tarea = Tarea::create([
                 'id_actividad' => $request->input('id-actividad-tarea'),
                 'nombre'=>$request->input('nombre-tarea'),
                 'finalizada'=>$request->input('finalizada-tarea')
             ]);
-            $tareaActualizada = Actividad::find($tarea->id_actividad);
-            $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
-            if ($estadoActividad) {
-                $tareaActualizada->id_estado_actividad = $estadoActividad->id;
-                $tareaActualizada->save();
+            if($tarea->finalizada != null){
+                if($tarea->finalizada){
+                    $this->envio_notificacion_tarea(13, $tarea);
+                }else{
+                    $this->envio_notificacion_tarea(12, $tarea);
+                }
             }
-            $this->envio_notificacion_actividad(9, $tarea->actividad);
-            if($tarea->finalizada){
-                $this->envio_notificacion_tarea(13, $tarea);
-            }else{
-                $this->envio_notificacion_tarea(12, $tarea);
+            $tareas = Tarea::where('id_actividad', $tarea->id_actividad)->get();
+            foreach ($tareas as $tarea) {
+                if ($tarea->finalizada === null){
+                    $cantidad_tareas_sin_iniciar++;
+                }else if ($tarea->finalizada===true) {
+                    $cantidad_tareas_completadas++;
+                }else{
+                    $cantidad_tareas_iniciadas++;
+                }
+            }
+            if ($cantidad_tareas_completadas>0 && $cantidad_tareas_sin_iniciar==0 &&  $cantidad_tareas_iniciadas==0) {
+                $tareaActualizada = Actividad::find($tarea->id_actividad);
+                $estadoActividad = EstadoActividad::where('nombre', 'Finalizada')->first();
+                if ($estadoActividad) {
+                    $tareaActualizada->id_estado_actividad = $estadoActividad->id;
+                    $tareaActualizada->save();
+                }
+                $this->envio_notificacion_actividad(10, $tarea->actividad);
+            }else if($cantidad_tareas_sin_iniciar>=0 && $cantidad_tareas_iniciadas==0 && $cantidad_tareas_completadas==0 ){
+                $tareaActualizada = Actividad::find($tarea->id_actividad);
+                $estadoActividad = EstadoActividad::where('nombre', 'Pendiente')->first();
+                if ($estadoActividad) {
+                    $tareaActualizada->id_estado_actividad = $estadoActividad->id;
+                    $tareaActualizada->save();
+                }
+                $this->envio_notificacion_actividad(8, $tarea->actividad);
+            } else{
+                $tareaActualizada = Actividad::find($tarea->id_actividad);
+                $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
+                if ($estadoActividad) {
+                    $tareaActualizada->id_estado_actividad = $estadoActividad->id;
+                    $tareaActualizada->save();
+                }
+                $this->envio_notificacion_actividad(9, $tarea->actividad);
             }
         }
+             
     }
 
     /**
@@ -112,6 +146,8 @@ class TareaController extends Controller
         $input = $request->all();
         $tarea = Tarea::find($id);
         $cantidad_tareas_completadas=0;
+        $cantidad_tareas_sin_iniciar=0;
+        $cantidad_tareas_iniciadas=0;
         if(!empty($input['nombre-tarea-editar'])){
             $tarea->id_actividad = $request->input('id-actividad-tarea-editar');
             $tarea->nombre = $request->input('nombre-tarea-editar');
@@ -120,11 +156,15 @@ class TareaController extends Controller
         }
         $tareas = Tarea::where('id_actividad', $tarea->id_actividad)->get();
         foreach ($tareas as $tarea) {
-            if (!$tarea->finalizada==true) {
+            if ($tarea->finalizada === null){
+                $cantidad_tareas_sin_iniciar++;
+            }else if ($tarea->finalizada===true) {
                 $cantidad_tareas_completadas++;
+            }else{
+                $cantidad_tareas_iniciadas++;
             }
         }
-        if ($cantidad_tareas_completadas == 0) {
+        if ($cantidad_tareas_completadas>0 && $cantidad_tareas_sin_iniciar==0 &&  $cantidad_tareas_iniciadas==0) {
             $tareaActualizada = Actividad::find($tarea->id_actividad);
             $estadoActividad = EstadoActividad::where('nombre', 'Finalizada')->first();
             if ($estadoActividad) {
@@ -132,7 +172,15 @@ class TareaController extends Controller
                 $tareaActualizada->save();
             }
             $this->envio_notificacion_actividad(10, $tarea->actividad);
-        }else{
+        }else if($cantidad_tareas_sin_iniciar>=0 && $cantidad_tareas_iniciadas==0 && $cantidad_tareas_completadas==0 ){
+            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $estadoActividad = EstadoActividad::where('nombre', 'Pendiente')->first();
+            if ($estadoActividad) {
+                $tareaActualizada->id_estado_actividad = $estadoActividad->id;
+                $tareaActualizada->save();
+            }
+            $this->envio_notificacion_actividad(8, $tarea->actividad);
+        } else{
             $tareaActualizada = Actividad::find($tarea->id_actividad);
             $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
             if ($estadoActividad) {
@@ -141,10 +189,12 @@ class TareaController extends Controller
             }
             $this->envio_notificacion_actividad(9, $tarea->actividad);
         }
-        if($tarea->finalizada){
-            $this->envio_notificacion_tarea(13, $tarea);
-        }else{
-            $this->envio_notificacion_tarea(12, $tarea);
+        if($tarea->finalizada != null){
+            if($tarea->finalizada){
+                $this->envio_notificacion_tarea(13, $tarea);
+            }else{
+                $this->envio_notificacion_tarea(12, $tarea);
+            }
         }
     }
 
@@ -159,39 +209,43 @@ class TareaController extends Controller
         $tarea = Tarea::find($id);
         $tarea->delete();
         $cantidad_tareas_completadas=0;
+        $cantidad_tareas_sin_iniciar=0;
+        $cantidad_tareas_iniciadas=0;
         $tareas = Tarea::where('id_actividad', $tarea->id_actividad)->get();
-        if(!$tareas->isEmpty()){
-            foreach ($tareas as $tarea) {
-                if (!$tarea->finalizada==true) {
-                    $cantidad_tareas_completadas++;
-                }
-            }
-            if ($cantidad_tareas_completadas == 0) {
-                $tareaActualizada = Actividad::find($tarea->id_actividad);
-                $estadoActividad = EstadoActividad::where('nombre', 'Finalizada')->first();
-                if ($estadoActividad) {
-                    $tareaActualizada->id_estado_actividad = $estadoActividad->id;
-                    $tareaActualizada->save();
-                }
-                $this->envio_notificacion_actividad(10, $tarea->actividad);
+        foreach ($tareas as $tarea) {
+            if ($tarea->finalizada === null){
+                $cantidad_tareas_sin_iniciar++;
+            }else if ($tarea->finalizada===true) {
+                $cantidad_tareas_completadas++;
             }else{
-                $tareaActualizada = Actividad::find($tarea->id_actividad);
-                $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
-                if ($estadoActividad) {
-                    $tareaActualizada->id_estado_actividad = $estadoActividad->id;
-                    $tareaActualizada->save();
-                }
-                $this->envio_notificacion_actividad(8, $tarea->actividad);
+                $cantidad_tareas_iniciadas++;
             }
-        }else{
+        }
+        if ($cantidad_tareas_completadas>0 && $cantidad_tareas_sin_iniciar==0 &&  $cantidad_tareas_iniciadas==0) {
+            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $estadoActividad = EstadoActividad::where('nombre', 'Finalizada')->first();
+            if ($estadoActividad) {
+                $tareaActualizada->id_estado_actividad = $estadoActividad->id;
+                $tareaActualizada->save();
+            }
+            $this->envio_notificacion_actividad(10, $tarea->actividad);
+        }else if($cantidad_tareas_sin_iniciar>=0 && $cantidad_tareas_iniciadas==0 && $cantidad_tareas_completadas==0 ){
             $tareaActualizada = Actividad::find($tarea->id_actividad);
             $estadoActividad = EstadoActividad::where('nombre', 'Pendiente')->first();
             if ($estadoActividad) {
                 $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                 $tareaActualizada->save();
             }
+            $this->envio_notificacion_actividad(8, $tarea->actividad);
+        } else{
+            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
+            if ($estadoActividad) {
+                $tareaActualizada->id_estado_actividad = $estadoActividad->id;
+                $tareaActualizada->save();
+            }
             $this->envio_notificacion_actividad(9, $tarea->actividad);
-        }
+        } 
     }
 
     public function envio_notificacion_tarea($tipo_notificacion_valor, $tarea)

@@ -94,7 +94,8 @@ class ActividadController extends Controller
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
         $estadosTarea = [
-            '0' => 'Sin Iniciar',
+            '' => 'Sin Iniciar',
+            '0' => 'En Proceso',
             '1' => 'Finalizada',
         ];
         $usuario= Auth::user();
