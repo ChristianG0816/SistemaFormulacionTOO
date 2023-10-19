@@ -19,6 +19,7 @@ class SeederTablaEstadoProyecto extends Seeder
             EstadoProyecto::create(['nombre' => 'Revision',]),
             EstadoProyecto::create(['nombre' => 'Aprobado',]),
             EstadoProyecto::create(['nombre' => 'Rechazado',]),      
+            EstadoProyecto::create(['nombre' => 'Iniciado',]),      
             EstadoProyecto::create(['nombre' => 'Finalizado',]),
         ];
     }
