@@ -9,8 +9,10 @@ $(document).ready(function () {
             data: formData,
             url: $form.attr('action'),
             success: function (response) {
-                var textarea = document.querySelector('textarea[name="linea_comentario_comentario"]');
-                textarea.value = '';
+                $("#icono-boton-comentario").removeClass("fa-minus");
+                $("#icono-boton-comentario").addClass("fa-plus");
+                $("#formulario-comentario").css("display", "none");
+                $("#titulo-encabezado-comentario").addClass("collapsed-card");
                 $.ajax({
                     type: 'GET',
                     url: "/actividades/show/" + $id_actividad_comentario,
@@ -20,6 +22,8 @@ $(document).ready(function () {
                         toastr.success('Comentario creado con éxito.');
                     }
                 });
+                var textarea = document.querySelector('textarea[name="linea_comentario_comentario"]');
+                textarea.value = '';
             },
             error: function (xhr, status, error) {
                 toastr.error('Ocurrió en error al agregar el comentario.');

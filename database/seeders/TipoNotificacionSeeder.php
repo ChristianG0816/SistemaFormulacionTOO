@@ -97,8 +97,8 @@ class TipoNotificacionSeeder extends Seeder
                 'ruta' => '/actividades/show/{{id}}',
             ],
             [
-                'nombre' => 'Tarea agregada',
-                'descripcion' => 'Se ha agregado una tarea a la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
+                'nombre' => 'Tarea iniciada',
+                'descripcion' => 'Se ha iniciado la tarea {{nombre_tarea}} de la actividad "{{nombre}}" del proyecto "{{nombre_proyecto}}".',
                 'icono' => 'fas fa-fw fa-file-signature',
                 'color' => '#0B5345',
                 'ruta' => '/actividades/show/{{id}}',

@@ -18,7 +18,7 @@ class CreateManoObraTable extends Migration
             $table->string('dui', 9);
             $table->string('afp', 20);
             $table->string('isss', 20);
-            $table->string('nacionalidad', 100);
+            $table->string('id_nacionalidad', 100)->constrained('nacionalidad')->onDelete('restrict')->onUpdate('cascade');
             $table->string('pasaporte', 20);
             $table->string('telefono', 9);
             $table->string('profesion', 100);

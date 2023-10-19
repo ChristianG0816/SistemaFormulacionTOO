@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\ManoObra;
+use App\Models\Nacionalidad;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -40,11 +41,19 @@ class ManoObraController extends Controller
      */
     public function create()
     {
+        $nacionalidades = Nacionalidad::pluck('name', 'id')->all();
         $sexos = [
             'Masculino' => 'Masculino',
             'Femenino' => 'Femenino',
         ];
-        return view('miembros.crear', compact('sexos'));
+        $estado_civil = [
+            'Soltero(a)' => 'Soltero(a)',
+            'Casado(a)' => 'Casado(a)',
+            'Divorciado(a)' => 'Divorciado(a)',
+            'Viudo(a)' => 'Viudo(a)',
+            'Conviviente' => 'Conviviente',
+        ];
+        return view('miembros.crear', compact('sexos', 'estado_civil','nacionalidades'));
     }
 
     /**
@@ -62,8 +71,8 @@ class ManoObraController extends Controller
             'dui'=>['required', 'regex:/^\d{9}$/','unique:mano_obra,dui'],
             'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
             'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'nacionalidad'=>'required',
-            'pasaporte'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
+            'id_nacionalidad'=>'required',
+            'pasaporte'=>['regex:/^\d{3}(?:\d{1,17})?$/'],
             'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
             'profesion'=>'required',
             'estado_civil'=>'required',
@@ -87,7 +96,7 @@ class ManoObraController extends Controller
             'dui'=>$request->input('dui'),
             'afp'=>$request->input('afp'),
             'isss'=>$request->input('isss'),
-            'nacionalidad'=>$request->input('nacionalidad'),
+            'id_nacionalidad'=>$request->input('id_nacionalidad'),
             'pasaporte'=>$request->input('pasaporte'),
             'telefono'=>$request->input('telefono'),
             'profesion'=>$request->input('profesion'),
@@ -122,7 +131,7 @@ class ManoObraController extends Controller
             'dui'=> $manoObra->dui,
             'afp'=> $manoObra->afp,
             'isss'=> $manoObra->isss,
-            'nacionalidad'=> $manoObra->nacionalidad,
+            'nacionalidad'=> $manoObra->nacionalidad->name,
             'pasaporte'=> $manoObra->pasaporte,
             'telefono' => $manoObra->telefono,
             'profesion'=> $manoObra->profesion,
@@ -143,6 +152,7 @@ class ManoObraController extends Controller
     public function edit($id)
     {
         $manoObra = ManoObra::find($id);
+        $nacionalidades = Nacionalidad::pluck('name', 'id')->all();
         $user = User::find($manoObra->id_usuario);
         $roles = Role::pluck('name','name')->all();
         $userRole = $user->roles->pluck('name','name')->all();
@@ -150,7 +160,13 @@ class ManoObraController extends Controller
             'Masculino' => 'Masculino',
             'Femenino' => 'Femenino',
         ];
-
+        $estado_civil = [
+            'Soltero(a)' => 'Soltero(a)',
+            'Casado(a)' => 'Casado(a)',
+            'Divorciado(a)' => 'Divorciado(a)',
+            'Viudo(a)' => 'Viudo(a)',
+            'Conviviente' => 'Conviviente',
+        ];
         $manoObraUser = (object) ([
             'id_usuario' => $manoObra->usuario->id,
             'name' => $manoObra->usuario->name,
@@ -159,7 +175,7 @@ class ManoObraController extends Controller
             'dui'=> $manoObra->dui,
             'afp'=> $manoObra->afp,
             'isss'=> $manoObra->isss,
-            'nacionalidad'=> $manoObra->nacionalidad,
+            'id_nacionalidad'=> $manoObra->nacionalidad->id,
             'pasaporte'=> $manoObra->pasaporte,
             'telefono' => $manoObra->telefono,
             'profesion'=> $manoObra->profesion,
@@ -168,7 +184,7 @@ class ManoObraController extends Controller
             'fecha_nacimiento'=> $manoObra->fecha_nacimiento,
             'costo_servicio'=> $manoObra->costo_servicio
         ]);
-        return view('miembros.editar', compact('manoObraUser', 'sexos'));
+        return view('miembros.editar', compact('manoObraUser', 'sexos', 'estado_civil','nacionalidades'));
     }
 
     /**
@@ -188,8 +204,8 @@ class ManoObraController extends Controller
             'dui'=>['required', 'regex:/^\d{9}$/'],
             'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
             'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'nacionalidad'=>'required',
-            'pasaporte'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
+            'id_nacionalidad'=>'required',
+            'pasaporte'=>['regex:/^\d{3}(?:\d{1,17})?$/'],
             'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
             'profesion'=>'required',
             'estado_civil'=>'required',
@@ -203,7 +219,7 @@ class ManoObraController extends Controller
             'dui'=>$request->input('dui'),
             'afp'=>$request->input('afp'),
             'isss'=>$request->input('isss'),
-            'nacionalidad'=>$request->input('nacionalidad'),
+            'id_nacionalidad'=>$request->input('id_nacionalidad'),
             'pasaporte'=>$request->input('pasaporte'),
             'telefono'=>$request->input('telefono'),
             'profesion'=>$request->input('profesion'),
