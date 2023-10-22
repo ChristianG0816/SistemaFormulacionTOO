@@ -67,9 +67,9 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label for="nacionalidad" class="text-secondary">Nacionalidad*</label>
-                    {!! Form::text('nacionalidad', null, [
-                        'class' => 'form-control' . ($errors->has('nacionalidad') ? ' is-invalid' : ''),
+                    <label for="nacionalidad" class="text-secondary">País de Origen*</label>
+                    {!! Form::select('id_nacionalidad', $nacionalidades, null, [
+                        'class' => 'form-control' . ($errors->has('id_nacionalidad') ? ' is-invalid' : ''), 'id' => 'select-nacionalidad'
                     ]) !!}
                     @error('nacionalidad')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -78,7 +78,7 @@
             </div>
             <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
                 <div class="form-group">
-                    <label for="pasaporte" class="text-secondary">Pasaporte*</label>
+                    <label for="pasaporte" class="text-secondary">Pasaporte</label>
                     {!! Form::text('pasaporte', null, [
                         'class' => 'form-control' . ($errors->has('pasaporte') ? ' is-invalid' : ''),
                     ]) !!}
@@ -88,7 +88,7 @@
                 </div>
                 <div class="form-group">
                     <label for="estado_civil" class="text-secondary">Estado Civil*</label>
-                    {!! Form::text('estado_civil', null, [
+                    {!! Form::select('estado_civil', $estado_civil, $manoObraUser->estado_civil, [
                         'class' => 'form-control' . ($errors->has('estado_civil') ? ' is-invalid' : ''),
                     ]) !!}
                     @error('estado_civil')
@@ -148,4 +148,20 @@
     </div>
   </div>
 </div>
+@stop
+@section('js')
+    <script>
+    jQuery.noConflict();
+    (function($) {      
+        toastr.options = {"closeButton": true, "progressBar": true}
+        @if (Session::has('success'))
+        toastr.success("{{ session('success') }}");
+        @endif
+
+        @if (Session::has('error'))
+        toastr.error("{{ session('error') }}");
+        @endif
+    })(jQuery);
+    </script>
+    <script src="{{ asset('js/miembros/form-miembros.js') }}"></script>
 @stop

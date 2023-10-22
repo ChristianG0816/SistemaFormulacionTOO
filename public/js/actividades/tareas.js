@@ -18,10 +18,12 @@ $(document).ready(function() {
                 title: 'Estado Tarea',
                 width: '10%',
                 render: function (data, type, row) {
-                    if (data) {
+                    if (data === null) {
+                        return '<span class="badge badge-danger">Sin Iniciar</span>';
+                    } else if (data) {
                         return '<span class="badge badge-success">Finalizada</span>';
                     } else {
-                        return '<span class="badge badge-danger">Sin Iniciar</span>';
+                        return '<span class="badge badge-warning">En Proceso</span>';
                     }
                 }
             },
@@ -131,7 +133,9 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(data) {
                 $("#nombre-tarea-editar").val(data.nombre);
-                if (data.finalizada === true) {
+                if (data.finalizada === null) {
+                    $("#finalizada-tarea-editar").val();
+                }else if (data.finalizada === true) {
                     $("#finalizada-tarea-editar").val(1);
                 } else {
                     $("#finalizada-tarea-editar").val(0);

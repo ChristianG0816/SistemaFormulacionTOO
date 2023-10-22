@@ -17,7 +17,7 @@ class CreateTareaTable extends Migration
             $table->bigIncrements('id');
             $table->string('nombre', 255); // varchar(100) not null
             $table->foreignId('id_actividad')->constrained('actividad')->onDelete('restrict')->onUpdate('cascade');
-            $table->boolean('finalizada'); // boolean not null
+            $table->boolean('finalizada')->nullable(); // boolean not null
             $table->timestamps(); // created_at, updated_at
         });
     }

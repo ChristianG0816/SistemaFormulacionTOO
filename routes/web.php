@@ -16,6 +16,7 @@ use App\Http\Controllers\MiembroActividadController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\PerfilController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\EventoController;
 
 
 /*
@@ -42,19 +43,29 @@ Route::group(['middleware' => ['auth']], function() {
     
     Route::get('/', function () {return view('home');});
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    //Rutas para perfil
     Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
     Route::get('/perfil/desFA', [PerfilController::class, 'disableFA'])->name('deshabilitarFA');
     Route::get('/perfil/habFA', [PerfilController::class, 'enableFA'])->name('habilitarFA');
     Route::patch('/perfil/updateInfo/{id}', [PerfilController::class, 'updateInfo'])->name('perfil.updateInfo');
     Route::post('/perfil/updatePass', [PerfilController::class, 'updatePass'])->name('perfil.updatePass');
     
+    //Rutas para seguridad
     Route::get('roles/data', [RolController::class, 'data'])->name('roles.data');
     Route::resource('roles', RolController::class);
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
     Route::resource('usuarios', UsuarioController::class);
     
+    //Rutas para proyecto
     Route::get('proyectos/data', [ProyectoController::class, 'data'])->name('proyectos.data');
     Route::resource('proyectos', ProyectoController::class);
+    Route::get('/proyectos/{id}/backup', [ProyectoController::class, 'backup'])->name('proyectos.backup');
+    Route::get('/proyectos/{id}/revision', [ProyectoController::class, 'revision'])->name('proyectos.revision');
+    Route::get('/proyectos/{id}/aprobar', [ProyectoController::class, 'aprobar'])->name('proyectos.aprobar');
+    Route::get('/proyectos/{id}/rechazar', [ProyectoController::class, 'rechazar'])->name('proyectos.rechazar');
+    Route::get('/proyectos/{id}/iniciar', [ProyectoController::class, 'iniciar'])->name('proyectos.iniciar');
+    Route::get('/proyectos/{id}/finalizar', [ProyectoController::class, 'finalizar'])->name('proyectos.finalizar');
     
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
@@ -69,6 +80,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::delete('asignacionrecurso/{id}', [AsignacionRecursoController::class, 'destroy']);
     Route::get('asignacionrecurso/{id}/edit', [AsignacionRecursoController::class, 'edit']);
 
+    //Rutas de actividades
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
     Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
@@ -80,6 +92,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('tareas/data/{id}', [TareaController::class, 'data'])->name('tareas.data');
     Route::resource('tareas', TareaController::class);
 
+    //Rutas de mano de obra
     Route::get('/miembrosactividades/list/{id}', [MiembroActividadController::class, 'list'])->name('miembrosactividades.list');
     Route::get('/miembrosactividades/nolist/{actividadId}/{proyectoId}', [MiembroActividadController::class, 'listMiembrosNoAsignados']);
     Route::get('/miembrosactividades/detalle/{id}', [MiembroActividadController::class, 'getMiembroEquipo']);
@@ -96,6 +109,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/calendario', [App\Http\Controllers\CalendarioController::class, 'index']);
     Route::get('/calendario/mostrar/{idProyecto}', [App\Http\Controllers\CalendarioController::class, 'show']);
     Route::post('/calendario/consultar/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarActividad']);
+    Route::post('/calendario/agregar', [App\Http\Controllers\CalendarioController::class, 'GuardarEvento']);
+    Route::get('/calendario/mostrarEvento/{idProyecto}', [App\Http\Controllers\CalendarioController::class, 'showEvento']);
+    Route::post('/calendario/consultarEvento/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarEvento']);
+    Route::post('/calendario/ActualizarEvento/{evento}', [App\Http\Controllers\CalendarioController::class, 'actualizarEvento']);
+    Route::post('/calendario/eliminarEvento/{id}', [App\Http\Controllers\CalendarioController::class, 'eliminarEvento']);
 
     //Ruta de Notificaciones
     Route::get('/notificaciones/get', [NotificationsController::class, 'getNotificationsData'])->name('notifications.get');

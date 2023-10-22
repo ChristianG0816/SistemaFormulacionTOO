@@ -48,6 +48,9 @@
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-3">
+              <!-- Columna derecha -->
               <div class="form-group">
                 <label for="fecha_inicio" class="text-secondary">Fecha Inicio*</label>
                 {!! Form::date('fecha_inicio', null, ['class' => 'form-control' . ($errors->has('fecha_inicio') ? ' is-invalid' : '')]) !!}
@@ -55,9 +58,6 @@
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
-            </div>
-            <div class="col-lg-6 col-md-12 mb-3">
-              <!-- Columna derecha -->
               <div class="form-group">
                 <label for="fecha_fin" class="text-secondary">Fecha Fin*</label>
                 {!! Form::date('fecha_fin', null, ['class' => 'form-control' . ($errors->has('fecha_fin') ? ' is-invalid' : '')]) !!}
@@ -93,15 +93,6 @@
                 'maxlength' => 250,
                 ]) !!}
                 @error('entregable')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-              <div class="form-group">
-                <label for="id_estado_proyecto" class="text-secondary">Estado*</label>
-                {!! Form::select('id_estado_proyecto', $estados, null, [
-                'class' => 'form-control' . ($errors->has('id_estado_proyecto') ? ' is-invalid' : ''),
-                ]) !!}
-                @error('id_estado_proyecto')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
