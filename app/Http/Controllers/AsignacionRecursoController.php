@@ -6,11 +6,26 @@ use App\Models\AsignacionRecurso;
 use App\Models\Proyecto;
 use App\Models\EquipoTrabajo;
 use App\Models\Recurso;
+use App\Models\Actividad;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AsignacionRecursoController extends Controller
-{
+{   
+
+    public function RecursosDisponibles($id){
+        //trae recursos disponibles no asignados a esta actividad
+        $data = Recurso::where('disponibilidad', '>=', 1)
+        ->whereNotIn('id', function($query) use ($id) {
+            $query->select('id_recurso')
+                ->from('asignacion_recurso')
+                ->where('id_actividad', $id);
+        })
+        ->get();
+
+        return response()->json($data);
+    }
+
     /**
      * 
      *
@@ -29,7 +44,7 @@ class AsignacionRecursoController extends Controller
                 $id_proyecto = intval($request->input('id_proyecto'));
                 $id_actividad = intval($request->input('id_actividad'));
                 $costo_recurso = 0;
-                $costo_mano_obra = 0;
+                $costo_recurso_actual = 0;
                 $costo_equipo_trabajo = 0;
 
                 $proyecto = Proyecto::find($id_proyecto);
@@ -40,6 +55,20 @@ class AsignacionRecursoController extends Controller
                 ->pluck('mano_obra.costo_servicio') // Obtener los valores de costo_servicio de la relación
                 ->sum();
 
+                //Obtener actividades por id_proyecto
+                $actividades = Actividad::where('id_proyecto', $id_proyecto)->get();
+                if($actividades){
+                    foreach($actividades as $actividad){
+                        $recursos = AsignacionRecurso::where('id_actividad', $actividad->id)->get();
+                        if($recursos){
+                            foreach($recursos as $recurso){
+                                $costo_recurso_individual = Recurso::where('id', $recurso->id_recurso)->sum('costo');
+                                $costo_recurso += $costo_recurso_individual * $recurso->cantidad;
+                            }
+                        }
+                    }
+                }
+
                 $recurso = Recurso::find($request->input('id_recurso'));
 
                 if( $recurso->disponibilidad - intval($request->input('cantidad')) < 0){
@@ -49,14 +78,25 @@ class AsignacionRecursoController extends Controller
                     ]);
                 }
                 
-                $recurso->disponibilidad -= intval($request->input('cantidad'));
-                $recurso->save();
+                $costo_recurso_actual = intval($request->input('cantidad')*$request->input('costo'));
+
+                $costo_total =  $costo_recurso_actual + intval($costo_equipo_trabajo) + intval($costo_recurso);
+
+                if (intval($proyecto->presupuesto) < intval($costo_total)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al agregar Recurso: El presupuesto del proyecto es insuficiente'
+                    ]);
+                }
 
                 AsignacionRecurso::create([
                     'id_actividad' => $request->input('id_actividad'),
                     'id_recurso' => $request->input('id_recurso'),
                     'cantidad' => $request->input('cantidad')
                 ]);
+
+                $recurso->disponibilidad -= intval($request->input('cantidad'));
+                $recurso->save();
 
                 return response()->json(['success' => true], 200);
             }
@@ -129,9 +169,33 @@ class AsignacionRecursoController extends Controller
      * @param  \App\Models\AsignacionRecurso  $asignacionRecurso
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AsignacionRecurso $asignacionRecurso)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'cantidad'=> ['required', 'regex:/^[1-9]\d*$/']
+        ]);
+
+        $data = $request->all();
+        $recursoAsignado = AsignacionRecurso::find($id);
+        $recurso = Recurso::find($data['id_recurso']);
+
+        $disponiblidadTotal = $recursoAsignado->cantidad + $recurso->disponibilidad;
+
+        if(intval($data['cantidad']) > intval($disponiblidadTotal)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al agregar Recurso: Cantidad sobrepasa Disponibilidad'
+            ]);
+        }
+
+        $recurso->disponibilidad = intval($disponiblidadTotal); //21
+        $recurso->disponibilidad -= intval($data['cantidad']);
+        $recursoAsignado->cantidad = intval($data['cantidad']);
+
+        $recurso->save();
+        $recursoAsignado->save();
+
+        return response()->json(['success' => true], 200);
     }
 
     /**

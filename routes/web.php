@@ -72,13 +72,15 @@ Route::group(['middleware' => ['auth']], function() {
     
     //Rutas para recursos
     Route::get('recursos/detalle/{id}', [RecursoController::class, 'getRecurso']);
-    Route::get('recursos/disponibles', [RecursoController::class, 'RecursosDisponibles']);
     Route::get('recursos/data', [RecursoController::class, 'data'])->name('recursos.data');
     Route::resource('recursos', RecursoController::class);
     Route::post('asignacionrecurso/crear', [AsignacionRecursoController::class,'crearAsignacionRecurso']);
+    Route::get('asignacionrecurso/disponibles/{id}', [AsignacionRecursoController::class, 'RecursosDisponibles']);
     Route::get('asignacionrecurso/list/{id}', [AsignacionRecursoController::class, 'list']);
     Route::delete('asignacionrecurso/{id}', [AsignacionRecursoController::class, 'destroy']);
     Route::get('asignacionrecurso/{id}/edit', [AsignacionRecursoController::class, 'edit']);
+    Route::get('asignacionrecurso/{id}/edit', [AsignacionRecursoController::class, 'edit']);
+    Route::put('asignacionrecurso/{id}', [AsignacionRecursoController::class, 'update']);
 
     //Rutas de actividades
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');

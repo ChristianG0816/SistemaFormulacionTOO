@@ -88,7 +88,7 @@ $(document).ready(function(){
 
         // Realiza una solicitud Ajax para obtener los recursos disponibles
         $.ajax({
-            url: '/recursos/disponibles/',
+            url: '/asignacionrecurso/disponibles/'+actividadId,
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -101,7 +101,7 @@ $(document).ready(function(){
                 });
             },
             error: function (error) {
-                console.log('Error al obtener los miembros disponibles:', error);
+                console.log('Error al obtener los recursos disponibles:', error);
             }
         });
     });
@@ -126,18 +126,12 @@ $(document).ready(function(){
             url: '/asignacionrecurso/' + id + '/edit',
             dataType: 'json',
             success: function(data) {
-                // $("#nombre-tarea-editar").val(data.nombre);
-                // if (data.finalizada === true) {
-                //     $("#finalizada-tarea-editar").val(1);
-                // } else {
-                //     $("#finalizada-tarea-editar").val(0);
-                // }
-                // modal.modal('show');
                 console.log(data);
-                $('#nombreRecurso').val(data[0].recurso.nombre);
-                $('#disponibilidadRecurso').val(data[0].recurso.disponibilidad);
-                $('#costoRecurso').val(data[0].recurso.costo);
-                $('#cantidadRecurso').val(data[0].cantidad);
+                $('#nombreRecursoE').data('id', data[0].recurso.id);
+                $('#nombreRecursoE').val(data[0].recurso.nombre);
+                $('#disponibilidadRecursoE').val(data[0].recurso.disponibilidad);
+                $('#costoRecursoE').val(data[0].recurso.costo);
+                $('#cantidadRecursoE').val(data[0].cantidad);
                 modal.modal('show');
             },
             error: function (error) {
@@ -157,6 +151,11 @@ $(document).ready(function(){
         $('#disponibilidadRecurso').val("");
         $('#cantidadRecurso').removeClass('is-invalid');
         $('#cantidadRecurso').next().text('');
+    });
+
+    $('#editarRecursoModal').on('hide.bs.modal', function (event) {
+        $('#cantidadRecursoE').removeClass('is-invalid');
+        $('#cantidadRecursoE').next().text('');
     });
 
     $('#recursoSelect').change(function () {
@@ -189,6 +188,7 @@ $(document).ready(function(){
     $('#agregarRecursoBtn').click(function () {
         var selectedRecurso = $('#recursoSelect').val();
         var cantidadRecurso = $('#cantidadRecurso').val();
+        var costoRecurso = $('#costoRecurso').val();
         // Verifica si se seleccionó un recurso
         if (selectedRecurso !== '') {
             // Realiza una solicitud Ajax para agregar un recurso
@@ -201,7 +201,8 @@ $(document).ready(function(){
                     id_proyecto: proyectoId,
                     id_actividad: actividadId,
                     id_recurso: selectedRecurso,
-                    cantidad: cantidadRecurso
+                    cantidad: cantidadRecurso,
+                    costo: costoRecurso
                 },
                 success: function (response) {
                     if (response.success) {
@@ -232,6 +233,50 @@ $(document).ready(function(){
                 }
             });
         }
+    });
+
+    $('#editarRecursoBtn').click(function () {
+        var id = $(this).data('id');
+        var cantidadRecursoE = $('#cantidadRecursoE').val();
+        var idRecurso = $('#nombreRecursoE').data('id');
+        $.ajax({
+            url: '/asignacionrecurso/'+id, // URL para asignar el recurso
+            method: 'PUT', // Utiliza el método POST para enviar datos al servidor
+            dataType: 'json',
+            data: {
+                _token: csrfToken, // Agrega el token CSRF aquí
+                id_actividad: actividadId,
+                cantidad: cantidadRecursoE,
+                id_recurso: idRecurso
+            },
+            success: function (response) {
+                if (response.success) {
+                    // Recarga el DataTable después de agregar el miembro
+                    $('#tableRecursosActividad').DataTable().ajax.reload();
+                    //limpiar campos
+                    // $('#cantidadRecurso').val('');
+                    // $('#costoRecurso').val("");
+                    // $('#disponibilidadRecurso').val("");
+                    // Cierra el modal después de agregar al miembro
+                    $('#editarRecursoModal').modal('hide');
+                    toastr.success('Se ha agregado un recurso a la actividad');
+                } else {
+                    console.log('Error al agregar el recurso:', response.message);
+                    toastr.error(response.message);
+                }
+            },
+            error: function (error) {
+                if (error.responseJSON!=undefined){
+                    if(error.responseJSON.errors.cantidad){
+                        $('#cantidadRecursoE').addClass('is-invalid');
+                        $('#cantidadRecursoE').next().text(error.responseJSON.errors.cantidad[0]);
+                    }
+                }else{
+                    toastr.error('Error al agregar el recurso');
+                    console.log(error);
+                }   
+            }
+        });
     });
 
     //Método para enviar la solicitud de eliminar
