@@ -123,11 +123,6 @@ class RecursoController extends Controller
         return redirect()->route('recursos.index')->with('success', 'Recurso editado con éxito');;
     }
 
-    public function RecursosDisponibles(){
-        $data = Recurso::where('disponibilidad', '>=', 1)->get();
-        return response()->json($data);
-    }
-
     public function getRecurso($id){
         $data = Recurso::find($id);
         return response()->json($data);

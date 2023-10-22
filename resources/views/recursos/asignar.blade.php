@@ -83,19 +83,19 @@
                 <form id="editarRecursoForm">
                     <div class="form-group">
                         <label for="nombre" class="text-secondary">Nombre:</label>
-                        <input type="text" class="form-control" id="nombreRecurso" readonly>
+                        <input type="text" class="form-control" id="nombreRecursoE" readonly>
                     </div>
                     <div class="form-group">
                         <label for="disponibilidad" class="text-secondary">Disponibilidad:</label>
-                        <input type="number" class="form-control" id="disponibilidadRecurso" readonly>
+                        <input type="number" class="form-control" id="disponibilidadRecursoE" readonly>
                     </div>
                     <div class="form-group">
                         <label for="costo" class="text-secondary">Costo:</label>
-                        <input type="number" class="form-control" id="costoRecurso" readonly>
+                        <input type="number" class="form-control" id="costoRecursoE" readonly>
                     </div>
                     <div class="form-group">
                         <label for="cantidad" class="text-secondary">Cantidad:*</label>
-                        <input type="number" class="form-control" id="cantidadRecurso" name="cantidadRecurso">
+                        <input type="number" class="form-control" id="cantidadRecursoE" name="cantidadRecurso">
                         <div class="invalid-feedback"></div>
                     </div>
                 </form>
