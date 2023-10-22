@@ -124,7 +124,7 @@ class RecursoController extends Controller
     }
 
     public function RecursosDisponibles(){
-        $data = Recurso::where('disponibilidad', 1)->get();
+        $data = Recurso::where('disponibilidad', '>=', 1)->get();
         return response()->json($data);
     }
 

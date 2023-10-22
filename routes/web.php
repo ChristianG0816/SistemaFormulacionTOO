@@ -77,6 +77,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('recursos', RecursoController::class);
     Route::post('asignacionrecurso/crear', [AsignacionRecursoController::class,'crearAsignacionRecurso']);
     Route::get('asignacionrecurso/list/{id}', [AsignacionRecursoController::class, 'list']);
+    Route::delete('asignacionrecurso/{id}', [AsignacionRecursoController::class, 'destroy']);
+    Route::get('asignacionrecurso/{id}/edit', [AsignacionRecursoController::class, 'edit']);
 
     //Rutas de actividades
     Route::get('actividades/{id}', [ActividadController::class, 'index'])->name('actividades.index');
