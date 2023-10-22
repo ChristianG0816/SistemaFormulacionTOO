@@ -27,6 +27,7 @@
 
 <div id="actividad-id" data-id="{{ $actividad->id }}"></div>
 <div id="csrf-token" data-token="{{ csrf_token() }}"></div>
+<div id="proyecto-id" data-id="{{ $actividad->id_proyecto}}"></div>
 
 <!-- Modal Agregar Recurso -->
 <div class="modal fade" id="agregarRecursoModal" tabindex="-1" role="dialog" aria-labelledby="agregarRecursoModalLabel" aria-hidden="true">
@@ -55,7 +56,8 @@
                     </div>
                     <div class="form-group">
                         <label for="cantidad" class="text-secondary">Cantidad:*</label>
-                        <input type="number" class="form-control" id="cantidadRecurso">
+                        <input type="number" class="form-control" id="cantidadRecurso" name="cantidadRecurso">
+                        <div class="invalid-feedback"></div>
                     </div>
                 </form>
             </div>
@@ -80,7 +82,7 @@
             <div class="modal-body">
                 <form id="editarRecursoForm">
                     <div class="form-group">
-                        <label for="Nombre" class="text-secondary">Nombre:</label>
+                        <label for="nombre" class="text-secondary">Nombre:</label>
                         <input type="text" class="form-control" id="nombreRecurso" readonly>
                     </div>
                     <div class="form-group">
@@ -93,7 +95,8 @@
                     </div>
                     <div class="form-group">
                         <label for="cantidad" class="text-secondary">Cantidad:*</label>
-                        <input type="number" class="form-control" id="cantidadRecurso">
+                        <input type="number" class="form-control" id="cantidadRecurso" name="cantidadRecurso">
+                        <div class="invalid-feedback"></div>
                     </div>
                 </form>
             </div>
