@@ -12,6 +12,7 @@ use App\Models\Proyecto;
 use App\Models\User;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Evento;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 
 class CalendarioController extends Controller
 {
@@ -162,9 +163,63 @@ class CalendarioController extends Controller
 
 public function showEvento($idProyecto){
     
-    // Obtener los eventos relacionados con el proyecto
-    $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+    // Obtener el usuario logueado
+    $usuarioLogueado = Auth::user();
+
+    // Obtener el mano de obra del usuario logueado
+    $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
+    // Obtener el id del usuario logueado - En este caso del supervisor
+    $Supervisor = Proyecto::where('id_dueno', $usuarioLogueado->id)->first();
+    // Obtener el id del usuario logueado - En este caso el cliente
+    $cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+    // Obtener el rol de gerente
+    $Gerente = $usuarioLogueado->hasRole('Gerente');
+
+    //Queda pendiente elaborar el de la mano de obra
+    if ($manoObra) {
+
+        if($idProyecto == 0){
+            $mano = ManoObra::where(function ($query) use ($usuarioLogueado) {
+                $query->where('id_usuario', $usuarioLogueado->id);
+            })->pluck('id');
     
+            //Aqui si pertenece a los dos proyectos me los va a traer ambos
+            $equipo = EquipoTrabajo::where(function ($query) use ($mano) {
+                $query->where('id_mano_obra', $mano);
+            })->pluck('id_proyecto');
+    
+            $eventos = Evento::whereIn('id_proyecto', $equipo)->get();
+        }else{
+            $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+        }
+    }
+
+    elseif($Supervisor || $cliente){
+        if ($idProyecto == 0) {
+            // Si idProyecto es igual a 0, se obtienen todas los eventos
+            // relacionadas con proyectos del usuario.
+
+            $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
+                $query->where('id_dueno', $usuarioLogueado->id)
+                    ->orWhere('id_cliente', $usuarioLogueado->id);
+            })->pluck('id');
+
+            $eventos = Evento::whereIn('id_proyecto', $proyectosUsuario)->get();
+        } else {
+            // Si idProyecto no es igual a 0, se obtienen los eventos 
+            // relacionadas con el proyecto específico.
+            $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+        } 
+    }elseif ($Gerente){
+        if ($idProyecto == 0) {
+            $eventos = Evento::all();
+        } else {
+            // Si idProyecto no es igual a 0, se obtienen los eventos 
+            // relacionadas con el proyecto específico.
+            $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+        } 
+    }
+
     $eventosData = [];
     foreach ($eventos as $evento) {
         $eventoData = [
