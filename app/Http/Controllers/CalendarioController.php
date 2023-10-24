@@ -162,8 +162,13 @@ class CalendarioController extends Controller
 
 public function showEvento($idProyecto){
     
-    // Obtener los eventos relacionados con el proyecto
-    $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+      // Obtener los eventos relacionados con el proyecto si $idProyecto no es igual a 0
+      if ($idProyecto != 0) {
+        $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+    } else {
+        // Si $idProyecto es igual a 0, obtener todos los eventos sin filtrar por proyecto
+        $eventos = Evento::all();
+    }
     
     $eventosData = [];
     foreach ($eventos as $evento) {

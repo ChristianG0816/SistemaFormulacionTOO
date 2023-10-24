@@ -30,13 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     formularioEvento.nombre.value = respuesta.data.nombre;
                     formularioEvento.descripcion.value = respuesta.data.descripcion;
                     formularioEvento.direccion.value = respuesta.data.direccion;
-                    
-                    // Obtenemos el valor seleccionado en el select
-                    var proyectoSelect = document.getElementById('proyectoSelect');
-                    var proyectoId = proyectoSelect.value;
-                    formularioEvento.proyecto.value = proyectoId;
-                    
-
+                    formularioEvento.proyecto.value = respuesta.data.id_proyecto;
                     formularioEvento.fecha_inicio.value = respuesta.data.fecha_inicio;
                     formularioEvento.fecha_fin.value = respuesta.data.fecha_fin;
                     formularioEvento.hora_inicio.value = respuesta.data.hora_inicio;
