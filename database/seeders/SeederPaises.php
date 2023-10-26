@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Nacionalidad;
+use App\Models\Pais;
 use Illuminate\Support\Facades\DB;
 
-class SeederNacionalidades extends Seeder {
+class SeederPaises extends Seeder {
 	
 	public function run() 
 	{
@@ -16,9 +16,9 @@ class SeederNacionalidades extends Seeder {
          * @return void
          */
         //eliminar datos
-        Nacionalidad::truncate();
-        DB::statement('ALTER SEQUENCE nacionalidad_id_seq RESTART WITH 1');
-		$nacionalidades = [
+        Pais::truncate();
+        DB::statement('ALTER SEQUENCE pais_id_seq RESTART WITH 1');
+		$paises = [
             ['code' => 'CA', 'name' => 'Canada'],
 			['code' => 'US', 'name' => 'United States'],
 			['code' => 'AF', 'name' => 'Afghanistan'],
@@ -263,8 +263,8 @@ class SeederNacionalidades extends Seeder {
 			['code' => 'ZW', 'name' => 'Zimbabwe'],
         ];
 
-		foreach ($nacionalidades as $nacionalidad) {
-            Nacionalidad::create($nacionalidad);
+		foreach ($paises as $pais) {
+            Pais::create($pais);
         }
 	}
 }

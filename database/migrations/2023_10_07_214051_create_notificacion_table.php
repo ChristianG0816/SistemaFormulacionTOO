@@ -19,7 +19,7 @@ class CreateNotificacionTable extends Migration
             $table->foreignId('id_tipo_notificacion')->constrained('tipo_notificacion')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_proyecto')->nullable()->constrained('proyecto')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_evento')->nullable()->constrained('evento')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignId('id_actividad')->nullable()->constrained('actividad')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('id_paquete_actividades')->nullable()->constrained('paquete_actividades')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_usuario')->constrained('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps(); // created_at, updated_at
         });

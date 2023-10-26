@@ -32,3 +32,4 @@ class CreateEquipoTrabajoTable extends Migration
         Schema::dropIfExists('equipo_trabajo'); // Elimina la tabla si existe
     }
 }
+
