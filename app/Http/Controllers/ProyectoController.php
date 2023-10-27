@@ -33,6 +33,7 @@ class ProyectoController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $proyectos = null;
         if ($user->hasRole('Supervisor')) {
             $proyectos = Proyecto::where('id_dueno', $user->id)->get();
         } elseif ($user->hasRole('Cliente')) {

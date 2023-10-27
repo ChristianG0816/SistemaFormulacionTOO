@@ -10,7 +10,7 @@ use App\Models\Actividad;
 use App\Models\Proyecto;
 use App\Models\EstadoActividad;
 use App\Models\Comentario;
-use App\Models\Tarea;
+use App\Models\PaqueteActividades;
 use App\Models\EquipoTrabajo;
 use App\Models\Notificacion;
 use App\Models\TipoNotificacion;
@@ -34,7 +34,7 @@ class TareaController extends Controller
 
     public function data($id)
     {
-        $data = Tarea::where('id_actividad', $id)->get();
+        $data = Actividad::where('id_paquete_actividades', $id)->get();
         return datatables()->of($data)->toJson();
     }
 
@@ -61,52 +61,52 @@ class TareaController extends Controller
         $cantidad_tareas_sin_iniciar=0;
         $cantidad_tareas_iniciadas=0;
         if(!empty($input['nombre-tarea'])){
-            $tarea = Tarea::create([
-                'id_actividad' => $request->input('id-actividad-tarea'),
+            $tarea = Actividad::create([
+                'id_paquete_actividades' => $request->input('id-actividad-tarea'),
                 'nombre'=>$request->input('nombre-tarea'),
-                'finalizada'=>$request->input('finalizada-tarea')
+                'id_estado_actividad'=>$request->input('finalizada-tarea')
             ]);
-            if($tarea->finalizada != null){
-                if($tarea->finalizada){
+            if($tarea->estado_actividad->nombre != 'Pendiente'){
+                if($tarea->estado_actividad->nombre ==='Finalizada'){
                     $this->envio_notificacion_tarea(13, $tarea);
                 }else{
                     $this->envio_notificacion_tarea(12, $tarea);
                 }
             }
-            $tareas = Tarea::where('id_actividad', $tarea->id_actividad)->get();
+            $tareas = Actividad::where('id_paquete_actividades', $tarea->paquete_actividades->id)->get();
             foreach ($tareas as $tarea) {
-                if ($tarea->finalizada === null){
+                if ($tarea->estado_actividad->nombre === 'Pendiente'){
                     $cantidad_tareas_sin_iniciar++;
-                }else if ($tarea->finalizada===true) {
+                }else if ($tarea->estado_actividad->nombre ==='Finalizada') {
                     $cantidad_tareas_completadas++;
                 }else{
                     $cantidad_tareas_iniciadas++;
                 }
             }
             if ($cantidad_tareas_completadas>0 && $cantidad_tareas_sin_iniciar==0 &&  $cantidad_tareas_iniciadas==0) {
-                $tareaActualizada = Actividad::find($tarea->id_actividad);
+                $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
                 $estadoActividad = EstadoActividad::where('nombre', 'Finalizada')->first();
                 if ($estadoActividad) {
                     $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                     $tareaActualizada->save();
                 }
-                $this->envio_notificacion_actividad(10, $tarea->actividad);
+                $this->envio_notificacion_actividad(10, $tarea->paquete_actividades);
             }else if($cantidad_tareas_sin_iniciar>=0 && $cantidad_tareas_iniciadas==0 && $cantidad_tareas_completadas==0 ){
-                $tareaActualizada = Actividad::find($tarea->id_actividad);
+                $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
                 $estadoActividad = EstadoActividad::where('nombre', 'Pendiente')->first();
                 if ($estadoActividad) {
                     $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                     $tareaActualizada->save();
                 }
-                $this->envio_notificacion_actividad(8, $tarea->actividad);
+                $this->envio_notificacion_actividad(8, $tarea->paquete_actividades);
             } else{
-                $tareaActualizada = Actividad::find($tarea->id_actividad);
+                $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
                 $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
                 if ($estadoActividad) {
                     $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                     $tareaActualizada->save();
                 }
-                $this->envio_notificacion_actividad(9, $tarea->actividad);
+                $this->envio_notificacion_actividad(9, $tarea->paquete_actividades);
             }
         }
              
@@ -130,7 +130,7 @@ class TareaController extends Controller
      */
     public function edit( $id)
     {
-        $tarea = Tarea::find($id);
+        $tarea = Actividad::find($id);
         return response()->json($tarea);
     }
 
@@ -144,57 +144,57 @@ class TareaController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
-        $tarea = Tarea::find($id);
+        $tarea = Actividad::find($id);
         $cantidad_tareas_completadas=0;
         $cantidad_tareas_sin_iniciar=0;
         $cantidad_tareas_iniciadas=0;
         if(!empty($input['nombre-tarea-editar'])){
-            $tarea->id_actividad = $request->input('id-actividad-tarea-editar');
+            $tarea->id_paquete_actividades = $request->input('id-actividad-tarea-editar');
             $tarea->nombre = $request->input('nombre-tarea-editar');
-            $tarea->finalizada = $request->input('finalizada-tarea-editar');
+            $tarea->id_estado_actividad = $request->input('finalizada-tarea-editar');
             $tarea->save();
         }
-        $tareas = Tarea::where('id_actividad', $tarea->id_actividad)->get();
+        if($tarea->estado_actividad->nombre != 'Pendiente'){
+            if($tarea->estado_actividad->nombre ==='Finalizada'){
+                $this->envio_notificacion_tarea(13, $tarea);
+            }else{
+                $this->envio_notificacion_tarea(12, $tarea);
+            }
+        }
+        $tareas = Actividad::where('id_paquete_actividades', $tarea->paquete_actividades->id)->get();
         foreach ($tareas as $tarea) {
-            if ($tarea->finalizada === null){
+            if ($tarea->estado_actividad->nombre === 'Pendiente'){
                 $cantidad_tareas_sin_iniciar++;
-            }else if ($tarea->finalizada===true) {
+            }else if ($tarea->estado_actividad->nombre ==='Finalizada') {
                 $cantidad_tareas_completadas++;
             }else{
                 $cantidad_tareas_iniciadas++;
             }
         }
         if ($cantidad_tareas_completadas>0 && $cantidad_tareas_sin_iniciar==0 &&  $cantidad_tareas_iniciadas==0) {
-            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
             $estadoActividad = EstadoActividad::where('nombre', 'Finalizada')->first();
             if ($estadoActividad) {
                 $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                 $tareaActualizada->save();
             }
-            $this->envio_notificacion_actividad(10, $tarea->actividad);
+            $this->envio_notificacion_actividad(10, $tarea->paquete_actividades);
         }else if($cantidad_tareas_sin_iniciar>=0 && $cantidad_tareas_iniciadas==0 && $cantidad_tareas_completadas==0 ){
-            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
             $estadoActividad = EstadoActividad::where('nombre', 'Pendiente')->first();
             if ($estadoActividad) {
                 $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                 $tareaActualizada->save();
             }
-            $this->envio_notificacion_actividad(8, $tarea->actividad);
+            $this->envio_notificacion_actividad(8, $tarea->paquete_actividades);
         } else{
-            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
             $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
             if ($estadoActividad) {
                 $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                 $tareaActualizada->save();
             }
-            $this->envio_notificacion_actividad(9, $tarea->actividad);
-        }
-        if($tarea->finalizada != null){
-            if($tarea->finalizada){
-                $this->envio_notificacion_tarea(13, $tarea);
-            }else{
-                $this->envio_notificacion_tarea(12, $tarea);
-            }
+            $this->envio_notificacion_actividad(9, $tarea->paquete_actividades);
         }
     }
 
@@ -206,45 +206,45 @@ class TareaController extends Controller
      */
     public function destroy($id)
     {
-        $tarea = Tarea::find($id);
+        $tarea = Actividad::find($id);
         $tarea->delete();
         $cantidad_tareas_completadas=0;
         $cantidad_tareas_sin_iniciar=0;
         $cantidad_tareas_iniciadas=0;
-        $tareas = Tarea::where('id_actividad', $tarea->id_actividad)->get();
+        $tareas = Actividad::where('id_paquete_actividades', $tarea->paquete_actividades->id)->get();
         foreach ($tareas as $tarea) {
-            if ($tarea->finalizada === null){
+            if ($tarea->estado_actividad->nombre === 'Pendiente'){
                 $cantidad_tareas_sin_iniciar++;
-            }else if ($tarea->finalizada===true) {
+            }else if ($tarea->estado_actividad->nombre==='Finalizada') {
                 $cantidad_tareas_completadas++;
             }else{
                 $cantidad_tareas_iniciadas++;
             }
         }
         if ($cantidad_tareas_completadas>0 && $cantidad_tareas_sin_iniciar==0 &&  $cantidad_tareas_iniciadas==0) {
-            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
             $estadoActividad = EstadoActividad::where('nombre', 'Finalizada')->first();
             if ($estadoActividad) {
                 $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                 $tareaActualizada->save();
             }
-            $this->envio_notificacion_actividad(10, $tarea->actividad);
+            $this->envio_notificacion_actividad(10, $tarea->paquete_actividades);
         }else if($cantidad_tareas_sin_iniciar>=0 && $cantidad_tareas_iniciadas==0 && $cantidad_tareas_completadas==0 ){
-            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
             $estadoActividad = EstadoActividad::where('nombre', 'Pendiente')->first();
             if ($estadoActividad) {
                 $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                 $tareaActualizada->save();
             }
-            $this->envio_notificacion_actividad(8, $tarea->actividad);
+            $this->envio_notificacion_actividad(8, $tarea->paquete_actividades);
         } else{
-            $tareaActualizada = Actividad::find($tarea->id_actividad);
+            $tareaActualizada = PaqueteActividades::find($tarea->paquete_actividades->id);
             $estadoActividad = EstadoActividad::where('nombre', 'En Proceso')->first();
             if ($estadoActividad) {
                 $tareaActualizada->id_estado_actividad = $estadoActividad->id;
                 $tareaActualizada->save();
             }
-            $this->envio_notificacion_actividad(9, $tarea->actividad);
+            $this->envio_notificacion_actividad(9, $tarea->paquete_actividades);
         } 
     }
 
@@ -252,19 +252,19 @@ class TareaController extends Controller
     {
         //Envío de notificacion a supervisor
         $notificacion = new Notificacion();
-        $notificacion->id_usuario = $tarea->actividad->proyecto->id_dueno;
+        $notificacion->id_usuario = $tarea->paquete_actividades->proyecto->id_dueno;
         $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
         $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
         if ($tipoNotificacion) {
-            $descripcion = str_replace(['{{nombre_tarea}}','{{nombre}}', '{{nombre_proyecto}}'], [$tarea->nombre, $tarea->actividad->nombre, $tarea->actividad->proyecto->nombre], $tipoNotificacion->descripcion);
+            $descripcion = str_replace(['{{nombre_tarea}}','{{nombre}}', '{{nombre_proyecto}}'], [$tarea->nombre, $tarea->paquete_actividades->nombre, $tarea->paquete_actividades->proyecto->nombre], $tipoNotificacion->descripcion);
             $notificacion->descripcion = $descripcion;
-            $notificacion->ruta = str_replace('{{id}}', $tarea->actividad->id, $tipoNotificacion->ruta);
+            $notificacion->ruta = str_replace('{{id}}', $tarea->paquete_actividades->id, $tipoNotificacion->ruta);
         }
-        $notificacion->id_actividad = $tarea->actividad->id;
+        $notificacion->id_paquete_actividades = $tarea->paquete_actividades->id;
         $notificacion->leida = false;
         $notificacion->save();
         //Envío de notificacion a equipo de trabajo
-        $EquipoTrabajo = EquipoTrabajo::where("id_proyecto",$tarea->actividad->proyecto->id);
+        $EquipoTrabajo = EquipoTrabajo::where("id_proyecto",$tarea->paquete_actividades->proyecto->id);
         foreach ($EquipoTrabajo as $miembro) {
             // Crear notificación para cada miembro
             $notificacion = new Notificacion();
@@ -272,12 +272,12 @@ class TareaController extends Controller
             $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
             $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
             if ($tipoNotificacion) {
-                $descripcion = str_replace(['{{nombre_tarea}}','{{nombre}}', '{{nombre_proyecto}}'], [$tarea->nombre, $tarea->actividad->nombre, $tarea->actividad->proyecto->nombre], $tipoNotificacion->descripcion);
+                $descripcion = str_replace(['{{nombre_tarea}}','{{nombre}}', '{{nombre_proyecto}}'], [$tarea->nombre, $tarea->paquete_actividades->nombre, $tarea->paquete_actividades->proyecto->nombre], $tipoNotificacion->descripcion);
                 $notificacion->descripcion = $descripcion;
-                $notificacion->ruta = str_replace('{{id}}', $tarea->actividad->id, $tipoNotificacion->ruta);
+                $notificacion->ruta = str_replace('{{id}}', $tarea->paquete_actividades->id, $tipoNotificacion->ruta);
             }
-            $notificacion->id_actividad = $tarea->actividad->id;
-            $notificacion->id_proyecto = $tarea->actividad->proyecto->id;
+            $notificacion->id_paquete_actividades = $tarea->paquete_actividades->id;
+            $notificacion->id_proyecto = $tarea->paquete_actividades->proyecto->id;
             $notificacion->leida = false;
             $notificacion->save();
         }
@@ -295,7 +295,7 @@ class TareaController extends Controller
             $notificacion->descripcion = $descripcion;
             $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
         }
-        $notificacion->id_actividad = $actividad->id;
+        $notificacion->id_paquete_actividades = $actividad->id;
         $notificacion->leida = false;
         $notificacion->save();
         //Envío de notificacion al cliente
@@ -308,7 +308,7 @@ class TareaController extends Controller
             $notificacion->descripcion = $descripcion;
             $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
         }
-        $notificacion->id_actividad = $actividad->id;
+        $notificacion->id_paquete_actividades = $actividad->id;
         $notificacion->leida = false;
         $notificacion->save();
         //Envío de notificacion a equipo de trabajo
@@ -324,7 +324,7 @@ class TareaController extends Controller
                 $notificacion->descripcion = $descripcion;
                 $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
             }
-            $notificacion->id_actividad = $actividad->id;
+            $notificacion->id_paquete_actividades = $actividad->id;
             $notificacion->id_proyecto = $actividad->proyecto->id;
             $notificacion->leida = false;
             $notificacion->save();
