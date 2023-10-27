@@ -153,7 +153,7 @@ class SeederDatosPrueba extends Seeder
         ]);
 
         Persona::create([
-            'tipo_documento' => 'DUI',
+            'tipo_documento' => 'Documento de Identidad',
             'numero_documento' => '123546678',
             'id_pais' => 65,
             'id_departamento' => 1,
@@ -161,7 +161,7 @@ class SeederDatosPrueba extends Seeder
             'telefono' => '64281475',
             'profesion' => 'Ingeniero',
             'estado_civil' => 'Casado',
-            'sexo' => 'M',
+            'sexo' => 'Masculino',
             'fecha_nacimiento' => '2000/12/08',
         ]);
 
@@ -172,7 +172,7 @@ class SeederDatosPrueba extends Seeder
         ]);
 
         Persona::create([
-            'tipo_documento' => 'DUI',
+            'tipo_documento' => 'Documento de Identidad',
             'numero_documento' => '163546689',
             'id_pais' => 65,
             'id_departamento' => 1,
@@ -180,7 +180,7 @@ class SeederDatosPrueba extends Seeder
             'telefono' => '64281475',
             'profesion' => 'Tester',
             'estado_civil' => 'Casado',
-            'sexo' => 'F',
+            'sexo' => 'Femenino',
             'fecha_nacimiento' => '2000/10/24',
         ]);
 
@@ -191,7 +191,7 @@ class SeederDatosPrueba extends Seeder
         ]);
 
         Persona::create([
-            'tipo_documento' => 'DUI',
+            'tipo_documento' => 'Documento de Identidad',
             'numero_documento' => '163546658',
             'id_pais' => 4,
             'id_departamento' => null,
@@ -199,7 +199,7 @@ class SeederDatosPrueba extends Seeder
             'telefono' => '64281475',
             'profesion' => 'Ayudante',
             'estado_civil' => 'Casado',
-            'sexo' => 'F',
+            'sexo' => 'Femenino',
             'fecha_nacimiento' => '2000/08/24',
         ]);
 

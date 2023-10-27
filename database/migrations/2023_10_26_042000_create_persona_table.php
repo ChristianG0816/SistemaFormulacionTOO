@@ -15,7 +15,7 @@ class CreatePersonaTable extends Migration
     {
         Schema::create('persona', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('tipo_documento', 20);
+            $table->string('tipo_documento', 50);
             $table->string('numero_documento', 20);
             $table->foreignId('id_pais')->constrained('pais')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_departamento')->nullable()->constrained('departamento')->onDelete('restrict')->onUpdate('cascade');

@@ -12,9 +12,13 @@ class Actividad extends Model
     protected $fillable = [
         'nombre',
         'id_paquete_actividades',
-        'finalizada'
+        'id_estado_actividad'
     ];
     public function paquete_actividades(){
         return $this->belongsTo(PaqueteActividades::class, 'id_paquete_actividades');
+    }
+
+    public function estado_actividad(){
+        return $this->belongsTo(EstadoActividad::class, 'id_estado_actividad');
     }
 }

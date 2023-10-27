@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\ManoObra;
-use App\Models\Nacionalidad;
+use App\Models\Pais;
+use App\Models\Departamento;
+use App\Models\Municipio;
+use App\Models\Persona;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +33,7 @@ class ManoObraController extends Controller
 
     public function data()
     {
-        $data = ManoObra::with('usuario')->get();
+        $data = ManoObra::with('usuario')->with('persona')->get();
         return datatables()->of($data)->toJson();
     }
 
@@ -41,7 +44,9 @@ class ManoObraController extends Controller
      */
     public function create()
     {
-        $nacionalidades = Nacionalidad::pluck('name', 'id')->all();
+        $paises = Pais::pluck('name', 'id')->all();
+        $departamentos = Departamento::pluck('nombre', 'id')->all();
+        $municipios = Municipio::all();
         $sexos = [
             'Masculino' => 'Masculino',
             'Femenino' => 'Femenino',
@@ -53,7 +58,11 @@ class ManoObraController extends Controller
             'Viudo(a)' => 'Viudo(a)',
             'Conviviente' => 'Conviviente',
         ];
-        return view('miembros.crear', compact('sexos', 'estado_civil','nacionalidades'));
+        $tipos_documentos = [
+            'Documento de Identidad' => 'Documento de Identidad',
+            'Pasaporte' => 'Pasaporte',
+        ];
+        return view('miembros.crear', compact('sexos', 'estado_civil','paises','departamentos','municipios','tipos_documentos'));
     }
 
     /**
@@ -68,11 +77,11 @@ class ManoObraController extends Controller
             'name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'dui'=>['required', 'regex:/^\d{9}$/','unique:mano_obra,dui'],
-            'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'id_nacionalidad'=>'required',
-            'pasaporte'=>['regex:/^\d{3}(?:\d{1,17})?$/'],
+            'tipo_documento'=>'required',
+            'numero_documento'=>['required', 'regex:/^\d{3}(?:\d{1,20})?$/'],
+            'id_pais'=>'required',
+            'departamento' => 'required_if:id_pais,65',
+            'municipio' => 'required_if:id_pais,65',
             'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
             'profesion'=>'required',
             'estado_civil'=>'required',
@@ -91,18 +100,21 @@ class ManoObraController extends Controller
             'password'=>Hash::make($password),
         ]);
         $user->assignRole(4);
-        $manoObra = ManoObra::create([
-            'id_usuario' => $user->id,
-            'dui'=>$request->input('dui'),
-            'afp'=>$request->input('afp'),
-            'isss'=>$request->input('isss'),
-            'id_nacionalidad'=>$request->input('id_nacionalidad'),
-            'pasaporte'=>$request->input('pasaporte'),
+        $persona = Persona::create([
+            'tipo_documento'=>$request->input('tipo_documento'),
+            'numero_documento'=>$request->input('numero_documento'),
+            'id_pais'=>$request->input('id_pais'),
+            'id_departamento'=>$request->input('departamento'),
+            'id_municipio'=>$request->input('municipio'),
             'telefono'=>$request->input('telefono'),
             'profesion'=>$request->input('profesion'),
             'estado_civil'=>$request->input('estado_civil'),
             'sexo'=>$request->input('sexo'),
             'fecha_nacimiento'=>$request->input('fecha_nacimiento'),
+        ]);
+        $manoObra = ManoObra::create([
+            'id_usuario' => $user->id,
+            'id_persona' => $persona->id,
             'costo_servicio'=>$request->input('costo_servicio')
         ]);
         \Mail::to($user->email)->send(new NuevoUsuarioCreado($user->name." ".$user->last_name, $user->email, $password));
@@ -117,27 +129,30 @@ class ManoObraController extends Controller
      */
     public function show($id)
     {
-        $manoObra = ManoObra::find($id);
-        $user = User::find($manoObra->id_usuario);
-        $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
-
+        $manoObra = ManoObra::with('usuario')->with('persona')->find($id);
+        if ($manoObra->persona->pais->name !== "El Salvador") {
+            $departamento = null;
+            $municipio = null;
+        } else {
+            $departamento = $manoObra->persona->departamento->nombre;
+            $municipio = $manoObra->persona->municipio->nombre;
+        }
         $manoObraUser = (object) ([
             'id_usuario' => $manoObra->usuario->id,
             'name' => $manoObra->usuario->name,
             'last_name' => $manoObra->usuario->last_name,
             'email' => $manoObra->usuario->email,
             'id' => $manoObra->id,
-            'dui'=> $manoObra->dui,
-            'afp'=> $manoObra->afp,
-            'isss'=> $manoObra->isss,
-            'nacionalidad'=> $manoObra->nacionalidad->name,
-            'pasaporte'=> $manoObra->pasaporte,
-            'telefono' => $manoObra->telefono,
-            'profesion'=> $manoObra->profesion,
-            'estado_civil'=> $manoObra->estado_civil,
-            'sexo'=> $manoObra->sexo,
-            'fecha_nacimiento'=> $manoObra->fecha_nacimiento,
+            'tipo_documento'=> $manoObra->persona->tipo_documento,
+            'numero_documento'=> $manoObra->persona->numero_documento,
+            'pais'=> $manoObra->persona->pais->name,
+            'departamento'=> $departamento,
+            'municipio'=> $municipio,
+            'telefono' => $manoObra->persona->telefono,
+            'profesion'=> $manoObra->persona->profesion,
+            'estado_civil'=> $manoObra->persona->estado_civil,
+            'sexo'=> $manoObra->persona->sexo,
+            'fecha_nacimiento'=> $manoObra->persona->fecha_nacimiento,
             'costo_servicio'=> $manoObra->costo_servicio
         ]);
         return view('miembros.mostrar', compact('manoObraUser'));
@@ -152,10 +167,9 @@ class ManoObraController extends Controller
     public function edit($id)
     {
         $manoObra = ManoObra::find($id);
-        $nacionalidades = Nacionalidad::pluck('name', 'id')->all();
-        $user = User::find($manoObra->id_usuario);
-        $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
+        $paises = Pais::pluck('name', 'id')->all();
+        $departamentos = Departamento::pluck('nombre', 'id')->all();
+        $municipios = Municipio::all();
         $sexos = [
             'Masculino' => 'Masculino',
             'Femenino' => 'Femenino',
@@ -167,24 +181,36 @@ class ManoObraController extends Controller
             'Viudo(a)' => 'Viudo(a)',
             'Conviviente' => 'Conviviente',
         ];
+        $tipos_documentos = [
+            'Documento de Identidad' => 'Documento de Identidad',
+            'Pasaporte' => 'Pasaporte',
+        ];
+        if ($manoObra->persona->pais->name !== "El Salvador") {
+            $departamento = null;
+            $municipio = null;
+        } else {
+            $departamento = $manoObra->persona->id_departamento;
+            $municipio = $manoObra->persona->id_municipio;
+        }
         $manoObraUser = (object) ([
             'id_usuario' => $manoObra->usuario->id,
             'name' => $manoObra->usuario->name,
             'last_name' => $manoObra->usuario->last_name,
+            'email' => $manoObra->usuario->email,
             'id' => $manoObra->id,
-            'dui'=> $manoObra->dui,
-            'afp'=> $manoObra->afp,
-            'isss'=> $manoObra->isss,
-            'id_nacionalidad'=> $manoObra->nacionalidad->id,
-            'pasaporte'=> $manoObra->pasaporte,
-            'telefono' => $manoObra->telefono,
-            'profesion'=> $manoObra->profesion,
-            'estado_civil'=> $manoObra->estado_civil,
-            'sexo'=> $manoObra->sexo,
-            'fecha_nacimiento'=> $manoObra->fecha_nacimiento,
+            'tipo_documento'=> $manoObra->persona->tipo_documento,
+            'numero_documento'=> $manoObra->persona->numero_documento,
+            'id_pais'=> $manoObra->persona->id_pais,
+            'id_departamento'=> $departamento,
+            'id_municipio'=> $municipio,
+            'telefono' => $manoObra->persona->telefono,
+            'profesion'=> $manoObra->persona->profesion,
+            'estado_civil'=> $manoObra->persona->estado_civil,
+            'sexo'=> $manoObra->persona->sexo,
+            'fecha_nacimiento'=> $manoObra->persona->fecha_nacimiento,
             'costo_servicio'=> $manoObra->costo_servicio
         ]);
-        return view('miembros.editar', compact('manoObraUser', 'sexos', 'estado_civil','nacionalidades'));
+        return view('miembros.editar', compact('manoObraUser', 'sexos', 'estado_civil','paises','departamentos','municipios','tipos_documentos'));
     }
 
     /**
@@ -198,14 +224,15 @@ class ManoObraController extends Controller
     {
         $manoObra = ManoObra::find($id);
         $user = User::find($manoObra->id_usuario);
+        $persona = Persona::find($manoObra->id_persona);
         $this->validate($request, [
             'name' => 'required',
             'last_name' => 'required',
-            'dui'=>['required', 'regex:/^\d{9}$/'],
-            'afp'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'isss'=>['required', 'regex:/^\d{3}(?:\d{1,17})?$/'],
-            'id_nacionalidad'=>'required',
-            'pasaporte'=>['regex:/^\d{3}(?:\d{1,17})?$/'],
+            'tipo_documento'=>'required',
+            'numero_documento'=>['required', 'regex:/^\d{3}(?:\d{1,20})?$/'],
+            'id_pais'=>'required',
+            'departamento' => 'required_if:id_pais,65',
+            'municipio' => 'required_if:id_pais,65',
             'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
             'profesion'=>'required',
             'estado_civil'=>'required',
@@ -213,26 +240,27 @@ class ManoObraController extends Controller
             'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
             'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
-        
-        $manoObra->update([
-            'id_usuario' => $user->id,
-            'dui'=>$request->input('dui'),
-            'afp'=>$request->input('afp'),
-            'isss'=>$request->input('isss'),
-            'id_nacionalidad'=>$request->input('id_nacionalidad'),
-            'pasaporte'=>$request->input('pasaporte'),
+        $user->update([
+            'name'=>$request->input('name'),
+            'last_name'=>$request->input('last_name'),
+        ]);
+        $persona->update([
+            'tipo_documento'=>$request->input('tipo_documento'),
+            'numero_documento'=>$request->input('numero_documento'),
+            'id_pais'=>$request->input('id_pais'),
+            'id_departamento'=>$request->input('departamento'),
+            'id_municipio'=>$request->input('municipio'),
             'telefono'=>$request->input('telefono'),
             'profesion'=>$request->input('profesion'),
             'estado_civil'=>$request->input('estado_civil'),
             'sexo'=>$request->input('sexo'),
             'fecha_nacimiento'=>$request->input('fecha_nacimiento'),
+        ]);
+        $manoObra->update([
+            'id_usuario' => $user->id,
+            'id_persona' => $persona->id,
             'costo_servicio'=>$request->input('costo_servicio')
         ]);
-        $user->update([
-            'name' => $request->input('name'),
-            'last_name'=>$request->input('last_name')
-        ]);
-
         $user->assignRole($request->input('roles'));
         return redirect()->route('miembros.index')->with('success', 'Mano obra actualizada con éxito');
     }
@@ -248,5 +276,6 @@ class ManoObraController extends Controller
         $manoObra = ManoObra::find($id);
         ManoObra::find($id)->delete();
         User::find($manoObra->id_usuario)->delete();
+        Persona::find($manoObra->id_persona)->delete();
     }
 }

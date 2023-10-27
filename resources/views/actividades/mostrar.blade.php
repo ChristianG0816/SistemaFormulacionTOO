@@ -1,7 +1,7 @@
 @extends('adminlte::page')
-@section('title', 'Actividad')
+@section('title', 'Paquete Actividades')
 @section('content_header')
-<h1 class="text-center">Actividad</h1>
+<h1 class="text-center">Paquete de Trabajo</h1>
 @stop
 @section('content')
 @if ($errors->any())
@@ -162,7 +162,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Agregar Tarea a la Actividad</h5>
+                <h5 class="modal-title">Agregar Actividad</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -176,7 +176,7 @@
                 </div>
                 <div class="form-group">
                     <label for="finalizada" class="text-secondary">Selecciona el estado:*</label>
-                    {!! Form::select('finalizada-tarea', $estadosTarea, null, ['id' => 'finalizada-tarea', 'class' => 'form-control']) !!}
+                    {!! Form::select('finalizada-tarea', $estadosActividad, null, ['id' => 'finalizada-tarea', 'class' => 'form-control']) !!}
                 </div>
                 
                 {!! Form::close() !!}
@@ -193,7 +193,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Editar Tarea de la Actividad</h5>
+                <h5 class="modal-title">Editar Actividad</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -208,7 +208,7 @@
 
                 <div class="form-group">
                     <label for="finalizada" class="text-secondary">Selecciona el estado:*</label>
-                    {!! Form::select('finalizada-tarea-editar', $estadosTarea, null, ['id' => 'finalizada-tarea-editar', 'class' => 'form-control']) !!}
+                    {!! Form::select('finalizada-tarea-editar', $estadosActividad, null, ['id' => 'finalizada-tarea-editar', 'class' => 'form-control']) !!}
                 </div>
                 {!! Form::close() !!}
             </div>

@@ -11,7 +11,7 @@ class Municipio extends Model
     protected $table = 'municipio';
     protected $fillable = [
         'id_departamento',
-        'name'
+        'nombre'
     ];
 
     public function departamento()

@@ -16,7 +16,7 @@ class MiembroActividadController extends Controller
         // Convertir $proyectoId a un entero
         $actividadId = (int)$actividadId;
 
-        $data = MiembroActividad::where('id_actividad', $actividadId)
+        $data = MiembroActividad::where('id_paquete_actividades', $actividadId)
         ->with(['equipo_trabajo.mano_obra'])
         ->with(['equipo_trabajo.mano_obra.usuario'])
         ->get();
@@ -59,7 +59,7 @@ class MiembroActividadController extends Controller
         // Obtener los registros de EquipoTrabajo que no están asociados a la actividad y que pertenecen al proyecto
         $miembrosNoAsignados = EquipoTrabajo::where('id_proyecto', $proyectoId)
         ->whereDoesntHave('miembros', function ($query) use ($actividadId) {
-            $query->where('id_actividad', $actividadId);
+            $query->where('id_paquete_actividades', $actividadId);
         })
         ->get();
 
@@ -85,13 +85,13 @@ class MiembroActividadController extends Controller
     {
         try {
         $data = $request->all();
-        if (!empty($data['id_actividad']) && !empty($data['id_equipo_trabajo'])) {
+        if (!empty($data['id_paquete_actividades']) && !empty($data['id_equipo_trabajo'])) {
             $id_actividad = intval($data['id_actividad']);
             $id_equipo_trabajo = intval($data['id_equipo_trabajo']);
             
             // Crea un registro en el modelo EquipoTrabajo con los datos recibidos
             $miembroActividad = MiembroActividad::create([
-                'id_actividad' => $id_actividad,
+                'id_paquete_actividades' => $id_actividad,
                 'id_equipo_trabajo' => $id_equipo_trabajo,
                 // Agrega más campos aquí según tus necesidades
             ]);

@@ -19,7 +19,7 @@ $(document).ready(function() {
                 extend: 'copy',
                 text: 'Copiar',
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5, 6] // Índices de las columnas que se copiarán
+                  columns: [0, 1, 2, 3, 4, 5] // Índices de las columnas que se copiarán
                 }
             },
             {
@@ -28,7 +28,7 @@ $(document).ready(function() {
                 title: 'Miembros del sistema', // Título del reporte en Excel
                 filename: 'Miembros ' + getCurrentDateTime(), // Nombre del archivo Excel
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5, 6] // Índices de las columnas que se exportarán
+                  columns: [0, 1, 2, 3, 4, 5] // Índices de las columnas que se exportarán
                 }
             },
             {
@@ -37,7 +37,7 @@ $(document).ready(function() {
                 title: 'Miembros del proyecto', // Título del reporte en PDF
                 filename: 'Miembros ' + getCurrentDateTime(), // Nombre del archivo PDF
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5, 6] // Índices de las columnas que se exportarán
+                  columns: [0, 1, 2, 3, 4, 5] // Índices de las columnas que se exportarán
                 },
                 customize: function (doc) {
                   doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
@@ -47,11 +47,10 @@ $(document).ready(function() {
         columns: [
             { data: 'usuario.name', title: 'Nombre', width: '15%' },
             { data: 'usuario.last_name', title: 'Apellido', width: '15%' },
-            { data: 'profesion', title: 'Profesión', width: '5%' },
+            { data: 'persona.profesion', title: 'Profesión', width: '15%' },
             { data: 'costo_servicio', title: 'Costo Servicio', width: '10%' },
-            { data: 'dui', title: 'DUI', width: '10%' },
-            { data: 'afp', title: 'AFP', width: '15%' },
-            { data: 'isss', title: 'ISSS', width: '10%' },
+            { data: 'persona.tipo_documento', title: 'Tipo Documento', width: '10%' },
+            { data: 'persona.numero_documento', title: 'N° Documento', width: '15%' },
             {
                 data: null,
                 title: 'Acciones',

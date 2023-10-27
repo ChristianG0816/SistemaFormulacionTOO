@@ -27,6 +27,10 @@
     min-width: 100%;
 }
 
+.select2-results__option[aria-disabled="true"] {
+    display: none;
+}
+
 @media (max-width: 767px) {
     #lista-comentarios {
         max-height: none !important; /* Quita la propiedad max-height */

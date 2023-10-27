@@ -15,7 +15,7 @@ class Comentario extends Model
         'id_usuario'
     ];
     public function paquete_actividades(){
-        return $this->belongsTo(Actividad::class, 'id_paquete_actividades');
+        return $this->belongsTo(PaqueteActividades::class, 'id_paquete_actividades');
     }
     public function usuario(){
         return $this->belongsTo(User::class, 'id_usuario');
