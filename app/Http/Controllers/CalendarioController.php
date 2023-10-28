@@ -9,6 +9,7 @@ use App\Models\EquipoTrabajo;
 use App\Models\ManoObra;
 use App\Models\MiembroActividad;
 use App\Models\Proyecto;
+use App\Models\EstadoActividad;
 use App\Models\User;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Evento;
@@ -76,7 +77,6 @@ class CalendarioController extends Controller
                             'start' => $actividad->fecha_fin,
                             'end' => $actividad->fecha_fin,
                             'tipo' => 'actividad',
-                            //'proyecto' => $actividad->id_proyecto,
                         ];
                         array_push($eventos, $evento);
                     }
@@ -257,6 +257,16 @@ public function consultarEvento($id)
 
     }
 
+    //Obtenemos el nombre del proyecto
+    public function showId($id){
+        $proyecto=Proyecto::find($id);
+        return response()->json($proyecto);
+    }
 
+    //Obtenemos el nombre del estadoDeLaActividad
+    public function showEstadoId($id){
+        $estado=EstadoActividad::find($id);
+        return response()->json($estado);
+    }
 
 }

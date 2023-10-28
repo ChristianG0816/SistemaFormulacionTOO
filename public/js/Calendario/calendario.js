@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         headerToolbar: {
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,listWeek",
+            right: "dayGridMonth",
         },
 
         eventSources: obtenerEventSources(proyectoId),
@@ -41,6 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         formularioEvento.fecha_recordatorio.value = respuesta.data.fecha_recordatorio;
                         formularioEvento.link_reunion.value =  respuesta.data.link_reunion;
 
+                        // Deshabilitar el campo del proyecto
+                        formularioEvento.proyecto.disabled = true;
+
                         // Cambiar el contenido del modal
                         $modal.find(".modal-title").text("Modificar Evento");
                         $modal.find("#btnGuardar").hide();
@@ -61,7 +64,54 @@ document.addEventListener("DOMContentLoaded", function () {
                         formulario.title.value = respuesta.data.nombre;
                         formulario.start.value = respuesta.data.fecha_inicio;
                         formulario.end.value = respuesta.data.fecha_fin;
-                        $("#actividad").modal("show");
+                        
+                    // Obtener el nombre del proyecto
+                    axios.get(baseUrl + "/proyectodata/" + respuesta.data.id_proyecto)
+                    .then((proyectoRespuesta) => {
+                        const proyecto = proyectoRespuesta.data;
+                        formulario.proyecto.value = proyecto.nombre;
+                    })
+                    .catch((proyectoError) => {
+                        if (proyectoError.response) {
+                        console.log(proyectoError.response.data);
+                     }
+                    });
+
+                    //Obtener el estado de la actividad
+                    axios.get(baseUrl + "/estadodata/" + respuesta.data.id_estado_actividad)
+                    .then((EstadoRespuesta) => {
+                        const estado = EstadoRespuesta.data;
+                        formulario.estado.value = estado.nombre;
+                    })
+                    .catch((EstadoError) => {
+                        if (EstadoError.response) {
+                        console.log(EstadoError.response.data);
+                     }
+                    });
+
+                    const fechaFin = new Date(respuesta.data.fecha_fin);
+                    const fechaActual = new Date();
+                    const diferenciaDias = Math.floor((fechaFin - fechaActual) / (1000 * 60 * 60 * 24));
+
+                    const label = document.querySelector("label[for=dia]");
+                    const diasRestantesDiv = document.getElementById("diasRestantesDiv");
+
+                    if ((respuesta.data.id_estado_actividad == 1 || respuesta.data.id_estado_actividad == 2) && diferenciaDias < 0) {
+                        label.textContent = "Días Vencidos:";
+                        const diasVencidos = Math.floor((fechaActual - fechaFin) / (1000 * 60 * 60 * 24));
+                        formulario.dia.value = diasVencidos;
+                        diasRestantesDiv.style.display = "block"; // Asegura que el div esté visible
+                    } else if (respuesta.data.id_estado_actividad == 3) {
+                        diasRestantesDiv.style.display = "none"; // Oculta el div
+                    } else {
+                        label.textContent = "Días Restantes:";
+                        formulario.dia.value = diferenciaDias;
+                        diasRestantesDiv.style.display = "block"; // Asegura que el div esté visible
+                    }
+
+                    $("#actividad").modal("show");
+
+
                     })
                     .catch((error) => {
                         if (error.response) {
@@ -95,7 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .post(nuevaURL, datos)
             .then((respuesta) => {
                 $("#evento").modal("hide");
-                calendar.refetchEvents();
+                //calendar.refetchEvents();
+                cargarActividadesYEventos(proyectoId);
             })
             .catch((error) => {
                 if (error.response) {
@@ -115,7 +166,8 @@ document.addEventListener("DOMContentLoaded", function () {
             formularioEvento.nombre.value = "";
             formularioEvento.descripcion.value = "";
             formularioEvento.direccion.value = "";
-            formularioEvento.proyecto.value = "";
+            // Habilitar el campo del proyecto
+            formularioEvento.proyecto.disabled = false;
             formularioEvento.fecha_inicio.value = "";
             formularioEvento.fecha_fin.value = "";
             formularioEvento.hora_inicio.value = "";

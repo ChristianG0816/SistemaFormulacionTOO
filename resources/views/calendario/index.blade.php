@@ -50,7 +50,7 @@
                             <label for="direccion">Dirección:</label>
                             <input type="text" class="form-control" name="direccion" id="direccion" aria-describedby="helpId" placeholder="">
                             <label for="proyecto">Proyecto Asociado:</label>
-                            <select class="form-control" name="proyecto" id="proyecto">
+                            <select class="form-control" name="proyecto" id="proyecto" disabled>
                                 <option value="">Seleccione un proyecto</option>
                                 @foreach($proyectos as $proyecto)
                                     <option value="{{ $proyecto->id }}">{{ $proyecto->nombre }}</option>
@@ -95,14 +95,38 @@
                 </div>
                 <div class="modal-body">
                     <form action="" id="actividades">
+                        
                         <div class="form-group">
                             <label for="title">Nombre Actividad</label>
                             <input type="text" class="form-control" name="title" id="title" aria-describedby="helpId" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Proyecto:</label>
+                            <input type="proyecto" class="form-control" name="proyecto" id="proyecto" aria-describedby="helpId" placeholder="">
+                        </div>
+
+                        <div class="form-group">
                             <label for="start">Fecha Inicio</label>
                             <input type="text" class="form-control" name="start" id="start" aria-describedby="helpId" placeholder="">
+                        </div>
+                        <div class="form-group">
                             <label for="end">Fecha Fin</label>
                             <input type="text" class="form-control" name="end" id="end" aria-describedby="helpId" placeholder="">
                         </div>
+
+                        <div class="form-group">
+                            <label for="estado">Estado Actividad:</label>
+                            <input type="text" class="form-control" name="estado" id="estado" aria-describedby="helpId" placeholder="">
+                        </div>
+
+                        <div class="form-group" id="diasRestantesDiv">
+                            <label for="dia">Dias Restantes</label>
+                            <input type="text" class="form-control" name="dia" id="dia" aria-describedby="helpId" placeholder="">
+                        </div>
+
+                        
+
                     </form>
                     
                 </div>
