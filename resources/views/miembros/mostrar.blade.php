@@ -35,25 +35,29 @@
                     {!! Form::text('last_name', $manoObraUser->last_name, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
                 <div class="form-group">
-                    <label for="dui" class="text-secondary">DUI</label>
-                    {!! Form::text('dui', $manoObraUser->dui, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    <label for="tipo_documento" class="text-secondary">Tipo Documento</label>
+                    {!! Form::text('tipo_documento', $manoObraUser->tipo_documento, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
                 <div class="form-group">
-                    <label for="afp" class="text-secondary">AFP</label>
-                    {!! Form::text('afp', $manoObraUser->afp, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    <label for="numero_documento" class="text-secondary">N° Documento</label>
+                    {!! Form::text('numero_documento', $manoObraUser->numero_documento, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
                 <div class="form-group">
-                    <label for="isss" class="text-secondary">ISSS</label>
-                    {!! Form::text('isss', $manoObraUser->isss, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    <label for="pais" class="text-secondary">País</label>
+                    {!! Form::text('pais',$manoObraUser->pais , ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
+                @if ($manoObraUser->departamento !== null)
                 <div class="form-group">
-                    <label for="nacionalidad" class="text-secondary">Nacionalidad</label>
-                    {!! Form::text('nacionalidad',$manoObraUser->nacionalidad , ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    <label for="departamento" class="text-secondary">Departamento</label>
+                    {!! Form::text('departamento', $manoObraUser->departamento, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
+                @endif
+                @if ($manoObraUser->municipio !== null)
                 <div class="form-group">
-                    <label for="pasaporte" class="text-secondary">Pasaporte</label>
-                    {!! Form::text('pasaporte', $manoObraUser->pasaporte, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                    <label for="municipio" class="text-secondary">Municipio</label>
+                    {!! Form::text('municipio', $manoObraUser->municipio, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                 </div>
+                @endif
             </div>
             <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
                 <div class="form-group">

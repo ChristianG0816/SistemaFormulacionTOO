@@ -31,29 +31,20 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label for="dui" class="text-secondary">DUI*</label>
-                    {!! Form::text('dui', null, [
-                        'class' => 'form-control' . ($errors->has('dui') ? ' is-invalid' : ''),
+                    <label for="tipo_documento" class="text-secondary">Tipo Documento*</label>
+                    {!! Form::select('tipo_documento', $tipos_documentos, $manoObraUser->tipo_documento, [
+                        'class' => 'form-control' . ($errors->has('tipo_documento') ? ' is-invalid' : ''), 'id' => 'select-tipo-documento'
                     ]) !!}
-                    @error('dui')
+                    @error('tipo_documento')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label for="afp" class="text-secondary">AFP*</label>
-                    {!! Form::text('afp', null, [
-                        'class' => 'form-control' . ($errors->has('afp') ? ' is-invalid' : ''),
+                    <label for="numero_documento" class="text-secondary">N° Documento*</label>
+                    {!! Form::text('numero_documento', null, [
+                        'class' => 'form-control' . ($errors->has('numero_documento') ? ' is-invalid' : ''),
                     ]) !!}
-                    @error('afp')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="form-group">
-                    <label for="isss" class="text-secondary">ISSS*</label>
-                    {!! Form::text('isss', null, [
-                        'class' => 'form-control' . ($errors->has('isss') ? ' is-invalid' : ''),
-                    ]) !!}
-                    @error('isss')
+                    @error('numero_documento')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -67,26 +58,39 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label for="nacionalidad" class="text-secondary">País de Origen*</label>
-                    {!! Form::select('id_nacionalidad', $nacionalidades, null, [
-                        'class' => 'form-control' . ($errors->has('id_nacionalidad') ? ' is-invalid' : ''), 'id' => 'select-nacionalidad'
+                    <label for="id_pais" class="text-secondary">País de Origen*</label>
+                    {!! Form::select('id_pais', $paises, $manoObraUser->id_pais, [
+                        'class' => 'form-control' . ($errors->has('id_pais') ? ' is-invalid' : ''), 'id' => 'select-pais'
                     ]) !!}
-                    @error('nacionalidad')
+                    @error('id_pais')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div id="group-departamento" class="form-group">
+                    <label for="departamento" class="text-secondary">Departamento*</label>
+                    {!! Form::select('departamento', $departamentos, $manoObraUser->id_departamento, [
+                        'class' => 'form-control' . ($errors->has('departamento') ? ' is-invalid' : ''), 'id' => 'select-departamento'
+                    ]) !!}
+                    @error('departamento')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div id="group-municipio" class="form-group">
+                    <label for="municipio" class="text-secondary">Municipio*</label>
+                    <select id="select-municipio" name="municipio" class="form-control {{ $errors->has('municipio') ? 'is-invalid' : '' }}">
+                        @foreach ($municipios as $municipio)
+                        <option value="{{ $municipio->id }}" data-departamento="{{ $municipio->id_departamento }}" {{ $municipio->id == $manoObraUser->id_municipio ? 'selected' : '' }}>
+                            {{ $municipio->nombre }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('municipio')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
             <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
-                <div class="form-group">
-                    <label for="pasaporte" class="text-secondary">Pasaporte</label>
-                    {!! Form::text('pasaporte', null, [
-                        'class' => 'form-control' . ($errors->has('pasaporte') ? ' is-invalid' : ''),
-                    ]) !!}
-                    @error('pasaporte')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="form-group">
+            <div class="form-group">
                     <label for="estado_civil" class="text-secondary">Estado Civil*</label>
                     {!! Form::select('estado_civil', $estado_civil, $manoObraUser->estado_civil, [
                         'class' => 'form-control' . ($errors->has('estado_civil') ? ' is-invalid' : ''),

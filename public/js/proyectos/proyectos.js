@@ -19,7 +19,7 @@ $(document).ready(function() {
                 extend: 'copy',
                 text: 'Copiar',
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5] // Índices de las columnas que se copiarán
+                  columns: [0, 1, 2, 3, 4, 5, 6] // Índices de las columnas que se copiarán
                 }
             },
             {
@@ -28,7 +28,7 @@ $(document).ready(function() {
                 title: 'Proyectos', // Título del reporte en Excel
                 filename: 'Proyectos ' + getCurrentDateTime(), // Nombre del archivo Excel
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5] // Índices de las columnas que se exportarán
+                  columns: [0, 1, 2, 3, 4, 5, 6] // Índices de las columnas que se exportarán
                 }
             },
             {
@@ -37,7 +37,7 @@ $(document).ready(function() {
                 title: 'Proyectos', // Título del reporte en PDF
                 filename: 'Proyectos ' + getCurrentDateTime(), // Nombre del archivo PDF
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5] // Índices de las columnas que se exportarán
+                  columns: [0, 1, 2, 3, 4, 5, 6] // Índices de las columnas que se exportarán
                 },
                 customize: function (doc) {
                   doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
@@ -81,7 +81,7 @@ $(document).ready(function() {
             { data: 'fecha_inicio', title: 'Fecha Inicio', width: '8%' },
             { data: 'fecha_fin', title: 'Fecha Fin', width: '8%' },
             { data: 'cliente_nombre', title: 'Cliente', width: '20%' },
-            { data: 'dueno_nombre', title: 'Dueño', width: '20%' },
+            { data: 'gerente_proyecto_nombre', title: 'Dueño', width: '20%' },
             {
                 data: null,
                 title: 'Acciones',

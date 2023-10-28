@@ -11,11 +11,11 @@ class Comentario extends Model
     protected $table = 'comentario';
     protected $fillable = [
         'linea_comentario',
-        'id_actividad',
+        'id_paquete_actividades',
         'id_usuario'
     ];
-    public function actividad(){
-        return $this->belongsTo(Actividad::class, 'id_actividad');
+    public function paquete_actividades(){
+        return $this->belongsTo(PaqueteActividades::class, 'id_paquete_actividades');
     }
     public function usuario(){
         return $this->belongsTo(User::class, 'id_usuario');

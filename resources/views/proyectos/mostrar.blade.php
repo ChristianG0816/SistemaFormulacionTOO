@@ -78,11 +78,11 @@
                             <div class="row">
                               <div class="col-md-1">
                                 <div class="form-group">
-                                  <label for="id_dueno" class="text-secondary">Dueño</label>
+                                  <label for="id_gerente_proyecto" class="text-secondary">Gerente del Proyecto</label>
                                 </div>
                               </div>
                               <div class="col-md-11">
-                                {!! Form::text('id_dueno', $proyecto->dueno->name . ' ' . $proyecto->dueno->last_name, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                {!! Form::text('id_gerente_proyecto', $proyecto->gerente_proyecto->name . ' ' . $proyecto->gerente_proyecto->last_name, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                               </div>
                             </div>
                             <div class="row">
@@ -168,17 +168,17 @@
             <!--Sección de actividades-->
             <div class="row">
               <div class="col-lg-12 col-md-12 mb-3">
-                <div class="card collapsed-card">
+                <div class="card">
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Actividades</h3>
                     <div class="card-tools ml-auto">
                       <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('actividades.create', $proyecto->id) }}">Agregar</a>
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                      <i class="fas fa-plus"></i>
+                      <i class="fas fa-minus"></i>
                       </button>
                     </div>
                   </div>
-                  <div class="card-body" style="display:none">
+                  <div class="card-body">
                     <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
                       <div class="row">
                         <div class="col-sm-12 card-body table-responsive p-0">

@@ -19,14 +19,14 @@ class Proyecto extends Model
         'presupuesto',
         'prioridad',
         'id_estado_proyecto',
-        'id_dueno',
+        'id_gerente_proyecto',
         'id_cliente'
     ];
     public function estado_proyecto(){
         return $this->belongsTo(EstadoProyecto::class, 'id_estado_proyecto');
     }
-    public function dueno(){
-        return $this->belongsTo(User::class, 'id_dueno');
+    public function gerente_proyecto(){
+        return $this->belongsTo(User::class, 'id_gerente_proyecto');
     }
     public function cliente(){
         return $this->belongsTo(User::class, 'id_cliente');

@@ -1,16 +1,16 @@
 <div class="row">
     <div class="col-lg-12 col-md-12 mb-3">
-    <div class="card collapsed-card">
+    <div class="card">
         <div class="card-header d-flex align-items-center">
         <h3 class="card-title">Equipo de Trabajo</h3>
         <div class="card-tools ml-auto">
             <a class="btn btn-sm btn-outline-warning my-0" type="button" value="Agregar" data-toggle="modal" data-target="#agregarMiembroModal">Agregar</a>
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-minus"></i>
             </button>
         </div>
         </div>
-        <div class="card-body" style="display:none">
+        <div class="card-body">
         <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
             <div class="row">
             <div class="col-sm-12 card-body table-responsive p-0">
