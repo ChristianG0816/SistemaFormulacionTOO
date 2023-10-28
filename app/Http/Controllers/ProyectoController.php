@@ -48,8 +48,11 @@ class ProyectoController extends Controller
             $proyectos = Proyecto::all();
          }
          
+        //dd($proyectos->toSql());
+        //dd($proyectos);
          return view('proyectos.index', compact('proyectos'));
      }
+
     public function data()
 {
     $user = Auth::user();

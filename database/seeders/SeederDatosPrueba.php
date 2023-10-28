@@ -4,8 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Proyecto;
-use App\Models\Actividad;
+use App\Models\PaqueteActividades;
 use App\Models\ManoObra;
+use App\Models\Persona;
 use App\Models\EquipoTrabajo;
 use App\Models\MiembroActividad;
 
@@ -60,7 +61,7 @@ class SeederDatosPrueba extends Seeder
             'id_cliente' => 6,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 1 Proyecto 1',
             'prioridad' => 1,
             'fecha_inicio' => '2023/10/10',
@@ -70,7 +71,7 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 2 Proyecto 1',
             'prioridad' => 1,
             'fecha_inicio' => '2023/10/12',
@@ -80,7 +81,7 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 1 Proyecto 2',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/10',
@@ -90,7 +91,7 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 2 Proyecto 2',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/12',
@@ -101,7 +102,7 @@ class SeederDatosPrueba extends Seeder
         ]);
 
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 1 Proyecto 3',
             'prioridad' => 1,
             'fecha_inicio' => '2023/09/10',
@@ -111,7 +112,7 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 2 Proyecto 3',
             'prioridad' => 1,
             'fecha_inicio' => '2023/09/12',
@@ -121,7 +122,7 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 3 Proyecto 3',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/10',
@@ -131,7 +132,7 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 4 Proyecto 3',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/2',
@@ -141,7 +142,7 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        Actividad::create([
+        PaqueteActividades::create([
             'nombre' => 'Actividad 5 Proyecto 3',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/05',
@@ -151,49 +152,61 @@ class SeederDatosPrueba extends Seeder
             'id_estado_actividad' => 1,
         ]);
 
-        ManoObra::create([
-            'dui' => '060803147',
-            'afp' => '1235466',
-            'isss' => '9751325',
-            'nacionalidad' => 'Salvadoreño',
-            'pasaporte' => '4318741',
+        Persona::create([
+            'tipo_documento' => 'Documento de Identidad',
+            'numero_documento' => '123546678',
+            'id_pais' => 65,
+            'id_departamento' => 1,
+            'id_municipio' => 1,
             'telefono' => '64281475',
             'profesion' => 'Ingeniero',
             'estado_civil' => 'Casado',
-            'sexo' => 'M',
+            'sexo' => 'Masculino',
             'fecha_nacimiento' => '2000/12/08',
-            'costo_servicio' => 500.00,
-            'id_usuario' => 3,
         ]);
 
         ManoObra::create([
-            'dui' => '080803147',
-            'afp' => '1635466',
-            'isss' => '9757325',
-            'nacionalidad' => 'Salvadoreño',
-            'pasaporte' => '4318741',
+            'costo_servicio' => 500.00,
+            'id_usuario' => 3,
+            'id_persona' => 1,
+        ]);
+
+        Persona::create([
+            'tipo_documento' => 'Documento de Identidad',
+            'numero_documento' => '163546689',
+            'id_pais' => 65,
+            'id_departamento' => 1,
+            'id_municipio' => 1,
             'telefono' => '64281475',
             'profesion' => 'Tester',
             'estado_civil' => 'Casado',
-            'sexo' => 'F',
+            'sexo' => 'Femenino',
             'fecha_nacimiento' => '2000/10/24',
-            'costo_servicio' => 400.00,
-            'id_usuario' => 4,
         ]);
 
         ManoObra::create([
-            'dui' => '080803147',
-            'afp' => '1635466',
-            'isss' => '9757325',
-            'nacionalidad' => 'Canandiense',
-            'pasaporte' => '4318741',
+            'costo_servicio' => 400.00,
+            'id_usuario' => 4,
+            'id_persona' => 2,
+        ]);
+
+        Persona::create([
+            'tipo_documento' => 'Documento de Identidad',
+            'numero_documento' => '163546658',
+            'id_pais' => 4,
+            'id_departamento' => null,
+            'id_municipio' => null,
             'telefono' => '64281475',
             'profesion' => 'Ayudante',
             'estado_civil' => 'Casado',
-            'sexo' => 'F',
+            'sexo' => 'Femenino',
             'fecha_nacimiento' => '2000/08/24',
+        ]);
+
+        ManoObra::create([
             'costo_servicio' => 400.00,
             'id_usuario' => 5,
+            'id_persona' => 3,
         ]);
 
 
@@ -218,47 +231,47 @@ class SeederDatosPrueba extends Seeder
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 1 ,
+            'id_paquete_actividades' => 1 ,
             'id_equipo_trabajo' => 1,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 2 ,
+            'id_paquete_actividades' => 2 ,
             'id_equipo_trabajo' => 1,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 3 ,
+            'id_paquete_actividades' => 3 ,
             'id_equipo_trabajo' => 2,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 4 ,
+            'id_paquete_actividades' => 4 ,
             'id_equipo_trabajo' => 2,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 5 ,
+            'id_paquete_actividades' => 5 ,
             'id_equipo_trabajo' => 3,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 6 ,
+            'id_paquete_actividades' => 6 ,
             'id_equipo_trabajo' => 3,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 7 ,
+            'id_paquete_actividades' => 7 ,
             'id_equipo_trabajo' => 3,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 8 ,
+            'id_paquete_actividades' => 8 ,
             'id_equipo_trabajo' => 3,
         ]);
 
         MiembroActividad::create([
-            'id_actividad' => 9 ,
+            'id_paquete_actividades' => 9 ,
             'id_equipo_trabajo' => 4,
         ]);
 

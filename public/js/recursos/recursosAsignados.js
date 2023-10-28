@@ -6,6 +6,7 @@ $(document).ready(function(){
     // Inicializar el DataTable con AJAX
     var csrfToken = $('#csrf-token').data('token');
     var actividadId = $("#actividad-id").data("id");
+    var proyectoId = $("#proyecto-id").data("id");
     $('#tableRecursosActividad').DataTable({
         ajax: "/asignacionrecurso/list/" + actividadId,
         processing: true,
@@ -17,7 +18,27 @@ $(document).ready(function(){
             {data: 'nombre', title: 'Nombre'},
             {data: 'cantidad', title: 'Cantidad'},
             {data: 'costo', title: 'Costo'},
-            {data: 'action', title: 'Accciones', name: 'action', orderable: false, searchable: false}
+            {
+                data: null,
+                title: 'Acciones',
+                sortable: false,
+                searchable: false,
+                width: '25%',
+                render: function (data, type, row) {
+                    
+                    var actionsHtml = '';
+
+                    actionsHtml += '<button id="type="button" class="btn btn-outline-info editarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                    actionsHtml += 'data-cod="' + row.id + '">';
+                    actionsHtml += 'Editar</button>';
+
+                    actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                    actionsHtml += 'data-cod="' + row.id + '">';
+                    actionsHtml += 'Eliminar</button>';
+                   
+                    return actionsHtml || '';
+                }
+            }
         ],
         language: {
             "sProcessing": "Procesando...",
@@ -47,6 +68,12 @@ $(document).ready(function(){
             return: true
         }
     });
+    //desactivado boton agregar por defecto
+    $('#agregarRecursoBtn').prop('disabled', true);
+    //al recargar se eliminan los valores
+    $('#cantidadRecurso').val('');
+    $('#costoRecurso').val("");
+    $('#disponibilidadRecurso').val("");
 
     $('#agregarRecursoModal').on('show.bs.modal', function (event) {
         var modal = $(this);
@@ -61,7 +88,7 @@ $(document).ready(function(){
 
         // Realiza una solicitud Ajax para obtener los recursos disponibles
         $.ajax({
-            url: '/recursos/disponibles/',
+            url: '/asignacionrecurso/disponibles/'+actividadId,
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -74,7 +101,42 @@ $(document).ready(function(){
                 });
             },
             error: function (error) {
-                console.log('Error al obtener los miembros disponibles:', error);
+                console.log('Error al obtener los recursos disponibles:', error);
+            }
+        });
+    });
+
+    // Método para mostrar el modal de eliminación
+    $(document).on('click', '.eliminarModalRecurso-btn', function () {
+        var id = $(this).data('id');
+        var modal = $('#confirmarEliminarModalRecurso');
+        var eliminarBtn = modal.find('#eliminarRecursoBtn');
+        eliminarBtn.data('id', id);
+        modal.modal('show');
+    });
+
+    // Método para mostrar el modal de editar
+    $(document).on('click', '.editarModalRecurso-btn', function () {
+        var id = $(this).data('id');
+        var modal = $('#editarRecursoModal');
+        var editarBtn = modal.find('#editarRecursoBtn');
+        editarBtn.data('id', id);
+        $.ajax({
+            type: 'GET',
+            url: '/asignacionrecurso/' + id + '/edit',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                $('#nombreRecursoE').data('id', data[0].recurso.id);
+                $('#nombreRecursoE').val(data[0].recurso.nombre);
+                $('#disponibilidadRecursoE').val(data[0].recurso.disponibilidad);
+                $('#costoRecursoE').val(data[0].recurso.costo);
+                $('#cantidadRecursoE').val(data[0].cantidad);
+                modal.modal('show');
+            },
+            error: function (error) {
+                console.log('Error al obtener los detalles del recurso asignado:', error);
+                toastr.error('Error al obtener los detalles del recurso asignado');
             }
         });
     });
@@ -84,9 +146,16 @@ $(document).ready(function(){
         var modal = $(this);
         var select = modal.find('#recursoSelect');
         select.val('');
-        $('#nombreRecurso').text("");
         $('#cantidadRecurso').val('');
-        $('#costoRecurso').text("");
+        $('#costoRecurso').val("");
+        $('#disponibilidadRecurso').val("");
+        $('#cantidadRecurso').removeClass('is-invalid');
+        $('#cantidadRecurso').next().text('');
+    });
+
+    $('#editarRecursoModal').on('hide.bs.modal', function (event) {
+        $('#cantidadRecursoE').removeClass('is-invalid');
+        $('#cantidadRecursoE').next().text('');
     });
 
     $('#recursoSelect').change(function () {
@@ -99,25 +168,29 @@ $(document).ready(function(){
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    $('#nombreRecurso').text(data.nombre);
-                    $('#costoRecurso').text(data.costo);
+                    $('#disponibilidadRecurso').val(data.disponibilidad);
+                    $('#costoRecurso').val(data.costo);
+                    $('#agregarRecursoBtn').prop('disabled', false); // Habilita el botón
                 },
                 error: function (error) {
-                    console.log('Error al obtener los detalles del miembro:', error);
+                    console.log('Error al obtener los detalles del recurso:', error);
+                    toastr.error('Error al obtener los detalles del recurso');
                 }
             });
         } else {
-            $('#nombreRecurso').text("");
-            $('#costoRecurso').text("");
+            $('#costoRecurso').val("");
+            $('#disponibilidadRecurso').val("");
+            $('#cantidadRecurso').val('');
+            $('#agregarRecursoBtn').prop('disabled', true); // Deshabilita el botón
         }
     });
 
     $('#agregarRecursoBtn').click(function () {
         var selectedRecurso = $('#recursoSelect').val();
         var cantidadRecurso = $('#cantidadRecurso').val();
+        var costoRecurso = $('#costoRecurso').val();
         // Verifica si se seleccionó un recurso
         if (selectedRecurso !== '') {
-            console.log('entre');
             // Realiza una solicitud Ajax para agregar un recurso
             $.ajax({
                 url: '/asignacionrecurso/crear', // URL para asignar el recurso
@@ -125,56 +198,107 @@ $(document).ready(function(){
                 dataType: 'json',
                 data: {
                     _token: csrfToken, // Agrega el token CSRF aquí
+                    id_proyecto: proyectoId,
                     id_actividad: actividadId,
                     id_recurso: selectedRecurso,
-                    cantidad: cantidadRecurso
+                    cantidad: cantidadRecurso,
+                    costo: costoRecurso
                 },
                 success: function (response) {
                     if (response.success) {
                         // Recarga el DataTable después de agregar el miembro
                         $('#tableRecursosActividad').DataTable().ajax.reload();
-                        //limpia la cantidad
+                        //limpiar campos
                         $('#cantidadRecurso').val('');
+                        $('#costoRecurso').val("");
+                        $('#disponibilidadRecurso').val("");
                         // Cierra el modal después de agregar al miembro
                         $('#agregarRecursoModal').modal('hide');
                         toastr.success('Se ha agregado un recurso a la actividad');
                     } else {
                         console.log('Error al agregar el recurso:', response.message);
+                        toastr.error(response.message);
                     }
                 },
                 error: function (error) {
-                    console.log('Error al agregar el recurso:', error);
+                    if (error.responseJSON!=undefined){
+                        if(error.responseJSON.errors.cantidad){
+                            $('#cantidadRecurso').addClass('is-invalid');
+                            $('#cantidadRecurso').next().text(error.responseJSON.errors.cantidad[0]);
+                        }
+                    }else{
+                        toastr.error('Error al agregar el recurso');
+                        console.log(error);
+                    }   
                 }
             });
         }
     });
 
-    $('#tableRecursosActividad').on('click', '.delete', function () {
+    $('#editarRecursoBtn').click(function () {
         var id = $(this).data('id');
-        
-        if (confirm('¿Estás seguro de eliminar este registro?')) {
-            $.ajax({
-                url: '/miembrosactividades/eliminar',
-                method: 'POST',
-                data: { 
-                    _token: csrfToken, 
-                    id: parseInt(id) // Convertir a entero
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert('Registro eliminado correctamente.');
-                        // Actualizar la tabla después de la eliminación si es necesario
-                        $('#tableMiembrosActividad').DataTable().ajax.reload();
-                        toastr.success('Se ha eliminado un recurso de la actividad');
-                    } else {
-                        alert('Error al eliminar el registro.');
-                    }
-                },
-                error: function () {
-                    alert('Ocurrió un error en la solicitud.');
+        var cantidadRecursoE = $('#cantidadRecursoE').val();
+        var idRecurso = $('#nombreRecursoE').data('id');
+        $.ajax({
+            url: '/asignacionrecurso/'+id, // URL para asignar el recurso
+            method: 'PUT', // Utiliza el método POST para enviar datos al servidor
+            dataType: 'json',
+            data: {
+                _token: csrfToken, // Agrega el token CSRF aquí
+                id_actividad: actividadId,
+                cantidad: cantidadRecursoE,
+                id_recurso: idRecurso
+            },
+            success: function (response) {
+                if (response.success) {
+                    // Recarga el DataTable después de agregar el miembro
+                    $('#tableRecursosActividad').DataTable().ajax.reload();
+                    //limpiar campos
+                    // $('#cantidadRecurso').val('');
+                    // $('#costoRecurso').val("");
+                    // $('#disponibilidadRecurso').val("");
+                    // Cierra el modal después de agregar al miembro
+                    $('#editarRecursoModal').modal('hide');
+                    toastr.success('Se ha agregado un recurso a la actividad');
+                } else {
+                    console.log('Error al agregar el recurso:', response.message);
+                    toastr.error(response.message);
                 }
-            });
-        }
+            },
+            error: function (error) {
+                if (error.responseJSON!=undefined){
+                    if(error.responseJSON.errors.cantidad){
+                        $('#cantidadRecursoE').addClass('is-invalid');
+                        $('#cantidadRecursoE').next().text(error.responseJSON.errors.cantidad[0]);
+                    }
+                }else{
+                    toastr.error('Error al agregar el recurso');
+                    console.log(error);
+                }   
+            }
+        });
     });
 
+    //Método para enviar la solicitud de eliminar
+    $(document).on('click', '#eliminarRecursoBtn', function () {
+        var id = $(this).data('id');
+        var modal = $('#confirmarEliminarModalRecurso');
+        $.ajax({
+            url: '/asignacionrecurso/' + id, //asignacionrecurso/{id}
+            type: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken, // Agrega el token CSRF aquí
+            },
+            success: function (response) {
+                modal.modal('hide');
+                $('#tableRecursosActividad').DataTable().ajax.reload();
+                toastr.success('Recurso eliminado con éxito.');
+            },
+            error: function (error) {
+                modal.modal('hide');
+                tableTareas.ajax.reload(null, false);
+                toastr.error('Ocurrió un error al eliminar.');
+            }
+        });
+    });    
 });

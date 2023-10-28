@@ -5,19 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Actividad extends Model
+class PaqueteActividades extends Model
 {
     use HasFactory;
-    protected $table = 'actividad';
+    protected $table = 'paquete_actividades';
     protected $fillable = [
         'nombre',
-        'id_paquete_actividades',
+        'prioridad',
+        'fecha_inicio',
+        'fecha_fin',
+        'responsabilidades',
+        'id_proyecto',
         'id_estado_actividad'
     ];
-    public function paquete_actividades(){
-        return $this->belongsTo(PaqueteActividades::class, 'id_paquete_actividades');
+    public function proyecto(){
+        return $this->belongsTo(Proyecto::class, 'id_proyecto');
     }
-
     public function estado_actividad(){
         return $this->belongsTo(EstadoActividad::class, 'id_estado_actividad');
     }

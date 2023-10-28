@@ -15,17 +15,8 @@ class CreateManoObraTable extends Migration
     {
         Schema::create('mano_obra', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('dui', 9);
-            $table->string('afp', 20);
-            $table->string('isss', 20);
-            $table->string('nacionalidad', 100);
-            $table->string('pasaporte', 20);
-            $table->string('telefono', 9);
-            $table->string('profesion', 100);
-            $table->string('estado_civil', 100);
-            $table->string('sexo', 100);
-            $table->date('fecha_nacimiento');
             $table->float('costo_servicio', 8, 2);
+            $table->foreignId('id_persona')->constrained('persona')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_usuario')->constrained('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
         });

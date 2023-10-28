@@ -15,10 +15,10 @@ class CreateMiembroActividadTable extends Migration
     {
         Schema::create('miembro_actividad', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('id_actividad')->constrained('actividad')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('id_paquete_actividades')->constrained('paquete_actividades')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_equipo_trabajo')->constrained('equipo_trabajo')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps(); // created_at, updated_at
-            $table->unique(['id_actividad', 'id_equipo_trabajo']); // Para que no se repitan los registros
+            $table->unique(['id_paquete_actividades', 'id_equipo_trabajo']); // Para que no se repitan los registros
         });
     }
 

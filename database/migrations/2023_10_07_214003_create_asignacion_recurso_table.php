@@ -15,11 +15,11 @@ class CreateAsignacionRecursoTable extends Migration
     {
         Schema::create('asignacion_recurso', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('id_actividad')->constrained('actividad')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('id_paquete_actividades')->constrained('paquete_actividades')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_recurso')->constrained('recurso')->onDelete('restrict')->onUpdate('cascade');
             $table->integer('cantidad'); // int not null
             $table->timestamps(); // created_at, updated_at
-            $table->unique(['id_actividad', 'id_recurso']); // Para que no se repitan los registros
+            $table->unique(['id_paquete_actividades', 'id_recurso']); // Para que no se repitan los registros
         });
     }
 

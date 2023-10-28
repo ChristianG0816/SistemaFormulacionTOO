@@ -1,23 +1,7 @@
 @extends('adminlte::page')
-@section('title', 'Actividad')
-@section('css')
-<style>
-@media (max-width: 767px) {
-    #lista-comentarios {
-        max-height: none !important; /* Quita la propiedad max-height */
-        height: 100%; /* Establece la altura al 100% */
-        margin-top: 0; /* Modifica el margen superior si es necesario */
-    }
-    #informacion-actividad {
-        height: auto !important; /* Quita la propiedad max-height */
-        height: 100%; /* Establece la altura al 100% */
-        margin-top: 0; /* Modifica el margen superior si es necesario */
-    }
-}
-</style>
-@stop
+@section('title', 'Paquete Actividades')
 @section('content_header')
-<h1 class="text-center">Actividad</h1>
+<h1 class="text-center">Paquete de Trabajo</h1>
 @stop
 @section('content')
 @if ($errors->any())
@@ -115,16 +99,16 @@
                 <div class="col col-lg-3">
                     <div class="card" style="height: 100%; background-color: #EBF5FB;">
                         <div class="col-lg-12 card-body" style="z-index: 2; position: relative;">
-                            <div class="card border-0 shadow-none rounded-0 p-0 m-0 collapsed-card" style="z-index: 2; position: absolute; width:92%; background-color: #EBF5FB;">
+                            <div id="titulo-encabezado-comentario" class="card border-0 shadow-none rounded-0 p-0 m-0 collapsed-card" style="z-index: 2; position: absolute; width:92%; background-color: #EBF5FB;">
                                 <div class="card-header border-0 m-0 p-0 w-100" style="background-color: #EBF5FB;">
                                     <div class="d-flex align-items-center m-1">
                                         <h5 class="text-center font-weight-bold">Comentarios</h5>
                                         <a type="button" class="btn btn-tool ml-auto" data-card-widget="collapse" title="Collapse">
-                                            <i class="fas fa-plus"></i>
+                                            <i id="icono-boton-comentario" class="fas fa-plus"></i>
                                         </a>
                                     </div>
                                 </div>
-                                <div class="card-body border-0 m-0 p-0 pr-1" style="display: none;">
+                                <div id="formulario-comentario" class="card-body border-0 m-0 p-0 pr-1" style="display: none;">
                                     <div class="card bg-white">
                                         <div class="card-body">
                                             {!! Form::open(['route' => 'comentarios.store', 'method' => 'POST', 'id' => 'comentario-form-agregar']) !!}
@@ -178,7 +162,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Agregar Tarea a la Actividad</h5>
+                <h5 class="modal-title">Agregar Actividad</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -192,7 +176,7 @@
                 </div>
                 <div class="form-group">
                     <label for="finalizada" class="text-secondary">Selecciona el estado:*</label>
-                    {!! Form::select('finalizada-tarea', $estadosTarea, [], ['id' => 'finalizada-tarea', 'class' => 'form-control']) !!}
+                    {!! Form::select('finalizada-tarea', $estadosActividad, null, ['id' => 'finalizada-tarea', 'class' => 'form-control']) !!}
                 </div>
                 
                 {!! Form::close() !!}
@@ -209,7 +193,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Editar Tarea de la Actividad</h5>
+                <h5 class="modal-title">Editar Actividad</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -224,7 +208,7 @@
 
                 <div class="form-group">
                     <label for="finalizada" class="text-secondary">Selecciona el estado:*</label>
-                    {!! Form::select('finalizada-tarea-editar', $estadosTarea, null, ['id' => 'finalizada-tarea-editar', 'class' => 'form-control']) !!}
+                    {!! Form::select('finalizada-tarea-editar', $estadosActividad, null, ['id' => 'finalizada-tarea-editar', 'class' => 'form-control']) !!}
                 </div>
                 {!! Form::close() !!}
             </div>

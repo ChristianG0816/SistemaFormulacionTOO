@@ -14,14 +14,16 @@ $(document).ready(function() {
         columns: [
             { data: 'nombre', title: 'Nombre', width: '30%' },
             {
-                data: 'finalizada',
+                data: 'id_estado_actividad',
                 title: 'Estado Tarea',
                 width: '10%',
                 render: function (data, type, row) {
-                    if (data) {
+                    if (data === 1) {
+                        return '<span class="badge badge-danger">Pendiente</span>';
+                    } else if (data === 3) {
                         return '<span class="badge badge-success">Finalizada</span>';
                     } else {
-                        return '<span class="badge badge-danger">Sin Iniciar</span>';
+                        return '<span class="badge badge-warning">En Proceso</span>';
                     }
                 }
             },
@@ -94,6 +96,7 @@ $(document).ready(function() {
         e.preventDefault();
         var $form = $('#tarea-form-agregar');
         var formData = $form.serialize();
+        console.log(formData);
         $.ajax({
             type: 'POST',
             data: formData,
@@ -131,11 +134,7 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(data) {
                 $("#nombre-tarea-editar").val(data.nombre);
-                if (data.finalizada === true) {
-                    $("#finalizada-tarea-editar").val(1);
-                } else {
-                    $("#finalizada-tarea-editar").val(0);
-                }
+                $("#finalizada-tarea-editar").val(data.id_estado_actividad);
                 modal.modal('show');
             }
         });

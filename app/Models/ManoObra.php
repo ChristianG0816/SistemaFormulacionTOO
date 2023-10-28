@@ -10,17 +10,8 @@ class ManoObra extends Model
     use HasFactory;
     protected $table = 'mano_obra';
     protected $fillable = [
-        'dui',
-        'afp',
-        'isss',
-        'nacionalidad',
-        'pasaporte',
-        'telefono',
-        'profesion',
-        'estado_civil',
-        'sexo',
-        'fecha_nacimiento',
         'costo_servicio',
+        'id_persona',
         'id_usuario'
     ];
 
@@ -33,4 +24,8 @@ class ManoObra extends Model
         return $this->hasMany(EquipoTrabajo::class, 'id_mano_obra');
     }
 
+    public function persona()
+    {
+        return $this->belongsTo(Persona::class, 'id_persona');
+    }
 }
