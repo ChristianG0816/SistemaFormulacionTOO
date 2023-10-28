@@ -29,7 +29,7 @@ class SeederDatosPrueba extends Seeder
             'presupuesto' => 4500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_dueno' => 7,
+            'id_gerente_proyecto' => 7,
             'id_cliente' => 8,
         ]);
 
@@ -43,7 +43,7 @@ class SeederDatosPrueba extends Seeder
             'presupuesto' => 2500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_dueno' => 9,
+            'id_gerente_proyecto' => 9,
             'id_cliente' => 8,
         ]);
 
@@ -57,7 +57,7 @@ class SeederDatosPrueba extends Seeder
             'presupuesto' => 2500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_dueno' => 7,
+            'id_gerente_proyecto' => 7,
             'id_cliente' => 6,
         ]);
 

@@ -35,9 +35,9 @@
                 @enderror
               </div>
               <div class="form-group">
-                <label for="id_dueno" class="text-secondary">Dueño*</label>
-                {!! Form::select('id_dueno', $duenos, null, ['class' => 'form-control' . ($errors->has('id_dueno') ? ' is-invalid' : '')]) !!}
-                @error('id_dueno')
+                <label for="id_gerente_proyecto" class="text-secondary">Gerente del Proyecto*</label>
+                {!! Form::select('id_gerente_proyecto', $gerentesProy, null, ['class' => 'form-control' . ($errors->has('id_gerente_proyecto') ? ' is-invalid' : '')]) !!}
+                @error('id_gerente_proyecto')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
