@@ -30,34 +30,33 @@ class ProyectoController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function index()
-    {
-        $user = Auth::user();
-        if ($user->hasRole('Supervisor')) {
-            $proyectos = Proyecto::where('id_dueno', $user->id)->get();
-        } elseif ($user->hasRole('Cliente')) {
-            $proyectos = Proyecto::where('id_cliente', $user->id)->get();
-        } elseif ($user->hasRole('Colaborador')) {
-            $proyectos = Proyecto::whereIn('id', function ($query) use ($user) {
-                $query->select('id_proyecto')
-                    ->from('equipo_trabajo')
-                    ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
-                    ->where('mano_obra.id_usuario', $user->id);
-            })->get();
-        }
-        //dd($proyectos->toSql());
-        //dd($proyectos);
-    
-        return view('proyectos.index', compact('proyectos'));
-    }  
-
+     public function index()
+     {
+         $user = Auth::user();
+         if ($user->hasRole('Supervisor')) {
+             $proyectos = Proyecto::where('id_gerente_proyecto', $user->id)->get();
+         } elseif ($user->hasRole('Cliente')) {
+             $proyectos = Proyecto::where('id_cliente', $user->id)->get();
+         } elseif ($user->hasRole('Colaborador')) {
+             $proyectos = Proyecto::whereIn('id', function ($query) use ($user) {
+                 $query->select('id_proyecto')
+                     ->from('equipo_trabajo')
+                     ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
+                     ->where('mano_obra.id_usuario', $user->id);
+             })->get();
+         }else{
+            $proyectos = Proyecto::all();
+         }
+         
+         return view('proyectos.index', compact('proyectos'));
+     }
     public function data()
 {
     $user = Auth::user();
     $proyectosQuery = Proyecto::query();
 
     if ($user->hasRole('Supervisor')) {
-        $proyectosQuery->where('id_dueno', $user->id);
+        $proyectosQuery->where('id_gerente_proyecto', $user->id);
     } elseif ($user->hasRole('Cliente')) {
         $proyectosQuery->where('id_cliente', $user->id);
     } elseif ($user->hasRole('Colaborador')) {
@@ -69,14 +68,14 @@ class ProyectoController extends Controller
         });
     }
 
-    $data = $proyectosQuery->with('estado_proyecto', 'dueno')->get();
+    $data = $proyectosQuery->with('estado_proyecto', 'gerente_proyecto')->get();
 
     return datatables()->of($data)
         ->addColumn('cliente_nombre', function ($row) {
             return $row->cliente->name . ' ' . $row->cliente->last_name;
         })
-        ->addColumn('dueno_nombre', function ($row) {
-            return $row->dueno->name . ' ' . $row->dueno->last_name;
+        ->addColumn('gerente_proyecto_nombre', function ($row) {
+            return $row->gerente_proyecto->name . ' ' . $row->gerente_proyecto->last_name;
         })             
         ->rawColumns(['action'])
         ->make(true);
@@ -91,14 +90,14 @@ class ProyectoController extends Controller
     {
         $prioridades = ['1' => '1','2' => '2','3' => '3','4' => '4','5' => '5',];
 
-        $dueno = Role::where('name', 'Supervisor')->first();
-        $usuariosDuenos = $dueno->users;
-        $duenos = $usuariosDuenos->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+        $gerenteProy = Role::where('name', 'Supervisor')->first();
+        $usuariosGerentesProy = $gerenteProy->users;
+        $gerentesProy = $usuariosGerentesProy->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
 
         $cliente = Role::where('name', 'Cliente')->first();
         $usuariosClientes = $cliente->users;        
         $clientes = $usuariosClientes->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
-        return view('proyectos.crear', compact('duenos','prioridades','clientes'));
+        return view('proyectos.crear', compact('gerentesProy','prioridades','clientes'));
     }
 
     /**
@@ -113,7 +112,7 @@ class ProyectoController extends Controller
             'nombre' => 'required|unique:proyecto',
             'objetivo' => 'required',
             'id_cliente'=>['required'],
-            'id_dueno'=>['required'],
+            'id_gerente_proyecto'=>['required'],
             'descripcion'=>['required'],
             'fecha_inicio'=>'required|fecha_menor_igual:fecha_fin',
             'fecha_fin'=> 'required',
@@ -154,15 +153,15 @@ class ProyectoController extends Controller
 
         $prioridades = ['1' => '1','2' => '2','3' => '3','4' => '4','5' => '5',];
 
-        $dueno = Role::where('name', 'Supervisor')->first();
-        $usuariosDuenos = $dueno->users;
-        $duenos = $usuariosDuenos->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+        $gerenteProy = Role::where('name', 'Supervisor')->first();
+        $usuariosGerentesProy = $gerenteProy->users;
+        $gerentesProy = $usuariosGerentesProy->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
 
         $cliente = Role::where('name', 'Cliente')->first();
         $usuariosClientes = $cliente->users;        
         $clientes = $usuariosClientes->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
         
-        return view('proyectos.editar', compact('proyecto','duenos','prioridades','clientes'));
+        return view('proyectos.editar', compact('proyecto','gerentesProy','prioridades','clientes'));
     }
 
     /**
@@ -178,7 +177,7 @@ class ProyectoController extends Controller
             'nombre' => 'required|unique:proyecto,nombre,' . $id,
             'objetivo' => 'required',
             'id_cliente'=>['required'],
-            'id_dueno'=>['required'],
+            'id_gerente_proyecto'=>['required'],
             'descripcion'=>['required'],
             'fecha_inicio'=>'required|fecha_menor_igual:fecha_fin',
             'fecha_fin'=> 'required',
