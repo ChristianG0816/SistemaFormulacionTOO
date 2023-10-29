@@ -127,7 +127,10 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         $.ajax({
             url: '/clientes/' + id,
-            type: 'DELETE',
+            type: 'POST',
+            data: {
+                _method: 'DELETE' // Indica que es una solicitud DELETE
+            },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -135,12 +138,11 @@ $(document).ready(function() {
                 modal.modal('hide');
                 var table = $('#tabla-clientes').DataTable();
                 table.ajax.reload(null, false);
-                toastr.success('Se ha eliminado un cliente con éxito');
+                toastr.success(response.success);
             },
             error: function (error) {
                 modal.modal('hide');
-                var table = $('#tabla-clientes').DataTable();
-                table.ajax.reload(null, false);
+                toastr.error(error.responseJSON.error);
             }
         });
     });

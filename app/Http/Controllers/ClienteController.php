@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Cliente;
+use App\Models\Proyecto;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Mail\NuevoUsuarioCreado;
@@ -71,20 +72,15 @@ class ClienteController extends Controller
     public function destroy($id)
     {
         $cliente = Cliente::find($id);
-        if ($cliente) {
-            $cliente->delete();
-            /*$usuarioId = $cliente->id_usuario;
-    
-            $proyectosAsociados = DB::table('proyecto')->where('id_cliente', $cliente->id)->get();   
-    
-            if ($proyectosAsociados->isEmpty()) {
-                DB::table('users')->where('id_usuario', $usuarioId)->delete();
-                return redirect()->route('clientes.index')->with('success', 'Cliente eliminado con éxito');
-            } else {
-                return redirect()->route('clientes.index')->with('error', 'No se puede eliminar el cliente, existen proyectos asociados a él');
-            }*/
+        $proyectosAsociados = Proyecto::where('id_cliente', $id)->get();
+        if (!$proyectosAsociados->isEmpty()) {
+            return response()->json(['error' => 'No se puede eliminar el cliente, existen proyectos asociados a él'], 422);
         } else {
-            return redirect()->route('clientes.index')->with('error', 'No se encontró el cliente');
+            $usuarioId = $cliente->id_usuario;
+            if($cliente){$cliente->delete();}   
+            $user = User::where('id', $usuarioId)->first();
+            if ($user) {$user->delete();}
+            return response()->json(['success' => 'Se ha eliminado correctamente el cliente']);
         }
     }
     

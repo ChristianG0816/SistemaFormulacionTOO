@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Proyecto;
+use App\Models\Cliente;
 use App\Models\EstadoProyecto;
 use App\Models\Evento;
 use App\Models\EquipoTrabajo;
@@ -30,25 +31,9 @@ class ProyectoController extends Controller
 
      public function index()
      {
-         $user = Auth::user();
-         if ($user->hasRole('Supervisor')) {
-             $proyectos = Proyecto::where('id_gerente_proyecto', $user->id)->get();
-         } elseif ($user->hasRole('Cliente')) {
-             $proyectos = Proyecto::where('id_cliente', $user->id)->get();
-         } elseif ($user->hasRole('Colaborador')) {
-             $proyectos = Proyecto::whereIn('id', function ($query) use ($user) {
-                 $query->select('id_proyecto')
-                     ->from('equipo_trabajo')
-                     ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
-                     ->where('mano_obra.id_usuario', $user->id);
-             })->get();
-         }else{
-            $proyectos = Proyecto::all();
-         }
-         
         //dd($proyectos->toSql());
         //dd($proyectos);
-         return view('proyectos.index', compact('proyectos'));
+         return view('proyectos.index');
      }
 
     public function data()
@@ -67,13 +52,15 @@ class ProyectoController extends Controller
                 ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
                 ->where('mano_obra.id_usuario', $user->id);
         });
-    }
+    }else{
+        $proyectos = Proyecto::all();
+     }
 
     $data = $proyectosQuery->with('estado_proyecto', 'gerente_proyecto')->get();
 
     return datatables()->of($data)
         ->addColumn('cliente_nombre', function ($row) {
-            return $row->cliente->name . ' ' . $row->cliente->last_name;
+            return $row->cliente->usuario_cliente->name . ' ' . $row->cliente->usuario_cliente->last_name;
         })
         ->addColumn('gerente_proyecto_nombre', function ($row) {
             return $row->gerente_proyecto->name . ' ' . $row->gerente_proyecto->last_name;
@@ -95,9 +82,9 @@ class ProyectoController extends Controller
         $usuariosGerentesProy = $gerenteProy->users;
         $gerentesProy = $usuariosGerentesProy->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
 
-        $cliente = Role::where('name', 'Cliente')->first();
-        $usuariosClientes = $cliente->users;        
-        $clientes = $usuariosClientes->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+        $clientes = Cliente::with('usuario_cliente')->get()->mapWithKeys(function ($cliente) {
+            return [$cliente->id => $cliente->usuario_cliente->name . ' ' . $cliente->usuario_cliente->last_name];
+        })->all();
         return view('proyectos.crear', compact('gerentesProy','prioridades','clientes'));
     }
 
@@ -158,9 +145,9 @@ class ProyectoController extends Controller
         $usuariosGerentesProy = $gerenteProy->users;
         $gerentesProy = $usuariosGerentesProy->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
 
-        $cliente = Role::where('name', 'Cliente')->first();
-        $usuariosClientes = $cliente->users;        
-        $clientes = $usuariosClientes->mapWithKeys(function ($usuario) {return [$usuario->id => $usuario->name . ' ' . $usuario->last_name];})->all();
+        $clientes = Cliente::with('usuario_cliente')->get()->mapWithKeys(function ($cliente) {
+            return [$cliente->id => $cliente->usuario_cliente->name . ' ' . $cliente->usuario_cliente->last_name];
+        })->all();
         
         return view('proyectos.editar', compact('proyecto','gerentesProy','prioridades','clientes'));
     }
@@ -262,14 +249,9 @@ class ProyectoController extends Controller
             $actividades = DB::table('actividad')->where('id_proyecto', $proyecto->id)->get();
     
             foreach ($actividades as $actividad) {
-                $id_actividad = $actividad->id;
-    
-                // Elimina asignaciones de recursos relacionadas
-                DB::table('asignacion_recurso')->where('id_actividad', $id_actividad)->delete();
-    
+                $id_actividad = $actividad->id;    
                 // Elimina comentarios relacionados a la actividad
                 DB::table('comentario')->where('id_actividad', $id_actividad)->delete();
-                
             }
     
             // Elimina notificaciones relacionadas al proyecto
@@ -345,15 +327,7 @@ class ProyectoController extends Controller
             $copiaActividad = $actividad->replicate();
             $copiaActividad->id_proyecto = $copiaProyecto->id;
             $copiaActividad->save();
-    
-            // Crear una copia de la asignacion de recursos de la actividad
-            $asignacionesRecursos = AsignacionRecurso::where('id_actividad', $actividad->id)->get();
-            foreach ($asignacionesRecursos as $asignacion) {
-                $copiaAsignacion = $asignacion->replicate();
-                $copiaAsignacion->id_actividad = $copiaActividad->id; 
-                $copiaAsignacion->save();
-            }
-    
+            
             // Copiar registros de comentarios relacionados a la actividad
             $comentarios = Comentario::where('id_actividad', $actividad->id)->get();
             foreach ($comentarios as $comentario) {
