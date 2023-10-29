@@ -350,6 +350,11 @@ return [
             'url'  => 'miembros',
             'icon' => 'fas fa-fw fa-users',
         ],
+        [
+            'text' => 'Recursos',
+            'url'  => 'recursos',
+            'icon' => 'fas fa-coins',
+        ],
         ['header' => 'Administración'],
         
         [
@@ -445,6 +450,11 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js',
                 ],
                 [
                     'type' => 'js',

@@ -1,5 +1,12 @@
 @extends('adminlte::page')
 @section('title', 'Gestión Proyectos')
+<style>
+  body{
+    table.dataTable tbody tr.selected {
+      background-color: #c9ebff;
+    }
+  }
+</style>
 @section('content_header')
 <h1 class="text-center">Gestionar Proyecto</h1>
 <p id="id_proyecto" data-id-proyecto="{{ $proyecto->id }}" class="d-none"></p>
@@ -172,6 +179,7 @@
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Actividades</h3>
                     <div class="card-tools ml-auto">
+                      <button type="button" class="btn btn-sm btn-outline-primary my-0" id="enviarRecordatorioBtn" style="display: none;">Enviar Recordatorio</button>
                       <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('actividades.create', $proyecto->id) }}">Agregar</a>
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>

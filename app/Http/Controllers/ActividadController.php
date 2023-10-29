@@ -13,6 +13,7 @@ use App\Models\Comentario;
 use App\Models\Notificacion;
 use App\Models\TipoNotificacion;
 use App\Models\EquipoTrabajo;
+use App\Models\ManoObra;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -216,6 +217,56 @@ class ActividadController extends Controller
             $notificacion->id_proyecto = $actividad->proyecto->id;
             $notificacion->leida = false;
             $notificacion->save();
+        }
+    }
+
+    public function enviarRecordatorio(Request $request, $id){
+        $data = $request->input('actividades');
+
+        // Iterar sobre los datosFiltrados y buscar las actividades en la base de datos
+        try {
+            foreach ($data as $actividad) {
+                // Buscar la actividad por su ID en la base de datos
+                $actividadEncontrada = Actividad::find($actividad['id']);
+    
+                // Verificar si la actividad fue encontrada
+                if ($actividadEncontrada) {
+                    //proyecto
+                    $nombre_proyecto = Proyecto::select('nombre')->find($id);
+                    //busca el miembro del equipo
+                    $miembroequipo = EquipoTrabajo::select('id_mano_obra')->find($actividadEncontrada->id_responsable);
+                    //busca dentro de mano de obra
+                    $usuarioAnotificar = ManoObra::select('id_usuario')->find($miembroequipo->id_mano_obra);
+
+                    //actividad recordatorio
+                    $tipo_notificacion_valor = 5;
+                    // Crear notificación para cada miembro
+                    $notificacion = new Notificacion();
+                    $notificacion->id_usuario = $usuarioAnotificar->id_usuario;
+                    $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+                    $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+                    if ($tipoNotificacion) {
+                        $descripcion = str_replace(['{{nombre}}', '{{nombre_proyecto}}'], [$actividadEncontrada->nombre, $nombre_proyecto], $tipoNotificacion->descripcion);
+                        $notificacion->descripcion = $descripcion;
+                        $notificacion->ruta = str_replace('{id}', $actividadEncontrada->id, $tipoNotificacion->ruta);
+                    }
+                    $notificacion->id_actividad = $actividadEncontrada->id;
+                    $notificacion->id_proyecto = $id;
+                    $notificacion->leida = false;
+                    $notificacion->save();
+                }
+            }
+            return response()->json(['success' => true], 200);
+
+        } catch (\Throwable $th) {
+            // Captura el mensaje de error
+            $errorMessage = $th->getMessage();
+
+            // Retorna el error como respuesta JSON
+            return response()->json([
+                'success' => false,
+                'message' => $errorMessage
+            ]);
         }
     }
 }
