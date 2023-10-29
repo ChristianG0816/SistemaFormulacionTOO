@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-group">
                     <label for="prioridad" class="text-secondary">Prioridad*</label>
-                    {!! Form::text('prioridad', null, [
+                    {!! Form::select('prioridad', $prioridades, null, [
                         'class' => 'form-control' . ($errors->has('prioridad') ? ' is-invalid' : ''),
                     ]) !!}
                     @error('prioridad')

@@ -140,6 +140,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     $("#actividad").modal("show");
 
+                    // Agrega un evento clic al botón para redirigir a la actividad
+                    btnRedirigir.addEventListener("click", function () {
+                    const actividadId = respuesta.data.id;
+
+                    // Construye la URL para redirigir a la actividad
+                    const url = `/actividades/show/${actividadId}`;
+
+                    // Redirige al usuario a la URL de la actividad
+                    window.location.href = url;
+                    });
+
 
                     })
                     .catch((error) => {
@@ -153,20 +164,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //Agregar un evento
     document.getElementById("btnGuardar").addEventListener("click", function () {
-            enviarDatos("/calendario/agregar");
+            enviarDatos("/calendario/agregar", "Evento creado exitosamente");
         });
 
     //Eliminar un evento
     document.getElementById("btnEliminar").addEventListener("click", function () {
-            enviarDatos("/calendario/eliminarEvento/" + formularioEvento.id.value);
+            enviarDatos("/calendario/eliminarEvento/" + formularioEvento.id.value , "Evento eliminado exitosamente");
         });
 
     //Modificar un evento
     document.getElementById("btnModificar").addEventListener("click", function () {
-            enviarDatos("/calendario/ActualizarEvento/" + formularioEvento.id.value);
+            enviarDatos("/calendario/ActualizarEvento/" + formularioEvento.id.value , "Evento actualizado exitosamente");
         });
               
-    function enviarDatos(url) {
+    function enviarDatos(url, mensaje) {
         const datos = new FormData(formularioEvento);
         const nuevaURL = baseUrl + url;
 
@@ -176,6 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 $("#evento").modal("hide");
                 //calendar.refetchEvents();
                 cargarActividadesYEventos(proyectoId);
+                toastr.success(mensaje);
             })
             .catch((error) => {
                 if (error.response) {

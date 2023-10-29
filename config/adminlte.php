@@ -349,6 +349,7 @@ return [
             'text' => 'Miembros',
             'url'  => 'miembros',
             'icon' => 'fas fa-fw fa-users',
+            'can' => 'gestionar-miembro',
         ],
         [
             'text' => 'Recursos',
@@ -356,6 +357,11 @@ return [
             'icon' => 'fas fa-coins',
         ],
         ['header' => 'Administración'],
+        
+        [
+            'text' => 'Clientes',
+            'url'  => 'clientes',
+        ],
         
         [
             'text' => 'Usuarios',

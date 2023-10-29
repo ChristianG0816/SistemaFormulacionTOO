@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ContactoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\RolController;
@@ -57,6 +59,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
     Route::resource('usuarios', UsuarioController::class);
     
+    //Rutas para cliente
+    Route::get('clientes/data', [ClienteController::class, 'data'])->name('clientes.data');
+    Route::resource('clientes', ClienteController::class);
+
     //Rutas para proyecto
     Route::get('proyectos/data', [ProyectoController::class, 'data'])->name('proyectos.data');
     Route::resource('proyectos', ProyectoController::class);
@@ -67,6 +73,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/proyectos/{id}/iniciar', [ProyectoController::class, 'iniciar'])->name('proyectos.iniciar');
     Route::get('/proyectos/{id}/finalizar', [ProyectoController::class, 'finalizar'])->name('proyectos.finalizar');
     
+    Route::get('miembros/verificarPais/{idPais}', [ManoObraController::class, 'verificarPais'])->name('miembros.verificarPais');
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
     
@@ -87,6 +94,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('actividades/create/{id}', [ActividadController::class, 'create'])->name('actividades.create');
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
+    Route::patch('actividades/{id}/actualizar', [ActividadController::class, 'actualizar'])->name('actividades.actualizar');
     Route::post('/actividades/{id}/recordatorio', [ActividadController::class, 'enviarRecordatorio']);
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
 

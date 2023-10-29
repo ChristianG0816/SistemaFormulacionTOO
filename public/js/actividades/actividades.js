@@ -91,19 +91,19 @@ $(document).ready(function() {
                     
                     var actionsHtml = '';
                     
-                    //if(hasPrivilegeVerActividad === true){
+                    if(permisos['ver-actividad']){
                         actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/actividades/show/'+row.id+'">Mostrar</a>';
-                    /*}
+                    }
 
-                    if(hasPrivilegeEditarActividad === true){*/
+                    if(permisos['editar-actividad']){
                         actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/actividades/'+row.id+'/edit">Editar</a>';
-                    /*}
+                    }
                     
-                    if(hasPrivilegeEliminarActividad === true){*/
+                    if(permisos['borrar-actividad']){
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
-                   //}
+                   }
                     
                     return actionsHtml || '';
                 }
@@ -193,6 +193,7 @@ $(document).ready(function() {
    
    //Método para enviar la solicitud de eliminar
     $(document).on('click', '#eliminarActividadBtn', function () {
+        e.preventDefault();
         var id = $(this).data('id');
         var modal = $('#confirmarEliminarModal');
         $.ajax({

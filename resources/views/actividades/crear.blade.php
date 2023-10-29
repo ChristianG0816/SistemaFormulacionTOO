@@ -24,8 +24,8 @@
               </div>
               <div class="form-group">
                   <label for="prioridad" class="text-secondary">Prioridad*</label>
-                  {!! Form::text('prioridad', null, [
-                      'class' => 'form-control' . ($errors->has('prioridad') ? ' is-invalid' : ''),
+                  {!! Form::select('prioridad', $prioridades, null, [
+                    'class' => 'form-control' . ($errors->has('prioridad') ? ' is-invalid' : ''),
                   ]) !!}
                   @error('prioridad')
                   <div class="invalid-feedback">{{ $message }}</div>

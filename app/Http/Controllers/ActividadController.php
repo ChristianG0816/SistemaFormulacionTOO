@@ -57,8 +57,14 @@ class ActividadController extends Controller
         }])
         ->get()
         ->pluck('mano_obra.usuario.full_name', 'id');
-
-        return view('actividades.crear', compact('estadosActividad', 'proyecto', 'miembrosEquipoTrabajo'));
+        $prioridades = [
+            '1' => '1',
+            '2' => '2',
+            '3' => '3',
+            '4' => '4',
+            '5' => '5',
+        ];
+        return view('actividades.crear', compact('estadosActividad', 'proyecto', 'miembrosEquipoTrabajo', 'prioridades'));
     }
 
     /**
@@ -124,7 +130,14 @@ class ActividadController extends Controller
         }])
         ->get()
         ->pluck('mano_obra.usuario.full_name', 'id');
-        return view('actividades.editar', compact('proyecto','actividad','estadosActividad', 'miembrosEquipoTrabajo'));
+        $prioridades = [
+            '1' => '1',
+            '2' => '2',
+            '3' => '3',
+            '4' => '4',
+            '5' => '5',
+        ];
+        return view('actividades.editar', compact('proyecto','actividad','estadosActividad', 'miembrosEquipoTrabajo', 'prioridades'));
     }
 
     /**
@@ -157,6 +170,30 @@ class ActividadController extends Controller
             $this->envio_notificacion_actividad(10, $actividad);
         }
         return redirect()->route('proyectos.show', ['proyecto' => $proyecto])->with('success', 'Actividad actualizada con éxito');
+    }
+
+    public function actualizar(Request $request, $id)
+    {
+        $actividad = Actividad::find($id);
+        $this->validate($request, [
+            'nombre' => 'required',
+            'prioridad'=>['required', 'regex:/^\d{1}(?:\d{1,4})?$/'],
+            'fecha_inicio' => 'required|fecha_menor_igual:fecha_fin',
+            'fecha_fin' => 'required',
+            'responsabilidades' => 'required',
+            'id_estado_actividad' => 'required',
+            'id_responsable' => 'required',
+        ]);
+        $input = $request->all();
+        $actividad->update($input);
+        $proyecto = Proyecto::find($actividad->id_proyecto);
+        if($actividad->estado_actividad->nombre == "Pendiente"){
+            $this->envio_notificacion_actividad(8, $actividad);
+        }else if($actividad->estado_actividad->nombre == "En Proceso"){
+            $this->envio_notificacion_actividad(9, $actividad);
+        }else if($actividad->estado_actividad->nombre == "Finalizada"){
+            $this->envio_notificacion_actividad(10, $actividad);
+        }
     }
 
     /**
