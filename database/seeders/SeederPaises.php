@@ -81,7 +81,7 @@ class SeederPaises extends Seeder {
 			['code' => 'DM', 'name' => 'Dominica'],
 			['code' => 'DO', 'name' => 'Dominican Republic'],
 			['code' => 'TP', 'name' => 'East Timor'],
-			['code' => 'EC', 'name' => 'Ecudaor'],
+			['code' => 'EC', 'name' => 'Ecuador'],
 			['code' => 'EG', 'name' => 'Egypt'],
 			['code' => 'SV', 'name' => 'El Salvador'],
 			['code' => 'GQ', 'name' => 'Equatorial Guinea'],

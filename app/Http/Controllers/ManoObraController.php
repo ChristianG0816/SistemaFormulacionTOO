@@ -37,6 +37,16 @@ class ManoObraController extends Controller
         return datatables()->of($data)->toJson();
     }
 
+    public function verificarPais($idPais)
+    {
+        $departamentos = Departamento::where('id_pais', $idPais)->get();
+        if ($departamentos->isEmpty()) {
+            return response()->json(['encontrado' => false]);
+        } else {
+            return response()->json(['encontrado' => true]);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -45,7 +55,7 @@ class ManoObraController extends Controller
     public function create()
     {
         $paises = Pais::pluck('name', 'id')->all();
-        $departamentos = Departamento::pluck('nombre', 'id')->all();
+        $departamentos = Departamento::all();
         $municipios = Municipio::all();
         $sexos = [
             'Masculino' => 'Masculino',
@@ -73,22 +83,28 @@ class ManoObraController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $rules=[
             'name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email',
             'tipo_documento'=>'required',
             'numero_documento'=>['required', 'regex:/^\d{3}(?:\d{1,20})?$/'],
             'id_pais'=>'required',
-            'departamento' => 'required_if:id_pais,65',
-            'municipio' => 'required_if:id_pais,65',
             'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
             'profesion'=>'required',
             'estado_civil'=>'required',
             'sexo'=>'required',
             'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
             'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
-        ]);
+        ];
+        $departamentos = Departamento::where('id_pais', $request->input('id_pais'))->get();
+        if ($departamentos->isEmpty()==false) {
+            $rules=[
+                'departamento' => 'required',
+                'municipio' => 'required'
+            ];
+        }
+        $this->validate($request, $rules);
 
         $password=Str::random(12);
 
@@ -168,7 +184,7 @@ class ManoObraController extends Controller
     {
         $manoObra = ManoObra::find($id);
         $paises = Pais::pluck('name', 'id')->all();
-        $departamentos = Departamento::pluck('nombre', 'id')->all();
+        $departamentos = Departamento::all();
         $municipios = Municipio::all();
         $sexos = [
             'Masculino' => 'Masculino',
@@ -225,21 +241,28 @@ class ManoObraController extends Controller
         $manoObra = ManoObra::find($id);
         $user = User::find($manoObra->id_usuario);
         $persona = Persona::find($manoObra->id_persona);
-        $this->validate($request, [
+        $rules=[
             'name' => 'required',
             'last_name' => 'required',
+            'email' => 'required|email|unique:users,email',
             'tipo_documento'=>'required',
             'numero_documento'=>['required', 'regex:/^\d{3}(?:\d{1,20})?$/'],
             'id_pais'=>'required',
-            'departamento' => 'required_if:id_pais,65',
-            'municipio' => 'required_if:id_pais,65',
             'telefono' => ['required', 'regex:/^\d{8}(?:\d{1,2})?$/'],
             'profesion'=>'required',
             'estado_civil'=>'required',
             'sexo'=>'required',
             'fecha_nacimiento'=> 'required|validateFechaMayorDe18',
             'costo_servicio'=> ['required', 'regex:/^\d+(\.\d+)?$/']
-        ]);
+        ];
+        $departamentos = Departamento::where('id_pais', $request->input('id_pais'))->get();
+        if ($departamentos->isEmpty()==false) {
+            $rules=[
+                'departamento' => 'required',
+                'municipio' => 'required'
+            ];
+        }
+        $this->validate($request, $rules);
         $user->update([
             'name'=>$request->input('name'),
             'last_name'=>$request->input('last_name'),
