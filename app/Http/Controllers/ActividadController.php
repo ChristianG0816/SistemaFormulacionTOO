@@ -56,8 +56,14 @@ class ActividadController extends Controller
         }])
         ->get()
         ->pluck('mano_obra.usuario.full_name', 'id');
-
-        return view('actividades.crear', compact('estadosActividad', 'proyecto', 'miembrosEquipoTrabajo'));
+        $prioridades = [
+            '1' => '1',
+            '2' => '2',
+            '3' => '3',
+            '4' => '4',
+            '5' => '5',
+        ];
+        return view('actividades.crear', compact('estadosActividad', 'proyecto', 'miembrosEquipoTrabajo', 'prioridades'));
     }
 
     /**
@@ -123,7 +129,14 @@ class ActividadController extends Controller
         }])
         ->get()
         ->pluck('mano_obra.usuario.full_name', 'id');
-        return view('actividades.editar', compact('proyecto','actividad','estadosActividad', 'miembrosEquipoTrabajo'));
+        $prioridades = [
+            '1' => '1',
+            '2' => '2',
+            '3' => '3',
+            '4' => '4',
+            '5' => '5',
+        ];
+        return view('actividades.editar', compact('proyecto','actividad','estadosActividad', 'miembrosEquipoTrabajo', 'prioridades'));
     }
 
     /**

@@ -130,6 +130,7 @@ class ComentarioController extends Controller
             $notificacion->descripcion = $descripcion4;
             $notificacion->ruta = str_replace('{{id}}', $comentario->actividad->id, $tipoNotificacion->ruta);
         }
+        $notificacion->id_proyecto = $comentario->actividad->id_proyecto;
         $notificacion->id_actividad = $comentario->actividad->id;
         $notificacion->leida = false;
         $notificacion->save();
@@ -152,7 +153,7 @@ class ComentarioController extends Controller
                     $notificacion->ruta = str_replace('{{id}}', $comentario->actividad->id, $tipoNotificacion->ruta);
                 }
                 $notificacion->id_actividad = $comentario->actividad->id;
-                $notificacion->id_proyecto = $comentario->actividad->proyecto->id;
+                $notificacion->id_proyecto = $comentario->actividad->id_proyecto;
                 $notificacion->leida = false;
                 $notificacion->save();
             }
