@@ -11,9 +11,7 @@ use App\Models\EstadoProyecto;
 use App\Models\Evento;
 use App\Models\EquipoTrabajo;
 use App\Models\Actividad;
-use App\Models\MiembroActividad;
 use App\Models\AsignacionRecurso;
-use App\Models\Tarea;
 use App\Models\Comentario;
 use App\Models\Notificacion;
 use Illuminate\Support\Facades\Auth;
@@ -272,11 +270,6 @@ class ProyectoController extends Controller
                 // Elimina comentarios relacionados a la actividad
                 DB::table('comentario')->where('id_actividad', $id_actividad)->delete();
                 
-                // Elimina tareas relacionadas a la actividad
-                DB::table('tarea')->where('id_actividad', $id_actividad)->delete();
-    
-                // Elimina miembros relacionados a la actividad
-                DB::table('miembro_actividad')->where('id_actividad', $id_actividad)->delete();
             }
     
             // Elimina notificaciones relacionadas al proyecto
@@ -353,32 +346,12 @@ class ProyectoController extends Controller
             $copiaActividad->id_proyecto = $copiaProyecto->id;
             $copiaActividad->save();
     
-            // Crear una copia de los miembros de la actividad
-            $miembrosActividad = MiembroActividad::where('id_actividad', $actividad->id)->get();
-            foreach ($miembrosActividad as $miembro) {
-                $copiaMiembro = $miembro->replicate();
-                $copiaMiembro->id_actividad = $copiaActividad->id;
-                if (isset($copiasEquiposTrabajo[$miembro->id_equipo_trabajo])) {
-                    $copiaMiembro->id_equipo_trabajo = $copiasEquiposTrabajo[$miembro->id_equipo_trabajo]->id;
-                }
-
-                $copiaMiembro->save();
-            }
-    
             // Crear una copia de la asignacion de recursos de la actividad
             $asignacionesRecursos = AsignacionRecurso::where('id_actividad', $actividad->id)->get();
             foreach ($asignacionesRecursos as $asignacion) {
                 $copiaAsignacion = $asignacion->replicate();
                 $copiaAsignacion->id_actividad = $copiaActividad->id; 
                 $copiaAsignacion->save();
-            }
-    
-            // Crear una copia de las tareas de la actividad
-            $tareas = Tarea::where('id_actividad', $actividad->id)->get();
-            foreach ($tareas as $tarea) {
-                $copiaTarea = $tarea->replicate();
-                $copiaTarea->id_actividad = $copiaActividad->id; 
-                $copiaTarea->save();
             }
     
             // Copiar registros de comentarios relacionados a la actividad

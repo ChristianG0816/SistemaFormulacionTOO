@@ -60,6 +60,15 @@
               </div>
           </div>
           <div class="col-lg-6 col-md-12 mb-3"><!-- Columna derecha -->
+                <div class="form-group">
+                    <label for="id_responsable" class="text-secondary">Responsable*</label>
+                    {!! Form::select('id_responsable', $miembrosEquipoTrabajo, null, [
+                        'class' => 'form-control' . ($errors->has('id_responsable') ? ' is-invalid' : ''),
+                    ]) !!}
+                    @error('id_responsable')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
               <div class="form-group">
                   <label for="responsabilidades" class="text-secondary">Responsabilidades*</label>
                   {!! Form::textarea('responsabilidades', null, [

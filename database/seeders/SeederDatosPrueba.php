@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Proyecto;
-use App\Models\PaqueteActividades;
+use App\Models\Actividad;
 use App\Models\ManoObra;
 use App\Models\Persona;
 use App\Models\EquipoTrabajo;
@@ -59,97 +59,6 @@ class SeederDatosPrueba extends Seeder
             'id_estado_proyecto' => 1,
             'id_gerente_proyecto' => 7,
             'id_cliente' => 6,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 1 Proyecto 1',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/10/10',
-            'fecha_fin' => '2023/10/15',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 1,
-            'id_estado_actividad' => 1,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 2 Proyecto 1',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/10/12',
-            'fecha_fin' => '2023/10/16',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 1,
-            'id_estado_actividad' => 1,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 1 Proyecto 2',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/11/10',
-            'fecha_fin' => '2023/11/26',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 2,
-            'id_estado_actividad' => 1,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 2 Proyecto 2',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/11/12',
-            'fecha_fin' => '2023/11/20',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 2,
-            'id_estado_actividad' => 1,
-        ]);
-
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 1 Proyecto 3',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/09/10',
-            'fecha_fin' => '2023/09/26',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 3,
-            'id_estado_actividad' => 1,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 2 Proyecto 3',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/09/12',
-            'fecha_fin' => '2023/09/20',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 3,
-            'id_estado_actividad' => 1,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 3 Proyecto 3',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/11/10',
-            'fecha_fin' => '2023/11/12',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 3,
-            'id_estado_actividad' => 1,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 4 Proyecto 3',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/11/2',
-            'fecha_fin' => '2023/11/8',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 3,
-            'id_estado_actividad' => 1,
-        ]);
-
-        PaqueteActividades::create([
-            'nombre' => 'Actividad 5 Proyecto 3',
-            'prioridad' => 1,
-            'fecha_inicio' => '2023/11/05',
-            'fecha_fin' => '2023/11/15',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
-            'id_proyecto' => 3,
-            'id_estado_actividad' => 1,
         ]);
 
         Persona::create([
@@ -225,55 +134,105 @@ class SeederDatosPrueba extends Seeder
             'id_mano_obra' => 2,
         ]);
 
-        EquipoTrabajo::Create([
+        
+        Actividad::create([
+            'nombre' => 'Actividad 1 Proyecto 1',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/10/10',
+            'fecha_fin' => '2023/10/15',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 1,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
+        ]);
+
+        Actividad::create([
+            'nombre' => 'Actividad 2 Proyecto 1',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/10/12',
+            'fecha_fin' => '2023/10/16',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 1,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
+        ]);
+
+        Actividad::create([
+            'nombre' => 'Actividad 1 Proyecto 2',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/10',
+            'fecha_fin' => '2023/11/26',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 2,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
+        ]);
+
+        Actividad::create([
+            'nombre' => 'Actividad 2 Proyecto 2',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/12',
+            'fecha_fin' => '2023/11/20',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 2,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
+        ]);
+
+
+        Actividad::create([
+            'nombre' => 'Actividad 1 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/09/10',
+            'fecha_fin' => '2023/09/26',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 3,
-            'id_mano_obra' => 3,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
         ]);
 
-        MiembroActividad::create([
-            'id_paquete_actividades' => 1 ,
-            'id_equipo_trabajo' => 1,
+        Actividad::create([
+            'nombre' => 'Actividad 2 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/09/12',
+            'fecha_fin' => '2023/09/20',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 3,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
         ]);
 
-        MiembroActividad::create([
-            'id_paquete_actividades' => 2 ,
-            'id_equipo_trabajo' => 1,
+        Actividad::create([
+            'nombre' => 'Actividad 3 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/10',
+            'fecha_fin' => '2023/11/12',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 3,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
         ]);
 
-        MiembroActividad::create([
-            'id_paquete_actividades' => 3 ,
-            'id_equipo_trabajo' => 2,
+        Actividad::create([
+            'nombre' => 'Actividad 4 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/2',
+            'fecha_fin' => '2023/11/8',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 3,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
         ]);
 
-        MiembroActividad::create([
-            'id_paquete_actividades' => 4 ,
-            'id_equipo_trabajo' => 2,
+        Actividad::create([
+            'nombre' => 'Actividad 5 Proyecto 3',
+            'prioridad' => 1,
+            'fecha_inicio' => '2023/11/05',
+            'fecha_fin' => '2023/11/15',
+            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'id_proyecto' => 3,
+            'id_estado_actividad' => 1,
+            'id_responsable' => 1,
         ]);
-
-        MiembroActividad::create([
-            'id_paquete_actividades' => 5 ,
-            'id_equipo_trabajo' => 3,
-        ]);
-
-        MiembroActividad::create([
-            'id_paquete_actividades' => 6 ,
-            'id_equipo_trabajo' => 3,
-        ]);
-
-        MiembroActividad::create([
-            'id_paquete_actividades' => 7 ,
-            'id_equipo_trabajo' => 3,
-        ]);
-
-        MiembroActividad::create([
-            'id_paquete_actividades' => 8 ,
-            'id_equipo_trabajo' => 3,
-        ]);
-
-        MiembroActividad::create([
-            'id_paquete_actividades' => 9 ,
-            'id_equipo_trabajo' => 4,
-        ]);
-
     }
 }

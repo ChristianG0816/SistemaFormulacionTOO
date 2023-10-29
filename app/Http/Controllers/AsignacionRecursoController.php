@@ -19,7 +19,7 @@ class AsignacionRecursoController extends Controller
         ->whereNotIn('id', function($query) use ($id) {
             $query->select('id_recurso')
                 ->from('asignacion_recurso')
-                ->where('id_paquete_actividades', $id);
+                ->where('id_actividad', $id);
         })
         ->get();
 
@@ -59,7 +59,7 @@ class AsignacionRecursoController extends Controller
                 $actividades = Actividad::where('id_proyecto', $id_proyecto)->get();
                 if($actividades){
                     foreach($actividades as $actividad){
-                        $recursos = AsignacionRecurso::where('id_paquete_actividades', $actividad->id)->get();
+                        $recursos = AsignacionRecurso::where('id_actividad', $actividad->id)->get();
                         if($recursos){
                             foreach($recursos as $recurso){
                                 $costo_recurso_individual = Recurso::where('id', $recurso->id_recurso)->sum('costo');
@@ -90,7 +90,7 @@ class AsignacionRecursoController extends Controller
                 }
 
                 AsignacionRecurso::create([
-                    'id_paquete_actividades' => $request->input('id_actividad'),
+                    'id_actividad' => $request->input('id_actividad'),
                     'id_recurso' => $request->input('id_recurso'),
                     'cantidad' => $request->input('cantidad')
                 ]);
@@ -116,7 +116,7 @@ class AsignacionRecursoController extends Controller
         // Convertir a un entero
         $actividadId = (int)$actividadId;
 
-        $data = AsignacionRecurso::where('id_paquete_actividades', $actividadId)
+        $data = AsignacionRecurso::where('id_actividad', $actividadId)
         ->with('recurso')
         ->get();
 
