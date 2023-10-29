@@ -144,7 +144,7 @@
                         </div>
 
                         <!-- Agregar un botón para redirigir a la actividad -->
-                    <a href="#" id="btnRedirigir" class="btn btn-primary">Ir a la Actividad</a>
+                        <a href="#" id="btnRedirigir" class="btn btn-primary">Ir a la Actividad</a>
 
                     </form>
                 </div>
