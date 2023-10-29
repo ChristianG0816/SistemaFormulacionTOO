@@ -72,7 +72,7 @@
                                 </div>
                               </div>
                               <div class="col-md-11">
-                                {!! Form::text('id_cliente', $proyecto->cliente->name . ' ' . $proyecto->cliente->last_name, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                {!! Form::text('id_cliente', $proyecto->cliente->usuario_cliente->name . ' ' . $proyecto->cliente->usuario_cliente->last_name, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                               </div>
                             </div>
                             <div class="row">

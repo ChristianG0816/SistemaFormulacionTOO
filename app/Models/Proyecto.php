@@ -29,6 +29,6 @@ class Proyecto extends Model
         return $this->belongsTo(User::class, 'id_gerente_proyecto');
     }
     public function cliente(){
-        return $this->belongsTo(User::class, 'id_cliente');
+        return $this->belongsTo(Cliente::class, 'id_cliente');
     }
 }

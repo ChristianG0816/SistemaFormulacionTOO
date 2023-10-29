@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Cliente;
+use App\Models\Proyecto;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Mail\NuevoUsuarioCreado;
@@ -68,23 +69,53 @@ class ClienteController extends Controller
         return view('clientes.mostrar', compact('cliente'));
     }
 
+    public function edit($id)
+    {
+        $cliente = Cliente::find($id);
+        $usuario = $cliente->usuario_cliente;
+        return view('clientes.editar', compact('cliente', 'usuario'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        $user = User::findOrFail($cliente->id_usuario);
+        $rules = [
+            'name' => 'required',
+            'tipo_cliente' => 'required',
+            'email' => 'required|email|unique:users,email,' . $cliente->id_usuario,
+            'telefono' => 'required'
+        ];
+    
+        if ($request->tipo_cliente === 'Persona Natural') {
+            $rules['last_name'] = 'required';
+        } else {
+            $request->merge(['last_name' => '']);
+        }
+
+        $this->validate($request, $rules);
+        $user->update([
+            'name' => $request->input('name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+        ]);
+
+        $cliente->update($request->all());
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado con éxito');
+    }
+
     public function destroy($id)
     {
         $cliente = Cliente::find($id);
-        if ($cliente) {
-            $cliente->delete();
-            /*$usuarioId = $cliente->id_usuario;
-    
-            $proyectosAsociados = DB::table('proyecto')->where('id_cliente', $cliente->id)->get();   
-    
-            if ($proyectosAsociados->isEmpty()) {
-                DB::table('users')->where('id_usuario', $usuarioId)->delete();
-                return redirect()->route('clientes.index')->with('success', 'Cliente eliminado con éxito');
-            } else {
-                return redirect()->route('clientes.index')->with('error', 'No se puede eliminar el cliente, existen proyectos asociados a él');
-            }*/
+        $proyectosAsociados = Proyecto::where('id_cliente', $id)->get();
+        if (!$proyectosAsociados->isEmpty()) {
+            return response()->json(['error' => 'No se puede eliminar el cliente, existen proyectos asociados a él'], 422);
         } else {
-            return redirect()->route('clientes.index')->with('error', 'No se encontró el cliente');
+            $usuarioId = $cliente->id_usuario;
+            if($cliente){$cliente->delete();}   
+            $user = User::where('id', $usuarioId)->first();
+            if ($user) {$user->delete();}
+            return response()->json(['success' => 'Se ha eliminado correctamente el cliente']);
         }
     }
     

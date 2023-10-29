@@ -26,7 +26,7 @@ class CreateProyectoTable extends Migration
             $table->timestamps(); // created_at, updated_at
             $table->foreignId('id_estado_proyecto')->constrained('estado_proyecto')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_gerente_proyecto')->constrained('users')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignId('id_cliente')->constrained('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('id_cliente')->constrained('cliente')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

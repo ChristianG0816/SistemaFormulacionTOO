@@ -13,7 +13,7 @@
           <a class="btn btn-sm btn-outline-warning" href="{{route('proyectos.create')}}">Nuevo</a>
           <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
           <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
-          <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button> 
+          <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button>
         </h3>
       </div>
       <div class="card-body">
