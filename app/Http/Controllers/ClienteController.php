@@ -69,6 +69,41 @@ class ClienteController extends Controller
         return view('clientes.mostrar', compact('cliente'));
     }
 
+    public function edit($id)
+    {
+        $cliente = Cliente::find($id);
+        $usuario = $cliente->usuario_cliente;
+        return view('clientes.editar', compact('cliente', 'usuario'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        $user = User::findOrFail($cliente->id_usuario);
+        $rules = [
+            'name' => 'required',
+            'tipo_cliente' => 'required',
+            'email' => 'required|email|unique:users,email,' . $cliente->id_usuario,
+            'telefono' => 'required'
+        ];
+    
+        if ($request->tipo_cliente === 'Persona Natural') {
+            $rules['last_name'] = 'required';
+        } else {
+            $request->merge(['last_name' => '']);
+        }
+
+        $this->validate($request, $rules);
+        $user->update([
+            'name' => $request->input('name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+        ]);
+
+        $cliente->update($request->all());
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado con éxito');
+    }
+
     public function destroy($id)
     {
         $cliente = Cliente::find($id);
