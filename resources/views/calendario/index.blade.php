@@ -34,40 +34,79 @@
                         </button>
                 </div>
                 <div class="modal-body">
+                    
                     <form action="" id="eventos">
-
                         {!! csrf_field() !!}
 
                         <div class="form-group d-none">
                             <label for="id">ID:</label>
                             <input type="text" class="form-control" name="id" id="id" aria-describedby="helpId" placeholder="">
                         </div>
-                        <div class="form-group">    
-                            <label for="nombre">Nombre:</label>
-                            <input type="text" class="form-control" name="nombre" id="nombre" aria-describedby="helpId" placeholder="">
-                            <label for="descripcion">Descripción:</label>
-                            <input type="text" class="form-control" name="descripcion" id="descripcion" aria-describedby="helpId" placeholder="">
-                            <label for="direccion">Dirección:</label>
-                            <input type="text" class="form-control" name="direccion" id="direccion" aria-describedby="helpId" placeholder="">
+
+                        <div class="form-group">
+                                
+                            <div class="form-group">
+                                <label for="nombre">Nombre:</label>
+                                <input type="text" class="form-control" name="nombre" id="nombre" aria-describedby="helpId" placeholder="">
+                                <div id="errorNombre" class="text-danger"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="descripcion">Descripción:</label>
+                                <input type="text" class="form-control" name="descripcion" id="descripcion" aria-describedby="helpId" placeholder="">
+                                <div id="errorDes" class="text-danger"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="direccion">Dirección:</label>
+                                <input type="text" class="form-control" name="direccion" id="direccion" aria-describedby="helpId" placeholder="">
+                                <div id="errorDir" class="text-danger"></div>
+                            </div>
+                            
                             <label for="proyecto">Proyecto Asociado:</label>
-                            <select class="form-control" name="proyecto" id="proyecto">
+                            <select class="form-control" name="proyecto" id="proyecto" disabled>
                                 <option value="">Seleccione un proyecto</option>
                                 @foreach($proyectos as $proyecto)
                                     <option value="{{ $proyecto->id }}">{{ $proyecto->nombre }}</option>
                                 @endforeach
                             </select>
-                            <label for="fecha_inicio">Fecha Inicio</label>
-                            <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio" aria-describedby="helpId" placeholder="">
-                            <label for="fecha_fin">Fecha Fin</label>
-                            <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" aria-describedby="helpId" placeholder="">
-                            <label for="hora_inicio">Hora Inicio</label>
-                            <input type="time" class="form-control" name="hora_inicio" id="hora_inicio" aria-describedby="helpId" placeholder="">
-                            <label for="hora_fin">Hora Fin</label>
-                            <input type="time" class="form-control" name="hora_fin" id="hora_fin" aria-describedby="helpId" placeholder="">
-                            <label for="fecha_recordatorio">Fecha Recordatorio:</label>
-                            <input type="date" class="form-control" name="fecha_recordatorio" id="fecha_recordatorio" aria-describedby="helpId" placeholder="">
-                            <label for="link_reunion">Link de la reunión:</label>
-                            <input type="text" class="form-control" name="link_reunion" id="link_reunion" aria-describedby="helpId" placeholder="">
+
+                            <div class="form-group">
+                                <label for="fecha_inicio">Fecha Inicio</label>
+                                <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio" aria-describedby="helpId" placeholder="">
+                                <div id="errorFechaInicio" class="text-danger"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="fecha_fin">Fecha Fin</label>
+                                <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" aria-describedby="helpId" placeholder="">
+                                <div id="errorFechaFin" class="text-danger"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="hora_inicio">Hora Inicio</label>
+                                <input type="time" class="form-control" name="hora_inicio" id="hora_inicio" aria-describedby="helpId" placeholder="">
+                                <div id="errorHoraInicio" class="text-danger"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="hora_fin">Hora Fin</label>
+                                <input type="time" class="form-control" name="hora_fin" id="hora_fin" aria-describedby="helpId" placeholder="">
+                                <div id="errorHoraFin" class="text-danger"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label label for="fecha_recordatorio">Fecha Recordatorio:</label>
+                                <input type="date" class="form-control" name="fecha_recordatorio" id="fecha_recordatorio" aria-describedby="helpId" placeholder="">
+                                <div id="errorFechaRecord" class="text-danger"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="link_reunion">Link de la reunión:</label>
+                                <input type="text" class="form-control" name="link_reunion" id="link_reunion" aria-describedby="helpId" placeholder="">
+                                <div id="errorlink" class="text-danger"></div>
+                            </div>
+
                         </div>
                     </form>
                 </div>
@@ -95,16 +134,15 @@
                 </div>
                 <div class="modal-body">
                     <form action="" id="actividades">
-                        <div class="form-group">
-                            <label for="title">Nombre Actividad</label>
-                            <input type="text" class="form-control" name="title" id="title" aria-describedby="helpId" placeholder="">
-                            <label for="start">Fecha Inicio</label>
-                            <input type="text" class="form-control" name="start" id="start" aria-describedby="helpId" placeholder="">
-                            <label for="end">Fecha Fin</label>
-                            <input type="text" class="form-control" name="end" id="end" aria-describedby="helpId" placeholder="">
+                        <p><strong>Nombre Paquete:</strong> <span id="titleForm"></span></p>
+                        <p><strong>Proyecto:</strong> <span id="proyectoForm"></span></p>
+                        <p><strong>Fecha Inicio:</strong> <span id="fechaInicioForm"></span></p>
+                        <p><strong>Fecha Fin:</strong> <span id="fechaFinForm"></span></p>
+                        <p><strong>Estado:</strong> <span id="estadoForm"></span></p>
+                        <div class="form-group" id="diasRestantesDiv">
+                            <p><strong id="dia">Dias Restantes:</strong> <span id="diaForm"></span></p>
                         </div>
                     </form>
-                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

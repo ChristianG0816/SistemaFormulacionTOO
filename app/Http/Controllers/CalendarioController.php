@@ -9,10 +9,11 @@ use App\Models\EquipoTrabajo;
 use App\Models\ManoObra;
 use App\Models\MiembroActividad;
 use App\Models\Proyecto;
-use App\Models\User;
+use App\Models\User; 
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Evento;
 use PhpParser\Node\Expr\BinaryOp\Equal;
+use App\Models\EstadoActividad;
 
 class CalendarioController extends Controller
 {
@@ -22,11 +23,12 @@ class CalendarioController extends Controller
         $usuarioLogueado = Auth::user();
         $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
         // Obtener el id del usuario logueado - En este caso del supervisor
-        $Supervisor = Proyecto::where('id_dueno', $usuarioLogueado->id)->first();
+        $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
+        
         //Obtener el id del usuario logueado - En este caso el cliente
-        $cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+        //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
 
-        $esGerente = $usuarioLogueado->hasRole('Gerente');
+        //$esGerente = $usuarioLogueado->hasRole('Gerente');
 
         if ($manoObra) {
             $proyectos = Proyecto::whereIn('id', function ($query) use ($manoObra) {
@@ -34,13 +36,13 @@ class CalendarioController extends Controller
                     ->from('equipo_trabajo')
                     ->where('id_mano_obra', $manoObra->id);
             })->get();
-        } elseif ($Supervisor) {
-            $proyectos = Proyecto::where('id_dueno', $usuarioLogueado->id)->get();
-        } elseif ($cliente) {
+        } elseif ($gerenteProyecto) {
+            $proyectos = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->get();
+        } /*elseif ($cliente) {
             $proyectos = Proyecto::where('id_cliente', $usuarioLogueado->id)->get();
-        } elseif ($esGerente) {
+        } */ /*elseif ($esGerente) {
             $proyectos = Proyecto::all();
-        } else {
+        } */ else {
             $proyectos = [];
         }
 
@@ -55,20 +57,19 @@ class CalendarioController extends Controller
         // Obtener el mano de obra del usuario logueado
         $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
         // Obtener el id del usuario logueado - En este caso del supervisor
-        $Supervisor = Proyecto::where('id_dueno', $usuarioLogueado->id)->first();
+        $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
         // Obtener el id del usuario logueado - En este caso el cliente
-        $cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+        //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
         // Obtener el rol de gerente
-        $Gerente = $usuarioLogueado->hasRole('Gerente');
+        //$Gerente = $usuarioLogueado->hasRole('Gerente');
 
         if ($manoObra) {
             $equipoTrabajo = EquipoTrabajo::where('id_mano_obra', $manoObra->id)->get();
             $eventos = [];
 
             foreach ($equipoTrabajo as $equipo) {
-                $miembrosActividad = MiembroActividad::where('id_equipo_trabajo', $equipo->id)->get();
-                foreach ($miembrosActividad as $miembroActividad) {
-                    $actividad = Actividad::find($miembroActividad->id_actividad);
+                    $actividades = Actividad::where('id_responsable', $equipo->id)->get();
+                    foreach ($actividades as $actividad) {
                     if ($idProyecto == 0 || ($actividad && $actividad->id_proyecto == $idProyecto)) {
                         $evento = [
                             'id' => $actividad->id,
@@ -76,15 +77,14 @@ class CalendarioController extends Controller
                             'start' => $actividad->fecha_fin,
                             'end' => $actividad->fecha_fin,
                             'tipo' => 'actividad',
-                            //'proyecto' => $actividad->id_proyecto,
                         ];
                         array_push($eventos, $evento);
                     }
                 }
             }
-
             return response()->json($eventos);
-        } elseif ($Gerente) {
+
+        } /*elseif ($Gerente) {
             if ($idProyecto == 0) {
                 // Si es Gerente y $idProyecto es igual a 0, obtén todas las actividades.
                 $actividades = Actividad::all();
@@ -106,12 +106,12 @@ class CalendarioController extends Controller
             }
 
             return response()->json($eventos);
-        } elseif ($Supervisor || $cliente) {
+            elseif ($gerenteProyecto || $cliente) {
+        } */ elseif ($gerenteProyecto) {
             if ($idProyecto == 0) {
                 // Si idProyecto es igual a 0, se obtienen todas las actividades relacionadas con proyectos del usuario.
                 $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
-                    $query->where('id_dueno', $usuarioLogueado->id)
-                        ->orWhere('id_cliente', $usuarioLogueado->id);
+                    $query->where('id_gerente_proyecto', $usuarioLogueado->id);
                 })->pluck('id');
                 $actividades = Actividad::whereIn('id_proyecto', $proyectosUsuario)->get();
             } else {
@@ -149,16 +149,18 @@ class CalendarioController extends Controller
 
     //Funcionalidades de Eventos
 
-    public function GuardarEvento(Request $request){
+public function GuardarEvento(Request $request){
     request()->validate(Evento::$rules);
 
     // Obtiene el valor seleccionado del select en el formulario.
     $id_proyecto = $request->input('proyecto');
 
     // Crea un nuevo evento con "id_proyecto" establecido.
+
     $evento = new Evento($request->all());
     $evento->id_proyecto = $id_proyecto;
     $evento->save();
+
 }
 
 public function showEvento($idProyecto){
@@ -169,11 +171,11 @@ public function showEvento($idProyecto){
     // Obtener el mano de obra del usuario logueado
     $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
     // Obtener el id del usuario logueado - En este caso del supervisor
-    $Supervisor = Proyecto::where('id_dueno', $usuarioLogueado->id)->first();
+    $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
     // Obtener el id del usuario logueado - En este caso el cliente
-    $cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+    //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
     // Obtener el rol de gerente
-    $Gerente = $usuarioLogueado->hasRole('Gerente');
+    //$Gerente = $usuarioLogueado->hasRole('Gerente');
 
     //Queda pendiente elaborar el de la mano de obra
     if ($manoObra) {
@@ -194,14 +196,14 @@ public function showEvento($idProyecto){
         }
     }
 
-    elseif($Supervisor || $cliente){
+    /* elseif($Supervisor || $cliente)*/
+    elseif($gerenteProyecto){
         if ($idProyecto == 0) {
             // Si idProyecto es igual a 0, se obtienen todas los eventos
             // relacionadas con proyectos del usuario.
 
             $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
-                $query->where('id_dueno', $usuarioLogueado->id)
-                    ->orWhere('id_cliente', $usuarioLogueado->id);
+                $query->where('id_gerente_proyecto', $usuarioLogueado->id);
             })->pluck('id');
 
             $eventos = Evento::whereIn('id_proyecto', $proyectosUsuario)->get();
@@ -210,7 +212,7 @@ public function showEvento($idProyecto){
             // relacionadas con el proyecto específico.
             $eventos = Evento::where('id_proyecto', $idProyecto)->get();
         } 
-    }elseif ($Gerente){
+    } /*elseif ($Gerente){
         if ($idProyecto == 0) {
             $eventos = Evento::all();
         } else {
@@ -218,7 +220,7 @@ public function showEvento($idProyecto){
             // relacionadas con el proyecto específico.
             $eventos = Evento::where('id_proyecto', $idProyecto)->get();
         } 
-    }
+    }*/
 
     $eventosData = [];
     foreach ($eventos as $evento) {
@@ -257,6 +259,17 @@ public function consultarEvento($id)
 
     }
 
+    //Obtenemos el nombre del proyecto
+    public function showId($id){
+        $proyecto=Proyecto::find($id);
+        return response()->json($proyecto);
+    }
+
+    //Obtenemos el nombre del estadoDeLaActividad
+    public function showEstadoId($id){
+        $estado=EstadoActividad::find($id);
+        return response()->json($estado);
+    }
 
 
 }

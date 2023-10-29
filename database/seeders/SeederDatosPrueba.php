@@ -8,7 +8,6 @@ use App\Models\Actividad;
 use App\Models\ManoObra;
 use App\Models\Persona;
 use App\Models\EquipoTrabajo;
-use App\Models\MiembroActividad;
 
 class SeederDatosPrueba extends Seeder
 {
@@ -165,7 +164,7 @@ class SeederDatosPrueba extends Seeder
             'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 2,
             'id_estado_actividad' => 1,
-            'id_responsable' => 1,
+            'id_responsable' => 2,
         ]);
 
         Actividad::create([
@@ -176,7 +175,7 @@ class SeederDatosPrueba extends Seeder
             'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 2,
             'id_estado_actividad' => 1,
-            'id_responsable' => 1,
+            'id_responsable' => 2,
         ]);
 
 
@@ -188,7 +187,7 @@ class SeederDatosPrueba extends Seeder
             'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
-            'id_responsable' => 1,
+            'id_responsable' => 3,
         ]);
 
         Actividad::create([
@@ -199,7 +198,7 @@ class SeederDatosPrueba extends Seeder
             'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
-            'id_responsable' => 1,
+            'id_responsable' => 3,
         ]);
 
         Actividad::create([
@@ -210,7 +209,7 @@ class SeederDatosPrueba extends Seeder
             'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
-            'id_responsable' => 1,
+            'id_responsable' => 3,
         ]);
 
         Actividad::create([
@@ -221,7 +220,7 @@ class SeederDatosPrueba extends Seeder
             'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
-            'id_responsable' => 1,
+            'id_responsable' => 3,
         ]);
 
         Actividad::create([
@@ -232,7 +231,7 @@ class SeederDatosPrueba extends Seeder
             'responsabilidades' => 'responsabilidad 1, 2, 3',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
-            'id_responsable' => 1,
+            'id_responsable' => 3,
         ]);
     }
 }

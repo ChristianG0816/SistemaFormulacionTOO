@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", function () {
     let formularioEvento = document.querySelector("#eventos");
 
     var calendarEl = document.getElementById("calendario");
+
+    //Defino variables para mostrar Actividades
+    let nombreForm = document.querySelector("#titleForm");
+    let proyectoForm = document.querySelector("#proyectoForm");
+    let InicioForm = document.querySelector("#fechaInicioForm");
+    let FinForm = document.querySelector("#fechaFinForm");
+    let estadoForm = document.querySelector("#estadoForm");
+    let diaForm = document.querySelector("#diaForm");
+
     let proyectoId = 0; // Inicialmente se muestra todo
     
 
@@ -14,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         headerToolbar: {
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,listWeek",
+            right: "dayGridMonth",
         },
 
         eventSources: obtenerEventSources(proyectoId),
@@ -41,10 +50,34 @@ document.addEventListener("DOMContentLoaded", function () {
                         formularioEvento.fecha_recordatorio.value = respuesta.data.fecha_recordatorio;
                         formularioEvento.link_reunion.value =  respuesta.data.link_reunion;
 
+                        // Deshabilitar el campo del proyecto
+                        formularioEvento.proyecto.disabled = true;
+
                         // Cambiar el contenido del modal
                         $modal.find(".modal-title").text("Modificar Evento");
                         $modal.find("#btnGuardar").hide();
                         $modal.find("#btnModificar, #btnEliminar").show();
+
+                        //Limpiar mensajes de error
+                        //Mensajes de error
+                        $("#errorNombre").text("");
+                        $("#nombre").removeClass("is-invalid");
+                        $("#errorDes").text("");
+                        $("#descripcion").removeClass("is-invalid");
+                        $("#errorDir").text("");
+                        $("#direccion").removeClass("is-invalid");
+                        $("#errorFechaInicio").text("");
+                        $("#fecha_inicio").removeClass("is-invalid");
+                        $("#errorFechaFin").text("");
+                        $("#fecha_fin").removeClass("is-invalid");
+                        $("#errorHoraInicio").text("");
+                        $("#hora_inicio").removeClass("is-invalid");
+                        $("#errorHoraFin").text("");
+                        $("#hora_fin").removeClass("is-invalid");
+                        $("#errorFechaRecord").text("");
+                        $("#fecha_recordatorio").removeClass("is-invalid");
+                        $("#errorlink").text("");
+                        $("#link_reunion").removeClass("is-invalid");
 
                         // Mostrar el modal
                         $modal.modal("show");
@@ -58,10 +91,56 @@ document.addEventListener("DOMContentLoaded", function () {
                 axios
                     .post(baseUrl + "/calendario/consultar/" + evento.id)
                     .then((respuesta) => {
-                        formulario.title.value = respuesta.data.nombre;
-                        formulario.start.value = respuesta.data.fecha_inicio;
-                        formulario.end.value = respuesta.data.fecha_fin;
-                        $("#actividad").modal("show");
+
+                        nombreForm.innerHTML = respuesta.data.nombre;
+                        InicioForm.innerHTML = respuesta.data.fecha_inicio;
+                        FinForm.innerHTML = respuesta.data.fecha_fin;
+
+                    // Obtener el nombre del proyecto
+                    axios.get(baseUrl + "/proyectodata/" + respuesta.data.id_proyecto)
+                    .then((proyectoRespuesta) => {
+                        proyectoForm.innerHTML = proyectoRespuesta.data.nombre;
+                    })
+                    .catch((proyectoError) => {
+                        if (proyectoError.response) {
+                        console.log(proyectoError.response.data);
+                     }
+                    });
+
+                    //Obtener el estado de la actividad
+                    axios.get(baseUrl + "/estadodata/" + respuesta.data.id_estado_actividad)
+                    .then((EstadoRespuesta) => {
+                        estadoForm.innerHTML = EstadoRespuesta.data.nombre;
+                    })
+                    .catch((EstadoError) => {
+                        if (EstadoError.response) {
+                        console.log(EstadoError.response.data);
+                     }
+                    });
+
+                    const fechaFin = new Date(respuesta.data.fecha_fin);
+                    const fechaActual = new Date();
+                    const diferenciaDias = Math.floor((fechaFin - fechaActual) / (1000 * 60 * 60 * 24));
+
+                    const dia = document.getElementById("dia");
+                    const diasRestantesDiv = document.getElementById("diasRestantesDiv");
+
+                    if ((respuesta.data.id_estado_actividad == 1 || respuesta.data.id_estado_actividad == 2) && diferenciaDias < 0) {
+                        dia.textContent = "Días Vencidos:";
+                        const diasVencidos = Math.floor((fechaActual - fechaFin) / (1000 * 60 * 60 * 24));
+                        diaForm.innerHTML = diasVencidos;
+                        diasRestantesDiv.style.display = "block"; // Asegura que el div esté visible
+                    } else if (respuesta.data.id_estado_actividad == 3) {
+                        diasRestantesDiv.style.display = "none"; // Oculta el div
+                    } else {
+                        dia.textContent = "Días Restantes:";
+                        diaForm.innerHTML = diferenciaDias;
+                        diasRestantesDiv.style.display = "block"; // Asegura que el div esté visible
+                    }
+
+                    $("#actividad").modal("show");
+
+
                     })
                     .catch((error) => {
                         if (error.response) {
@@ -86,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("btnModificar").addEventListener("click", function () {
             enviarDatos("/calendario/ActualizarEvento/" + formularioEvento.id.value);
         });
-
+              
     function enviarDatos(url) {
         const datos = new FormData(formularioEvento);
         const nuevaURL = baseUrl + url;
@@ -95,12 +174,62 @@ document.addEventListener("DOMContentLoaded", function () {
             .post(nuevaURL, datos)
             .then((respuesta) => {
                 $("#evento").modal("hide");
-                calendar.refetchEvents();
+                //calendar.refetchEvents();
+                cargarActividadesYEventos(proyectoId);
             })
             .catch((error) => {
                 if (error.response) {
-                    console.log(error.response.data);
-                }
+
+                //Aqui capturo los mensajes de error y se los paso al modal.
+
+                // Mostrar el mensaje de error para nombre
+                const mensajeError = error.response.data.errors.nombre;  
+                $("#errorNombre").text(mensajeError);
+                $("#nombre").addClass("is-invalid"); 
+
+                // Mostrar el mensaje de error para descripción
+                const mensajeErrorDes = error.response.data.errors.descripcion;  
+                $("#errorDes").text(mensajeErrorDes);
+                $("#descripcion").addClass("is-invalid");
+
+                // Mostrar el mensaje de error para direccion
+                const mensajeErrorDir = error.response.data.errors.direccion;  
+                $("#errorDir").text(mensajeErrorDir);
+                $("#direccion").addClass("is-invalid");
+
+                // Mostrar el mensaje de error para fechaInicio
+                const mensajeErrorFechaInicio = error.response.data.errors.fecha_inicio;  
+                $("#errorFechaInicio").text(mensajeErrorFechaInicio);
+                $("#fecha_inicio").addClass("is-invalid");
+
+                // Mostrar el mensaje de error para fechaFin
+                const mensajeErrorFechaFin = error.response.data.errors.fecha_fin;  
+                $("#errorFechaFin").text(mensajeErrorFechaFin);
+                $("#fecha_fin").addClass("is-invalid");
+
+                // Mostrar el mensaje de error para Hora Inicio
+                const mensajeErrorHoraInicio = error.response.data.errors.hora_inicio;  
+                $("#errorHoraInicio").text(mensajeErrorHoraInicio);
+                $("#hora_inicio").addClass("is-invalid");
+
+                // Mostrar el mensaje de error para Hora Fin
+                const mensajeErrorHoraFin = error.response.data.errors.hora_fin;  
+                $("#errorHoraFin").text(mensajeErrorHoraFin);
+                $("#hora_fin").addClass("is-invalid");
+
+                // Mostrar el mensaje de error para Fecha Recordatorio
+                const mensajeErrorFechaRecordatorio = error.response.data.errors.fecha_recordatorio;  
+                $("#errorFechaRecord").text(mensajeErrorFechaRecordatorio);
+                $("#fecha_recordatorio").addClass("is-invalid");
+
+                // Mostrar el mensaje de error para Link de reunion
+                const mensajeErrorLink = error.response.data.errors.link_reunion;  
+                $("#errorlink").text(mensajeErrorLink);
+                $("#link_reunion").addClass("is-invalid");
+
+                console.log(error.response.data);
+
+            }
             });
     }
 
@@ -115,6 +244,8 @@ document.addEventListener("DOMContentLoaded", function () {
             formularioEvento.nombre.value = "";
             formularioEvento.descripcion.value = "";
             formularioEvento.direccion.value = "";
+            // Habilitar el campo del proyecto
+            formularioEvento.proyecto.disabled = false;
             formularioEvento.proyecto.value = "";
             formularioEvento.fecha_inicio.value = "";
             formularioEvento.fecha_fin.value = "";
@@ -127,6 +258,26 @@ document.addEventListener("DOMContentLoaded", function () {
             $modal.find(".modal-title").text("Crear Evento");
             $modal.find("#btnGuardar").show();
             $modal.find("#btnModificar, #btnEliminar").hide();
+
+            //Mensajes de error
+            $("#errorNombre").text("");
+            $("#nombre").removeClass("is-invalid");
+            $("#errorDes").text("");
+            $("#descripcion").removeClass("is-invalid");
+            $("#errorDir").text("");
+            $("#direccion").removeClass("is-invalid");
+            $("#errorFechaInicio").text("");
+            $("#fecha_inicio").removeClass("is-invalid");
+            $("#errorFechaFin").text("");
+            $("#fecha_fin").removeClass("is-invalid");
+            $("#errorHoraInicio").text("");
+            $("#hora_inicio").removeClass("is-invalid");
+            $("#errorHoraFin").text("");
+            $("#hora_fin").removeClass("is-invalid");
+            $("#errorFechaRecord").text("");
+            $("#fecha_recordatorio").removeClass("is-invalid");
+            $("#errorlink").text("");
+            $("#link_reunion").removeClass("is-invalid");
 
             // Mostrar el modal
             $modal.modal("show");
