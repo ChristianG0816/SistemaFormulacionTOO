@@ -349,6 +349,7 @@ return [
             'text' => 'Miembros',
             'url'  => 'miembros',
             'icon' => 'fas fa-fw fa-users',
+            'can' => 'gestionar-miembro',
         ],
         ['header' => 'Administración'],
         

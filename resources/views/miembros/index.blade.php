@@ -13,10 +13,14 @@
             <div class="card-header">
                 <h3 class="card-title">
                 <!--Sección de botones-->
+                @can('crear-miembro')
                 <a class="btn btn-sm btn-outline-warning" href="{{route('miembros.create')}}">Nuevo</a>
+                @endcan
+                @can('exportar-miembro')
                 <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
                 <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
-                <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button> 
+                <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button>
+                @endcan 
                 </h3>
             </div>
             <div class="card-body">
@@ -53,8 +57,17 @@
     </div>                 
     <!-- /.Modal de eliminar -->
 @stop
-
+@php
+    $permisos = [
+        'ver-miembro' => auth()->user()->can('ver-miembro'),
+        'editar-miembro' => auth()->user()->can('editar-miembro'),
+        'borrar-miembro' => auth()->user()->can('borrar-miembro'),
+    ];
+@endphp
 @section('js')
+    <script>
+        var permisos = @json($permisos);
+    </script>
     <script>
     jQuery.noConflict();
     (function($) {      
