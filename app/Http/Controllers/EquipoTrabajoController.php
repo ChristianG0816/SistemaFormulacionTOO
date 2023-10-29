@@ -41,7 +41,7 @@ class EquipoTrabajoController extends Controller
             })
             ->addColumn('telefono', function ($row) {
                 // Acceder a la columna 'telefono' de la relación 'id_mano_obra'
-                return $row->mano_obra->telefono;
+                return $row->mano_obra->persona->telefono;
             })
             ->addColumn('action', function ($row) {
                 $btnDetalle = '<a href="' . route('miembros.show', $row->mano_obra->id) . '" class="btn btn-outline-secondary btn-sm">Mostrar</a>';
@@ -62,7 +62,8 @@ class EquipoTrabajoController extends Controller
             $query->where('id_proyecto', $proyectoId);
         })
         ->with('usuario:id,name,last_name') // Cargamos la relación 'usuario' y seleccionamos los campos necesarios
-        ->select('id', 'telefono', 'id_usuario')
+        ->with('persona:telefono')
+        ->select('id','id_usuario')
         ->get();
 
         // Concatenar 'name' y 'last_name' y asignar el resultado a un nuevo atributo 'full_name'
@@ -75,7 +76,7 @@ class EquipoTrabajoController extends Controller
 
     public function getMiembro(Request $request, $id)
     {
-        $miembro = ManoObra::with('usuario')->findOrFail($id);
+        $miembro = ManoObra::with('usuario', 'persona')->findOrFail($id);
 
         // Concatenar 'name' y 'last_name' en un nuevo atributo 'full_name'
         $miembro->full_name = $miembro->usuario->name . ' ' . $miembro->usuario->last_name;
