@@ -11,15 +11,14 @@ class Evento extends Model
 
     static $rules = [
         'nombre' => 'required',
-        'descripcion'=> 'required',
-        'direccion'=> 'required',
-        'fecha_inicio'=> 'required',
-        'fecha_fin'=> 'required',
-        'hora_inicio'=> 'required',
-        'hora_fin'=> 'required',
-        'fecha_recordatorio'=> 'required',
-        'link_reunion'=> 'required',
-        
+        'descripcion' => 'required',
+        'direccion' => 'required',
+        'fecha_inicio' => 'required',
+        'fecha_fin' => 'required|after:fecha_inicio',
+        'hora_inicio' => 'required|before:hora_fin',
+        'hora_fin' => 'required|after:hora_inicio',
+        'fecha_recordatorio' => 'required|after_or_equal:fecha_inicio|before_or_equal:fecha_fin',
+        'link_reunion' => 'required',
     ];
 
     protected $table = 'evento';
@@ -35,7 +34,10 @@ class Evento extends Model
         'link_reunion',
         'id_proyecto'
     ];
+    
     public function proyecto(){
         return $this->belongsTo(Proyecto::class, 'id_proyecto');
     }
+
+
 }

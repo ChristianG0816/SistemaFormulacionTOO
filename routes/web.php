@@ -116,6 +116,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/calendario/consultarEvento/{id}', [App\Http\Controllers\CalendarioController::class, 'consultarEvento']);
     Route::post('/calendario/ActualizarEvento/{evento}', [App\Http\Controllers\CalendarioController::class, 'actualizarEvento']);
     Route::post('/calendario/eliminarEvento/{id}', [App\Http\Controllers\CalendarioController::class, 'eliminarEvento']);
+    Route::get('/proyectodata/{id}', [App\Http\Controllers\CalendarioController::class, 'showId']);
+    Route::get('/estadodata/{id}', [App\Http\Controllers\CalendarioController::class, 'showEstadoId']);
 
     //Ruta de Notificaciones
     Route::get('/notificaciones/get', [NotificationsController::class, 'getNotificationsData'])->name('notifications.get');
