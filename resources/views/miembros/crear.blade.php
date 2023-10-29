@@ -68,9 +68,11 @@
                 </div>
                 <div id="group-departamento" class="form-group">
                     <label for="departamento" class="text-secondary">Departamento*</label>
-                    {!! Form::select('departamento', $departamentos, null, [
-                        'class' => 'form-control' . ($errors->has('departamento') ? ' is-invalid' : ''), 'id' => 'select-departamento'
-                    ]) !!}
+                    <select id="select-departamento" name="departamento" class="form-control {{ $errors->has('departamento') ? 'is-invalid' : '' }}">
+                        @foreach ($departamentos as $departamento)
+                            <option value="{{ $departamento->id }}" data-pais="{{ $departamento->id_pais }}">{{ $departamento->nombre }}</option>
+                        @endforeach
+                    </select>
                     @error('departamento')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

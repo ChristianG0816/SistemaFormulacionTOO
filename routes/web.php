@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/proyectos/{id}/iniciar', [ProyectoController::class, 'iniciar'])->name('proyectos.iniciar');
     Route::get('/proyectos/{id}/finalizar', [ProyectoController::class, 'finalizar'])->name('proyectos.finalizar');
     
+    Route::get('miembros/verificarPais/{idPais}', [ManoObraController::class, 'verificarPais'])->name('miembros.verificarPais');
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);
     
