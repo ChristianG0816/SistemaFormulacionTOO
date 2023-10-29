@@ -165,6 +165,7 @@
             </div>
             <!--Sección de equipo de trabajo-->
             @include('equipos.asignar')
+            @can('gestionar-actividad')
             <!--Sección de actividades-->
             <div class="row">
               <div class="col-lg-12 col-md-12 mb-3">
@@ -172,7 +173,11 @@
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Actividades</h3>
                     <div class="card-tools ml-auto">
+                      @if ($proyecto->estado_proyecto->nombre != 'Aprobado')
+                      @can('crear-actividad')
                       <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('actividades.create', $proyecto->id) }}">Agregar</a>
+                      @endcan
+                      @endif
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
                       </button>
@@ -191,6 +196,7 @@
                 </div>
               </div>
             </div>
+            @endcan
           </div>
         </div>
       </div>
@@ -217,9 +223,25 @@
   </div>
 </div>
 <!-- /.Modal de eliminar -->
-
 @stop
+@php
+    $permisos = [
+        'ver-actividad' => auth()->user()->can('ver-actividad'),
+        'editar-actividad' => auth()->user()->can('editar-actividad'),
+        'borrar-actividad' => auth()->user()->can('borrar-actividad'),
+    ];
+    if ($proyecto->estado_proyecto->nombre != 'Aprobado'){
+        $permisos['editar-actividad'] = true;
+        $permisos['borrar-actividad'] = true;
+    }else{
+        $permisos['editar-actividad'] = false;
+        $permisos['borrar-actividad'] = false;
+    }
+@endphp
 @section('js')
+<script>
+    var permisos = @json($permisos);
+</script>
 <script>
   jQuery.noConflict();
   (function($) {      
