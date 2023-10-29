@@ -353,6 +353,11 @@ return [
         ['header' => 'Administración'],
         
         [
+            'text' => 'Clientes',
+            'url'  => 'clientes',
+        ],
+        
+        [
             'text' => 'Usuarios',
             'url'  => 'usuarios',
             'icon' => 'fas fa-fw fa-user',

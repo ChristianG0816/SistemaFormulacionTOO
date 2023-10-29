@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ContactoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\RolController;
@@ -57,6 +59,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('usuarios/data', [UsuarioController::class, 'data'])->name('usuarios.data');
     Route::resource('usuarios', UsuarioController::class);
     
+    //Rutas para cliente
+    Route::get('clientes/data', [ClienteController::class, 'data'])->name('clientes.data');
+    Route::resource('clientes', ClienteController::class);
+
     //Rutas para proyecto
     Route::get('proyectos/data', [ProyectoController::class, 'data'])->name('proyectos.data');
     Route::resource('proyectos', ProyectoController::class);
