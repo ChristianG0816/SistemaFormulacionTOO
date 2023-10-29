@@ -110,7 +110,7 @@ $(document).ready(function(){
                     // Actualiza los campos de nombre, correo y teléfono en el modal
                     $('#nombreMiembro').text(data.full_name); // Utiliza el nuevo campo 'full_name'
                     $('#correoMiembro').text(data.usuario.email); // Utiliza la relación 'usuario' para obtener el correo
-                    $('#telefonoMiembro').text(data.telefono); // Ajusta el campo según tu estructura de datos
+                    $('#telefonoMiembro').text(data.persona.telefono); // Ajusta el campo según tu estructura de datos
                 },
                 error: function (error) {
                     toastr.error('Error al obtener los detalles del miembro');
