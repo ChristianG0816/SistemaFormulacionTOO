@@ -1,7 +1,7 @@
 @extends('adminlte::page')
-@section('title', 'Paquete Actividades')
+@section('title', 'Actividad')
 @section('content_header')
-<h1 class="text-center">Paquete de Trabajo</h1>
+<h1 class="text-center">Actividad</h1>
 @stop
 @section('content')
 @if ($errors->any())
@@ -54,44 +54,15 @@
                             </div>
                             <div class="col-lg-6 col-md-6 mb-3"><!-- Columna derecha -->
                                 <div class="form-group">
+                                    <label for="id_responsable" class="text-secondary">Responsable</label>
+                                    {!! Form::text('id_responsable', $actividad->responsable->mano_obra->usuario->name .' ' .$actividad->responsable->mano_obra->usuario->last_name, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                </div>
+                                <div class="form-group">
                                     <label for="responsabilidades" class="text-secondary">Responsabilidades</label>
                                     {!! Form::textarea('responsabilidades', $actividad->responsabilidades, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                                 </div>
                             </div>
                         </div>
-                        <!--Sección de tareas-->
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 mb-3">
-                                <div class="card collapsed-card">
-                                    <div class="card-header d-flex align-items-center">
-                                        <h3 class="card-title mb-0">Tareas</h3>
-                                        <div class="card-tools ml-auto">
-                                            <input type="button" value="Agregar" class="btn btn-sm btn-outline-warning my-0" data-toggle="modal" data-target="#agregarTareaModal">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body" style="display: none;">
-                                        <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                                        <div class="row">
-                                            <div class="col-sm-12 card-body table-responsive p-0" style="height: 40vh;">
-                                            <table id="tabla-tareas" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed w-100"></table>
-                                            </div>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--Sección de mano de obra-->
-                        @include('miembrosActividad.asignar')
-                        <!--Mas secciones-->
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 mb-3">
-                            </div>
-                        </div>
-                        {{--  Seccion para asignar mano de obra a las actividades --}}
                         @include('recursos.asignar')
                     </div>
                 </div>
@@ -157,89 +128,6 @@
 </div>
 
 
-<!-- Modal Agregar Tarea -->
-<div class="modal fade" id="agregarTareaModal" tabindex="-1" role="dialog" aria-labelledby="agregarTareaModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Agregar Actividad</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                {!! Form::open(['route' => 'tareas.store', 'method' => 'POST', 'id' => 'tarea-form-agregar']) !!}
-                {!! Form::text('id-actividad-tarea', $actividad->id, ['class' => 'form-control d-none']) !!}
-                <div class="form-group">
-                    <label for="nombre" class="text-secondary">Nombre*</label>
-                    {!! Form::text('nombre-tarea', null, ['id' => 'nombre-tarea', 'class' => 'form-control']) !!}
-                </div>
-                <div class="form-group">
-                    <label for="finalizada" class="text-secondary">Selecciona el estado:*</label>
-                    {!! Form::select('finalizada-tarea', $estadosActividad, null, ['id' => 'finalizada-tarea', 'class' => 'form-control']) !!}
-                </div>
-                
-                {!! Form::close() !!}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="agregarTareaBtn">Agregar</button>
-                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal Editar Tarea -->
-<div class="modal fade" id="editarTareaModal" tabindex="-1" role="dialog" aria-labelledby="editarTareaModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar Actividad</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                {!! Form::open(['route' => 'tareas.store', 'method' => 'POST', 'id' => 'tarea-form-editar']) !!}
-                {!! Form::text('id-actividad-tarea-editar', $actividad->id, ['class' => 'form-control d-none']) !!}
-                <div class="form-group">
-                    <label for="nombre" class="text-secondary">Nombre*</label>
-                    {!! Form::text('nombre-tarea-editar', null, ['id' => 'nombre-tarea-editar', 'class' => 'form-control']) !!}
-                </div>
-
-                <div class="form-group">
-                    <label for="finalizada" class="text-secondary">Selecciona el estado:*</label>
-                    {!! Form::select('finalizada-tarea-editar', $estadosActividad, null, ['id' => 'finalizada-tarea-editar', 'class' => 'form-control']) !!}
-                </div>
-                {!! Form::close() !!}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="editarTareaBtn">Guardar</button>
-                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal de eliminar -->
-<div class="modal fade" id="confirmarEliminarModalTarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Confirmar eliminación</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-                <strong>¿Estás seguro de eliminar la tarea seleccionada?</strong>
-                <p>Ten en cuenta que se eliminarán los datos relacionados a la tarea.</p>
-            </div>
-            <div class="modal-footer">
-                <button id="eliminarTareaBtn" class="btn btn-outline-danger btn-sm">Eliminar</button>
-                <button type="button" class="btn btn-outline-dark btn-sm" data-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>                 
-<!-- /.Modal de eliminar -->
-
 @stop
 
 @section('js')
@@ -259,8 +147,6 @@
     var proyectoId = {{$actividad->id_proyecto}};
     var csrfToken = '{{ csrf_token() }}';
     </script>
-    <script src="{{ asset('js/miembrosActividad/miembrosActividad.js') }}"></script>
     <script src="{{ asset('js/actividades/comentarios.js') }}"></script>
-    <script src="{{ asset('js/actividades/tareas.js') }}"></script>
     <script src="{{ asset('js/recursos/recursosAsignados.js') }}"></script>
 @stop

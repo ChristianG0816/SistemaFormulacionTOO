@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\PaqueteActividades;
+use App\Models\Actividad;
 use App\Models\Proyecto;
 use App\Models\EstadoActividad;
 use App\Models\Comentario;
@@ -30,14 +30,14 @@ class ActividadController extends Controller
     public function index($id)
     {
         $proyecto = Proyecto::findOrFail($id);
-        $actividades = PaqueteActividades::where('id_proyecto', $proyecto->id)->get();
+        $actividades = Actividad::where('id_proyecto', $proyecto->id)->get();
         return view('actividades.index', compact('actividades', 'proyecto'));
     }
 
     public function data($id)
     {
         $proyecto = Proyecto::findOrFail($id);
-        $data = PaqueteActividades::where('id_proyecto', $proyecto->id)->with(['estado_actividad']) ->get();
+        $data = Actividad::where('id_proyecto', $proyecto->id)->with(['estado_actividad']) ->get();
         return datatables()->of($data)->toJson();
     }
 
@@ -50,7 +50,14 @@ class ActividadController extends Controller
     {
         $proyecto = Proyecto::findOrFail($id);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
-        return view('actividades.crear', compact('estadosActividad', 'proyecto'));
+        $miembrosEquipoTrabajo = EquipoTrabajo::where('id_proyecto', $proyecto->id)
+        ->with(['mano_obra.usuario' => function ($query) {
+            $query->select('id', 'name', 'last_name', DB::raw('name || \' \' || last_name AS full_name'));
+        }])
+        ->get()
+        ->pluck('mano_obra.usuario.full_name', 'id');
+
+        return view('actividades.crear', compact('estadosActividad', 'proyecto', 'miembrosEquipoTrabajo'));
     }
 
     /**
@@ -68,6 +75,7 @@ class ActividadController extends Controller
             'fecha_fin' => 'required',
             'responsabilidades' => 'required',
             'id_estado_actividad' => 'required',
+            'id_responsable' => 'required',
         ]);
         $input = $request->all();
         $actividad = Actividad::create($input);
@@ -90,11 +98,11 @@ class ActividadController extends Controller
      */
     public function show($id)
     {
-        $actividad = PaqueteActividades::find($id);
+        $actividad = Actividad::find($id);
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
         $usuario= Auth::user();
-        $comentarios = Comentario::where('id_paquete_actividades', $actividad->id)->orderBy('created_at', 'desc')->get();
+        $comentarios = Comentario::where('id_actividad', $actividad->id)->orderBy('created_at', 'desc')->get();
         return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios'));
     }
 
@@ -106,10 +114,16 @@ class ActividadController extends Controller
      */
     public function edit( $id)
     {
-        $actividad = PaqueteActividades::find($id);
+        $actividad = Actividad::find($id);
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
-        return view('actividades.editar', compact('proyecto','actividad','estadosActividad'));
+        $miembrosEquipoTrabajo = EquipoTrabajo::where('id_proyecto', $proyecto->id)
+        ->with(['mano_obra.usuario' => function ($query) {
+            $query->select('id', 'name', 'last_name', DB::raw('name || \' \' || last_name AS full_name'));
+        }])
+        ->get()
+        ->pluck('mano_obra.usuario.full_name', 'id');
+        return view('actividades.editar', compact('proyecto','actividad','estadosActividad', 'miembrosEquipoTrabajo'));
     }
 
     /**
@@ -121,7 +135,7 @@ class ActividadController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $actividad = PaqueteActividades::find($id);
+        $actividad = Actividad::find($id);
         $this->validate($request, [
             'nombre' => 'required',
             'prioridad'=>['required', 'regex:/^\d{1}(?:\d{1,4})?$/'],
@@ -129,6 +143,7 @@ class ActividadController extends Controller
             'fecha_fin' => 'required',
             'responsabilidades' => 'required',
             'id_estado_actividad' => 'required',
+            'id_responsable' => 'required',
         ]);
         $input = $request->all();
         $actividad->update($input);
@@ -151,8 +166,8 @@ class ActividadController extends Controller
      */
     public function destroy($id)
     {
-        $actividad = PaqueteActividades::find($id);
-        $Notificaciones = Notificacion::where("id_paquete_actividades",$actividad->id)->delete();
+        $actividad = Actividad::find($id);
+        $Notificaciones = Notificacion::where("id_actividad",$actividad->id)->delete();
         $actividad->delete();
     }
 
@@ -160,7 +175,7 @@ class ActividadController extends Controller
     {
         //Envío de notificacion a supervisor
         $notificacion = new Notificacion();
-        $notificacion->id_usuario = $actividad->proyecto->id_dueno;
+        $notificacion->id_usuario = $actividad->proyecto->id_gerente_proyecto;
         $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
         $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
         if ($tipoNotificacion) {
@@ -168,7 +183,7 @@ class ActividadController extends Controller
             $notificacion->descripcion = $descripcion;
             $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
         }
-        $notificacion->id_paquete_actividades = $actividad->id;
+        $notificacion->id_actividad = $actividad->id;
         $notificacion->leida = false;
         $notificacion->save();
         //Envío de notificacion al cliente
@@ -181,7 +196,7 @@ class ActividadController extends Controller
             $notificacion->descripcion = $descripcion;
             $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
         }
-        $notificacion->id_paquete_actividades = $actividad->id;
+        $notificacion->id_actividad = $actividad->id;
         $notificacion->leida = false;
         $notificacion->save();
         //Envío de notificacion a equipo de trabajo
@@ -197,7 +212,7 @@ class ActividadController extends Controller
                 $notificacion->descripcion = $descripcion;
                 $notificacion->ruta = str_replace('{{id}}', $actividad->id, $tipoNotificacion->ruta);
             }
-            $notificacion->id_paquete_actividades = $actividad->id;
+            $notificacion->id_actividad = $actividad->id;
             $notificacion->id_proyecto = $actividad->proyecto->id;
             $notificacion->leida = false;
             $notificacion->save();

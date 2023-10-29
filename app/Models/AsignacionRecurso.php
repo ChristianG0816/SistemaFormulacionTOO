@@ -10,12 +10,12 @@ class AsignacionRecurso extends Model
     use HasFactory;
     protected $table = 'asignacion_recurso';
     protected $fillable = [
-        'id_paquete_actividades',
+        'id_actividad',
         'id_recurso',
         'cantidad'
     ];
-    public function paquete_actividades(){
-        return $this->belongsTo(Actividad::class, 'id_paquete_actividades');
+    public function actividad(){
+        return $this->belongsTo(Actividad::class, 'id_actividad');
     }
     public function recurso(){
         return $this->belongsTo(Recurso::class, 'id_recurso');
