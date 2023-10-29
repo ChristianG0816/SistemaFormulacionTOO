@@ -6,6 +6,11 @@ $(document).ready(function() {
     var id_proyecto = $('#id_proyecto').data('id-proyecto');
     var table = $('#tabla-actividades').DataTable({
         ajax: '/actividades/data/'+id_proyecto,
+        select:true,
+        select:{
+            style:'multiple',
+        },
+        rowId: 'id',
         processing: true,
         serverSide: true,
         order: [[0, 'asc']],
@@ -134,6 +139,13 @@ $(document).ready(function() {
                   _: "%d filas copiadas al portapapeles",
                   1: "1 fila copiada al portapapeles"
                 }
+            },
+            "select": {
+                "rows": {
+                    _: " %d filas seleccionadas",
+                    0: " Hacer click para seleccionar fila",
+                    1: " 1 fila seleccionada"
+                }
             }
         },
         search: {
@@ -203,5 +215,59 @@ $(document).ready(function() {
                 toastr.error('Ocurrió un error al eliminar la actividad.');
             }
         });
+    });
+
+    // Evento select de DataTables para manejar las filas seleccionadas
+    $('#tabla-actividades').on('select.dt deselect.dt', function() {
+        var selectedRows = table.rows({ selected: true }).count();
+
+        // Si hay filas seleccionadas, muestra el botón de enviar recordatorio, de lo contrario, ocúltalo
+        if (selectedRows > 0) {
+            $('#enviarRecordatorioBtn').show();
+        } else {
+            $('#enviarRecordatorioBtn').hide();
+        }
     });  
+
+    
+    $('#enviarRecordatorioBtn').on('click', function() {
+        // Obtener las filas seleccionadas y extraer solo los datos necesarios
+        var filasSeleccionadas = table.rows({ selected: true }).data();
+        // Crear un arreglo para almacenar los datos filtrados
+        var datosFiltrados = [];
+        // Iterar sobre las filas seleccionadas y extraer los datos
+        filasSeleccionadas.each(function (index, data) {
+            var id = index.id;
+            var estadoActividad = index.estado_actividad.id;
+
+            // Verificar si las propiedades son válidas antes de agregarlas al arreglo
+            if (id !== undefined && estadoActividad !== undefined) {
+                datosFiltrados.push({ id: id, estado_actividad: estadoActividad });
+           }
+        });
+
+        console.log(table.rows({ selected: true }).data());
+        
+        $.ajax({
+            url: '/actividades/' + id_proyecto +'/recordatorio',
+            type: 'POST',
+            data: { actividades: datosFiltrados },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success('Se ha enviado recordatorio con exito');
+                } else {
+                    console.log('Error al enviar recordatorio: ', response.message);
+                    toastr.error('Error al enviar recordatorio');
+                }
+            },
+            error: function (error) {
+                toastr.error('Error al enviar recordatorio');
+                console.log(error);
+            }
+        });
+    });
+
 });

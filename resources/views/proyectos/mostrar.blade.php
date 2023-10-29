@@ -1,5 +1,12 @@
 @extends('adminlte::page')
 @section('title', 'Gestión Proyectos')
+<style>
+  body{
+    table.dataTable tbody tr.selected {
+      background-color: #c9ebff;
+    }
+  }
+</style>
 @section('content_header')
 <h1 class="text-center">Gestionar Proyecto</h1>
 <p id="id_proyecto" data-id-proyecto="{{ $proyecto->id }}" class="d-none"></p>
@@ -175,6 +182,7 @@
                     <div class="card-tools ml-auto">
                       @if ($proyecto->estado_proyecto->nombre != 'Aprobado')
                       @can('crear-actividad')
+                      <button type="button" class="btn btn-sm btn-outline-primary my-0" id="enviarRecordatorioBtn" style="display: none;">Enviar Recordatorio</button>
                       <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('actividades.create', $proyecto->id) }}">Agregar</a>
                       @endcan
                       @endif
