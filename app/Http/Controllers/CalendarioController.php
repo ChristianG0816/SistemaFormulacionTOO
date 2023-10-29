@@ -7,7 +7,7 @@ use App\Models\Actividad;
 use Illuminate\Support\Facades\Auth;
 use App\Models\EquipoTrabajo;
 use App\Models\ManoObra;
-use App\Models\MiembroActividad;
+use App\Models\EstadoProyecto;
 use App\Models\Proyecto;
 use App\Models\User; 
 use Spatie\Permission\Traits\HasRoles;
@@ -18,36 +18,43 @@ use App\Models\EstadoActividad;
 class CalendarioController extends Controller
 {
 
-    public function index()
-    {
-        $usuarioLogueado = Auth::user();
-        $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
-        // Obtener el id del usuario logueado - En este caso del supervisor
-        $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
-        
-        //Obtener el id del usuario logueado - En este caso el cliente
-        //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+    public function index(){
+    $usuarioLogueado = Auth::user();
+    $manoObra = ManoObra::where('id_usuario', $usuarioLogueado->id)->first();
+    $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
 
-        //$esGerente = $usuarioLogueado->hasRole('Gerente');
+    //Obtener el id del usuario logueado - En este caso el cliente
+    //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
 
-        if ($manoObra) {
-            $proyectos = Proyecto::whereIn('id', function ($query) use ($manoObra) {
+    $GerenteGeneral = $usuarioLogueado->hasRole('Gerente');
+
+    if ($manoObra) {
+        // Obtén proyectos iniciados relacionados con la mano de obra
+        $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)
+            ->whereIn('id', function ($query) use ($manoObra) {
                 $query->select('id_proyecto')
                     ->from('equipo_trabajo')
                     ->where('id_mano_obra', $manoObra->id);
             })->get();
-        } elseif ($gerenteProyecto) {
-            $proyectos = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->get();
-        } /*elseif ($cliente) {
-            $proyectos = Proyecto::where('id_cliente', $usuarioLogueado->id)->get();
-        } */ /*elseif ($esGerente) {
-            $proyectos = Proyecto::all();
-        } */ else {
-            $proyectos = [];
-        }
-
-        return view('calendario.index', ['proyectos' => $proyectos]);
+    } elseif ($gerenteProyecto) {
+        // Obtén proyectos iniciados relacionados con el gerente de proyecto
+        $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)
+            ->where('id_gerente_proyecto', $usuarioLogueado->id)
+            ->get();
+    }  /*elseif ($cliente) {
+        $proyectos = Proyecto::where('id_cliente', $usuarioLogueado->id)->get();
+    } */
+    elseif ($GerenteGeneral) {
+        // Si es un Gerente General, obtén todos los proyectos iniciados
+        $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)->get();
+    } else {
+        $proyectosIniciados = [];
     }
+
+    return view('calendario.index', ['proyectos' => $proyectosIniciados]);
+}
+
+
 
     public function show($idProyecto)
     {
@@ -61,37 +68,51 @@ class CalendarioController extends Controller
         // Obtener el id del usuario logueado - En este caso el cliente
         //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
         // Obtener el rol de gerente
-        //$Gerente = $usuarioLogueado->hasRole('Gerente');
+        $GerenteGeneral = $usuarioLogueado->hasRole('Gerente');
 
         if ($manoObra) {
             $equipoTrabajo = EquipoTrabajo::where('id_mano_obra', $manoObra->id)->get();
             $eventos = [];
-
+        
             foreach ($equipoTrabajo as $equipo) {
-                    $actividades = Actividad::where('id_responsable', $equipo->id)->get();
-                    foreach ($actividades as $actividad) {
-                    if ($idProyecto == 0 || ($actividad && $actividad->id_proyecto == $idProyecto)) {
-                        $evento = [
-                            'id' => $actividad->id,
-                            'title' => $actividad->nombre,
-                            'start' => $actividad->fecha_fin,
-                            'end' => $actividad->fecha_fin,
-                            'tipo' => 'actividad',
-                        ];
-                        array_push($eventos, $evento);
+                $actividades = Actividad::where('id_responsable', $equipo->id)->get();
+                foreach ($actividades as $actividad) {
+                    // Verificar si el proyecto relacionado con la actividad está iniciado
+                    $proyecto = Proyecto::find($actividad->id_proyecto);
+                    if ($proyecto && $proyecto->estado_proyecto->nombre === 'Iniciado') {
+                        if ($idProyecto == 0 || ($actividad && $actividad->id_proyecto == $idProyecto)) {
+                            $evento = [
+                                'id' => $actividad->id,
+                                'title' => $actividad->nombre,
+                                'start' => $actividad->fecha_fin,
+                                'end' => $actividad->fecha_fin,
+                                'tipo' => 'actividad',
+                            ];
+                            array_push($eventos, $evento);
+                        }
                     }
                 }
             }
             return response()->json($eventos);
-
-        } /*elseif ($Gerente) {
+        } elseif ($GerenteGeneral) {
             if ($idProyecto == 0) {
+                
                 // Si es Gerente y $idProyecto es igual a 0, obtén todas las actividades.
-                $actividades = Actividad::all();
+                $proyectosIniciados = Proyecto::whereHas('estado_proyecto', function ($query) {
+                    $query->where('nombre', 'Iniciado');
+                })->pluck('id');
+                $actividades = Actividad::whereIn('id_proyecto', $proyectosIniciados)->get();
+
             } else {
                 // Si es Gerente y $idProyecto no es igual a 0, filtra las actividades por proyecto.
-                $actividades = Actividad::where('id_proyecto', $idProyecto)->get();
+                $proyecto = Proyecto::find($idProyecto);
+                if ($proyecto && $proyecto->estado_proyecto->nombre === 'Iniciado') {
+                    $actividades = Actividad::where('id_proyecto', $idProyecto)->get();
+                } else {
+                    $actividades = [];
+                }
             }
+
             $eventos = [];
 
             foreach ($actividades as $actividad) {
@@ -106,19 +127,32 @@ class CalendarioController extends Controller
             }
 
             return response()->json($eventos);
-            elseif ($gerenteProyecto || $cliente) {
+        }
+          /*  elseif ($gerenteProyecto || $cliente) {
         } */ elseif ($gerenteProyecto) {
-            if ($idProyecto == 0) {
-                // Si idProyecto es igual a 0, se obtienen todas las actividades relacionadas con proyectos del usuario.
-                $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
-                    $query->where('id_gerente_proyecto', $usuarioLogueado->id);
-                })->pluck('id');
-                $actividades = Actividad::whereIn('id_proyecto', $proyectosUsuario)->get();
-            } else {
-                // Si idProyecto no es igual a 0, se obtienen las actividades relacionadas con el proyecto específico.
-                $actividades = Actividad::where('id_proyecto', $idProyecto)->get();
-            }
+        if ($idProyecto == 0) {
+            // Si idProyecto es igual a 0, se obtienen todas las actividades relacionadas con proyectos del usuario.
+            $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
+                $query->where('id_gerente_proyecto', $usuarioLogueado->id);
+            })->pluck('id');
 
+            // Filtrar proyectos iniciados
+            $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)->pluck('id');
+
+            // Obtener las actividades relacionadas con proyectos iniciados del usuario
+            $actividades = Actividad::whereIn('id_proyecto', $proyectosUsuario)
+                ->whereIn('id_proyecto', $proyectosIniciados)
+                ->get();
+        } else {
+            // Si idProyecto no es igual a 0, se obtienen las actividades relacionadas con el proyecto específico.
+            $proyecto = Proyecto::find($idProyecto);
+
+        if ($proyecto && $proyecto->estado_proyecto->nombre === 'Iniciado') {
+            $actividades = Actividad::where('id_proyecto', $idProyecto)->get();
+        } else {
+            $actividades = [];
+        }
+    }
             //dd($actividades);
             $eventos = [];
 
@@ -175,53 +209,77 @@ public function showEvento($idProyecto){
     // Obtener el id del usuario logueado - En este caso el cliente
     //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
     // Obtener el rol de gerente
-    //$Gerente = $usuarioLogueado->hasRole('Gerente');
+    $GerenteGeneral = $usuarioLogueado->hasRole('Gerente');
 
-    //Queda pendiente elaborar el de la mano de obra
     if ($manoObra) {
-
-        if($idProyecto == 0){
+        if ($idProyecto == 0) {
             $mano = ManoObra::where(function ($query) use ($usuarioLogueado) {
                 $query->where('id_usuario', $usuarioLogueado->id);
             })->pluck('id');
     
-            //Aqui si pertenece a los dos proyectos me los va a traer ambos
-            $equipo = EquipoTrabajo::where(function ($query) use ($mano) {
-                $query->where('id_mano_obra', $mano);
-            })->pluck('id_proyecto');
+            // Obtén proyectos iniciados relacionados con la mano de obra
+            $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)
+                ->whereIn('id', function ($query) use ($mano) {
+                    $query->select('id_proyecto')
+                        ->from('equipo_trabajo')
+                        ->whereIn('id_mano_obra', $mano);
+                })
+                ->pluck('id');
     
-            $eventos = Evento::whereIn('id_proyecto', $equipo)->get();
-        }else{
-            $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+            // Obtén los eventos relacionados con los proyectos iniciados
+            $eventos = Evento::whereIn('id_proyecto', $proyectosIniciados)->get();
+        } else {
+            // Si $idProyecto no es igual a 0, verifica si el proyecto específico está iniciado.
+            $proyecto = Proyecto::find($idProyecto);
+    
+            if ($proyecto && $proyecto->estado_proyecto->nombre === 'Iniciado') {
+                $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+            } else {
+                $eventos = [];
+            }
         }
     }
-
+    
     /* elseif($Supervisor || $cliente)*/
-    elseif($gerenteProyecto){
+    elseif ($gerenteProyecto) {
         if ($idProyecto == 0) {
-            // Si idProyecto es igual a 0, se obtienen todas los eventos
-            // relacionadas con proyectos del usuario.
-
-            $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
-                $query->where('id_gerente_proyecto', $usuarioLogueado->id);
-            })->pluck('id');
-
-            $eventos = Evento::whereIn('id_proyecto', $proyectosUsuario)->get();
+            // Si idProyecto es igual a 0, obtén todos los proyectos iniciados relacionados con el gerente.
+            $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)
+                ->where('id_gerente_proyecto', $usuarioLogueado->id)
+                ->pluck('id');
+    
+            // Obtén los eventos relacionados con los proyectos iniciados
+            $eventos = Evento::whereIn('id_proyecto', $proyectosIniciados)->get();
         } else {
-            // Si idProyecto no es igual a 0, se obtienen los eventos 
-            // relacionadas con el proyecto específico.
-            $eventos = Evento::where('id_proyecto', $idProyecto)->get();
-        } 
-    } /*elseif ($Gerente){
+            // Si idProyecto no es igual a 0, verifica si el proyecto específico está iniciado.
+            $proyecto = Proyecto::find($idProyecto);
+    
+            if ($proyecto && $proyecto->estado_proyecto->nombre === 'Iniciado') {
+                $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+            } else {
+                $eventos = [];
+            }
+        }
+    }
+    elseif ($GerenteGeneral) {
         if ($idProyecto == 0) {
-            $eventos = Evento::all();
+            // Si idProyecto es igual a 0, obtén todos los proyectos iniciados.
+            $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)->pluck('id');
+    
+            // Obtén los eventos relacionados con los proyectos iniciados
+            $eventos = Evento::whereIn('id_proyecto', $proyectosIniciados)->get();
         } else {
-            // Si idProyecto no es igual a 0, se obtienen los eventos 
-            // relacionadas con el proyecto específico.
-            $eventos = Evento::where('id_proyecto', $idProyecto)->get();
-        } 
-    }*/
-
+            // Si idProyecto no es igual a 0, verifica si el proyecto específico está iniciado.
+            $proyecto = Proyecto::find($idProyecto);
+    
+            if ($proyecto && $proyecto->estado_proyecto->nombre === 'Iniciado') {
+                $eventos = Evento::where('id_proyecto', $idProyecto)->get();
+            } else {
+                $eventos = [];
+            }
+        }
+    }
+    
     $eventosData = [];
     foreach ($eventos as $evento) {
         $eventoData = [
