@@ -9,8 +9,7 @@ use App\Models\EquipoTrabajo;
 use App\Models\ManoObra;
 use App\Models\MiembroActividad;
 use App\Models\Proyecto;
-use App\Models\User;
-use App\Models\PaqueteActividades; 
+use App\Models\User; 
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Evento;
 use PhpParser\Node\Expr\BinaryOp\Equal;
@@ -69,9 +68,8 @@ class CalendarioController extends Controller
             $eventos = [];
 
             foreach ($equipoTrabajo as $equipo) {
-                $miembrosActividad = MiembroActividad::where('id_equipo_trabajo', $equipo->id)->get();
-                foreach ($miembrosActividad as $miembroActividad) {
-                    $actividad = PaqueteActividades::find($miembroActividad->id_actividad);
+                    $actividades = Actividad::where('id_responsable', $equipo->id)->get();
+                    foreach ($actividades as $actividad) {
                     if ($idProyecto == 0 || ($actividad && $actividad->id_proyecto == $idProyecto)) {
                         $evento = [
                             'id' => $actividad->id,
@@ -79,14 +77,13 @@ class CalendarioController extends Controller
                             'start' => $actividad->fecha_fin,
                             'end' => $actividad->fecha_fin,
                             'tipo' => 'actividad',
-                            //'proyecto' => $actividad->id_proyecto,
                         ];
                         array_push($eventos, $evento);
                     }
                 }
             }
-
             return response()->json($eventos);
+
         } /*elseif ($Gerente) {
             if ($idProyecto == 0) {
                 // Si es Gerente y $idProyecto es igual a 0, obtén todas las actividades.
@@ -116,10 +113,10 @@ class CalendarioController extends Controller
                 $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
                     $query->where('id_gerente_proyecto', $usuarioLogueado->id);
                 })->pluck('id');
-                $actividades = PaqueteActividades::whereIn('id_proyecto', $proyectosUsuario)->get();
+                $actividades = Actividad::whereIn('id_proyecto', $proyectosUsuario)->get();
             } else {
                 // Si idProyecto no es igual a 0, se obtienen las actividades relacionadas con el proyecto específico.
-                $actividades = PaqueteActividades::where('id_proyecto', $idProyecto)->get();
+                $actividades = Actividad::where('id_proyecto', $idProyecto)->get();
             }
 
             //dd($actividades);
@@ -146,7 +143,7 @@ class CalendarioController extends Controller
 
     public function consultarActividad($id)
     {
-        $actividad = PaqueteActividades::find($id);
+        $actividad = Actividad::find($id);
         return response()->json($actividad);
     }
 
