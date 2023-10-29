@@ -16,7 +16,7 @@ class Notificacion extends Model
         'id_tipo_notificacion',
         'id_proyecto',
         'id_evento',
-        'id_paquete_actividades',
+        'id_actividad',
         'id_usuario'
     ];
     public function tipo_notificacion(){
@@ -28,8 +28,8 @@ class Notificacion extends Model
     public function evento(){
         return $this->belongsTo(Evento::class, 'id_evento');
     }
-    public function paquete_actividades(){
-        return $this->belongsTo(PaqueteActividades::class, 'id_paquete_actividades');
+    public function actividad(){
+        return $this->belongsTo(Actividad::class, 'id_actividad');
     }
     public function usuario(){
         return $this->belongsTo(User::class, 'id_usuario');

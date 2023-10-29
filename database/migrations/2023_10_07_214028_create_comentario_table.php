@@ -16,7 +16,7 @@ class CreateComentarioTable extends Migration
         Schema::create('comentario', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('linea_comentario'); // text not null
-            $table->foreignId('id_paquete_actividades')->constrained('paquete_actividades')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('id_actividad')->constrained('actividad')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_usuario')->constrained('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps(); // created_at, updated_at
         });

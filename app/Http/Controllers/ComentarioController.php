@@ -54,7 +54,7 @@ class ComentarioController extends Controller
             $comentario = Comentario::create([
                 'id_usuario' => $usuario->id,
                 'linea_comentario'=>$request->input('linea_comentario_comentario'),
-                'id_paquete_actividades'=>$request->input('id_actividad_comentario')
+                'id_actividad'=>$request->input('id_actividad_comentario')
             ]);
             $this->envio_notificacion_comentario(11, $comentario);
         }
@@ -97,7 +97,7 @@ class ComentarioController extends Controller
             $comentarioNew = Comentario::find($id);
             $comentarioNew->id_usuario = $usuario->id;
             $comentarioNew->linea_comentario = $request->input($input_linea);
-            $comentarioNew->id_paquete_actividades = $request->input($input_actividad);
+            $comentarioNew->id_actividad = $request->input($input_actividad);
             $comentarioNew->save();
         }
     }
@@ -118,23 +118,23 @@ class ComentarioController extends Controller
     {
         //Envío de notificacion a supervisor
         $notificacion = new Notificacion();
-        $notificacion->id_usuario = $comentario->paquete_actividades->proyecto->id_dueno;
+        $notificacion->id_usuario = $comentario->actividad->proyecto->id_gerente_proyecto;
         $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
         $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
         if ($tipoNotificacion) {
             $nombre_usuario=$comentario->usuario->name . " " . $comentario->usuario->last_name;
             $descripcion=$tipoNotificacion->descripcion;
             $descripcion2 = str_replace('{{usuario}}', $nombre_usuario, $descripcion);
-            $descripcion3 = str_replace('{{nombre}}', $comentario->paquete_actividades->nombre, $descripcion2);
-            $descripcion4  = str_replace('{{nombre_proyecto}}', $comentario->paquete_actividades->proyecto->nombre, $descripcion3);
+            $descripcion3 = str_replace('{{nombre}}', $comentario->actividad->nombre, $descripcion2);
+            $descripcion4  = str_replace('{{nombre_proyecto}}', $comentario->actividad->proyecto->nombre, $descripcion3);
             $notificacion->descripcion = $descripcion4;
-            $notificacion->ruta = str_replace('{{id}}', $comentario->paquete_actividades->id, $tipoNotificacion->ruta);
+            $notificacion->ruta = str_replace('{{id}}', $comentario->actividad->id, $tipoNotificacion->ruta);
         }
-        $notificacion->id_paquete_actividades = $comentario->paquete_actividades->id;
+        $notificacion->id_actividad = $comentario->actividad->id;
         $notificacion->leida = false;
         $notificacion->save();
         //Envío de notificacion a equipo de trabajo
-        $EquipoTrabajo = EquipoTrabajo::where("id_proyecto",$comentario->paquete_actividades->proyecto->id);
+        $EquipoTrabajo = EquipoTrabajo::where("id_proyecto",$comentario->actividad->proyecto->id);
         if($EquipoTrabajo!=null){
             foreach ($EquipoTrabajo as $miembro) {
                 // Crear notificación para cada miembro
@@ -146,13 +146,13 @@ class ComentarioController extends Controller
                     $nombre_usuario=$comentario->usuario->name . " " . $comentario->usuario->last_name;
                     $descripcion=$tipoNotificacion->descripcion;
                     $descripcion2 = str_replace('{{usuario}}', $nombre_usuario, $descripcion);
-                    $descripcion3 = str_replace('{{nombre}}', $comentario->paquete_actividades->nombre, $descripcion2);
-                    $descripcion4  = str_replace('{{nombre_proyecto}}', $comentario->paquete_actividades->proyecto->nombre, $descripcion3);
+                    $descripcion3 = str_replace('{{nombre}}', $comentario->actividad->nombre, $descripcion2);
+                    $descripcion4  = str_replace('{{nombre_proyecto}}', $comentario->actividad->proyecto->nombre, $descripcion3);
                     $notificacion->descripcion = $descripcion4;
-                    $notificacion->ruta = str_replace('{{id}}', $comentario->paquete_actividades->id, $tipoNotificacion->ruta);
+                    $notificacion->ruta = str_replace('{{id}}', $comentario->actividad->id, $tipoNotificacion->ruta);
                 }
-                $notificacion->id_paquete_actividades = $comentario->paquete_actividades->id;
-                $notificacion->id_proyecto = $comentario->paquete_actividades->proyecto->id;
+                $notificacion->id_actividad = $comentario->actividad->id;
+                $notificacion->id_proyecto = $comentario->actividad->proyecto->id;
                 $notificacion->leida = false;
                 $notificacion->save();
             }
