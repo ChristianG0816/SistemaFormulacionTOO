@@ -1,5 +1,12 @@
 @extends('adminlte::page')
 @section('title', 'Gestión Proyectos')
+<style>
+  body{
+    table.dataTable tbody tr.selected {
+      background-color: #c9ebff;
+    }
+  }
+</style>
 @section('content_header')
 <h1 class="text-center">Gestionar Proyecto</h1>
 <p id="id_proyecto" data-id-proyecto="{{ $proyecto->id }}" class="d-none"></p>
@@ -165,6 +172,7 @@
             </div>
             <!--Sección de equipo de trabajo-->
             @include('equipos.asignar')
+            @can('gestionar-actividad')
             <!--Sección de actividades-->
             <div class="row">
               <div class="col-lg-12 col-md-12 mb-3">
@@ -172,7 +180,12 @@
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Actividades</h3>
                     <div class="card-tools ml-auto">
+                      @if ($proyecto->estado_proyecto->nombre != 'Aprobado')
+                      @can('crear-actividad')
+                      <button type="button" class="btn btn-sm btn-outline-primary my-0" id="enviarRecordatorioBtn" style="display: none;">Enviar Recordatorio</button>
                       <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('actividades.create', $proyecto->id) }}">Agregar</a>
+                      @endcan
+                      @endif
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
                       </button>
@@ -191,6 +204,7 @@
                 </div>
               </div>
             </div>
+@endcan
             <!--Sección de documentos legales-->
             <div class="row">
               <div class="col-lg-12 col-md-12 mb-3">
@@ -243,9 +257,25 @@
   </div>
 </div>
 <!-- /.Modal de eliminar -->
-
 @stop
+@php
+    $permisos = [
+        'ver-actividad' => auth()->user()->can('ver-actividad'),
+        'editar-actividad' => auth()->user()->can('editar-actividad'),
+        'borrar-actividad' => auth()->user()->can('borrar-actividad'),
+    ];
+    if ($proyecto->estado_proyecto->nombre != 'Aprobado'){
+        $permisos['editar-actividad'] = true;
+        $permisos['borrar-actividad'] = true;
+    }else{
+        $permisos['editar-actividad'] = false;
+        $permisos['borrar-actividad'] = false;
+    }
+@endphp
 @section('js')
+<script>
+    var permisos = @json($permisos);
+</script>
 <script>
   jQuery.noConflict();
   (function($) {      

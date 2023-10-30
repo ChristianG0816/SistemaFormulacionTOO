@@ -49,7 +49,7 @@ class TipoNotificacionSeeder extends Seeder
             ],
             [
                 'nombre' => 'Recordatorio de actividad',
-                'descripcion' => 'Recordatorio de actividad "{{nombre}}" en proyecto "{{nombre_proyecto}}".',
+                'descripcion' => 'Recordatorio de actividad pendiente "{{nombre}}" en proyecto "{{nombre_proyecto}}".',
                 'icono' => 'fas fa-fw fa-bell',
                 'color' => '#FF9933',
                 'ruta' => '/actividades/show/{id}',
@@ -66,7 +66,7 @@ class TipoNotificacionSeeder extends Seeder
                 'descripcion' => 'Te han invitado al evento "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-calendar',
                 'color' => '#FF33CC',
-                'ruta' => '/eventos/{{id}}',
+                'ruta' => '/calendario',
             ],
             [
                 'nombre' => 'Actividad pendiente',

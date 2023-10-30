@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Calendario')
 
 @section('content_header')
 @stop
@@ -132,7 +132,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body custom-modal-body">
                     <form action="" id="actividades">
                         <p><strong>Nombre Paquete:</strong> <span id="titleForm"></span></p>
                         <p><strong>Proyecto:</strong> <span id="proyectoForm"></span></p>
@@ -142,6 +142,10 @@
                         <div class="form-group" id="diasRestantesDiv">
                             <p><strong id="dia">Dias Restantes:</strong> <span id="diaForm"></span></p>
                         </div>
+
+                        <!-- Agregar un botón para redirigir a la actividad -->
+                        <a href="#" id="btnRedirigir" class="btn btn-primary">Ir a la Actividad</a>
+
                     </form>
                 </div>
                 <div class="modal-footer">

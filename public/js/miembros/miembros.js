@@ -61,19 +61,19 @@ $(document).ready(function() {
                     
                     var actionsHtml = '';
                     
-                    //if(hasPrivilegeVerMiembro === true){
+                    if(permisos['ver-miembro']){
                         actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/miembros/'+row.id+'">Mostrar</a>';
-                    /*}
+                    }
 
-                    if(hasPrivilegeEditarMiembro === true){*/
+                    if(permisos['editar-miembro']){
                         actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/miembros/'+row.id+'/edit">Editar</a>';
-                    /*}
+                    }
                     
-                    if(hasPrivilegeEliminarMiembro === true){*/
+                    if(permisos['borrar-miembro']){
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
-                   //}
+                   }
                     
                     return actionsHtml || '';
                 }
