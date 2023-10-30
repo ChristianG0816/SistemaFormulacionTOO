@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         formularioEvento.hora_inicio.value = respuesta.data.hora_inicio;
                         formularioEvento.hora_fin.value = respuesta.data.hora_fin;
                         formularioEvento.fecha_recordatorio.value = respuesta.data.fecha_recordatorio;
+                        formularioEvento.hora_recordatorio.value = respuesta.data.hora_recordatorio;
                         formularioEvento.link_reunion.value =  respuesta.data.link_reunion;
 
                         // Deshabilitar el campo del proyecto
@@ -76,8 +77,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         $("#hora_fin").removeClass("is-invalid");
                         $("#errorFechaRecord").text("");
                         $("#fecha_recordatorio").removeClass("is-invalid");
+                        $("#errorHoraRecordatorio").text("");
+                        $("#hora_recordatorio").removeClass("is-invalid");
                         $("#errorlink").text("");
                         $("#link_reunion").removeClass("is-invalid");
+                        
 
                         // Mostrar el modal
                         $modal.modal("show");
@@ -234,6 +238,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 $("#errorFechaRecord").text(mensajeErrorFechaRecordatorio);
                 $("#fecha_recordatorio").addClass("is-invalid");
 
+                // Mostrar el mensaje de error para HoraRecordatorio
+                const mensajeErrorHoraRecordatorio = error.response.data.errors.hora_recordatorio;  
+                $("#errorHoraRecordatorio").text(mensajeErrorHoraRecordatorio);
+                $("#hora_recordatorio").addClass("is-invalid");
+
                 // Mostrar el mensaje de error para Link de reunion
                 const mensajeErrorLink = error.response.data.errors.link_reunion;  
                 $("#errorlink").text(mensajeErrorLink);
@@ -264,6 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formularioEvento.hora_inicio.value = "";
             formularioEvento.hora_fin.value = "";
             formularioEvento.fecha_recordatorio.value = "";
+            formularioEvento.hora_recordatorio.value = "";
             formularioEvento.link_reunion.value = "";
 
             // Cambiar el contenido del modal
@@ -288,6 +298,8 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#hora_fin").removeClass("is-invalid");
             $("#errorFechaRecord").text("");
             $("#fecha_recordatorio").removeClass("is-invalid");
+            $("#errorHoraRecordatorio").text("");
+            $("#hora_recordatorio").removeClass("is-invalid");
             $("#errorlink").text("");
             $("#link_reunion").removeClass("is-invalid");
 

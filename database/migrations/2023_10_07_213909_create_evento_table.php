@@ -23,6 +23,7 @@ class CreateEventoTable extends Migration
             $table->time('hora_inicio'); // time not null
             $table->time('hora_fin'); // time not null
             $table->date('fecha_recordatorio'); // time not null
+            $table->time('hora_recordatorio'); // time not null
             $table->string('link_reunion', 255); // varchar(250) not null
             $table->foreignId('id_proyecto')->constrained('proyecto')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps(); // created_at, updated_at

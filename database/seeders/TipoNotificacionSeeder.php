@@ -110,6 +110,13 @@ class TipoNotificacionSeeder extends Seeder
                 'color' => '#0B5345',
                 'ruta' => '/actividades/show/{{id}}',
             ],
+            [
+                'nombre' => 'Recordatorio de evento.',
+                'descripcion' => 'Recordatorio para el evento: {{nombre}} perteneciente al proyecto " {{nombre_proyecto}}".',
+                'icono' => 'fas fa-fw fa-calendar',
+                'color' => '#FF33CC',
+                'ruta' => '/calendario',
+            ],
         ];
 
         foreach ($tiposNotificacion as $tipo) {
