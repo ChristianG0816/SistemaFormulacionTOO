@@ -117,6 +117,13 @@ class TipoNotificacionSeeder extends Seeder
                 'color' => '#FF33CC',
                 'ruta' => '/calendario',
             ],
+            [
+                'nombre' => 'Proyecto para Revisión',
+                'descripcion' => 'El proyecto "{{nombre}}", se encuentra listo para ser revisado.',
+                'icono' => 'fas fa-file-import',
+                'color' => '#0B5345',
+                'ruta' => '/actividades/show/{{id}}',
+            ],
         ];
 
         foreach ($tiposNotificacion as $tipo) {
