@@ -73,7 +73,8 @@ class SeederTablaPermisos extends Seeder
         $roleColaborador = Role::create(['name' => 'Colaborador'])->givePermissionTo([
             //Roles referentes al colaborador de proyecto
             $roles,
-            $comentarios
+            $comentarios,
+            $actividades
         ]);
 
     }
