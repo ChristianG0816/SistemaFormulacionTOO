@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Editar Cliente')
+@section('title', 'Crear Contacto')
 
 @section('content_header')
-    <h1 class="text-center">Editar Cliente</h1>
+    <h1 class="text-center">Crear Contacto</h1>
 @stop
 
 @section('content')
@@ -14,37 +14,38 @@
                     <div id="table_wrapper" class="wrapper dt-bootstrap4">
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                            {!! Form::model($cliente, ['method'=>'PATCH', 'route' => ['clientes.update', $cliente->id]]) !!}
+                            {!! Form::open(array('route'=>'contactos.store', 'method'=>'POST')) !!}
+                                {!! Form::text('id_cliente', $cliente->id, ['class' => 'form-control d-none']) !!}
                             <div class="form-group">
-                                <label for="tipo_cliente" class="text-secondary">Tipo de Cliente*</label>
-                                {!! Form::select('tipo_cliente', ['Persona Natural' => 'Persona Natural', 'Persona Jurídica' => 'Persona Jurídica'], null, ['class' => 'form-control' . ($errors->has('tipo_cliente') ? ' is-invalid' : ''), 'id' => 'tipo_cliente']) !!}
-                                @error('tipo_cliente')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="form-group natural">
-                                <label for="name" class="text-secondary">Nombre*</label>
-                                {!! Form::text('name', $usuario->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'maxlength' => 255]) !!}
-                                @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="form-group juridica">
-                                <label for="last_name" class="text-secondary">Apellido*</label>
-                                {!! Form::text('last_name', $usuario->last_name, ['class' => 'form-control' . ($errors->has('last_name') ? ' is-invalid' : ''), 'maxlength' => 255]) !!}
-                                @error('last_name')
+                                <label for="nombre" class="text-secondary">Nombre*</label>
+                                {!! Form::text('nombre', null, ['class' => 'form-control' . ($errors->has('nombre') ? ' is-invalid' : ''), 'maxlength' => 250]) !!}
+                                @error('nombre')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="email" class="text-secondary">Correo*</label>
-                                {!! Form::email('email', $usuario->email, ['class' => 'form-control' . ($errors->has('email') ? ' is-invalid' : ''),'maxlength' => 255]) !!}
-                                @error('email')
+                                <label for="apellido" class="text-secondary">Apellido*</label>
+                                {!! Form::text('apellido', null, ['class' => 'form-control' . ($errors->has('apellido') ? ' is-invalid' : ''), 'maxlength' => 250]) !!}
+                                @error('apellido')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="telefono" class="text-secondary">Teléfono*</label>
+                                <label for="rol" class="text-secondary">Rol*</label>
+                                {!! Form::text('rol', null, ['class' => 'form-control' . ($errors->has('rol') ? ' is-invalid' : ''), 'maxlength' => 100]) !!}
+                                @error('rol')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="correo" class="text-secondary">Correo*</label>
+                                {!! Form::email('correo', null, ['class' => 'form-control' . ($errors->has('correo') ? ' is-invalid' : ''),'maxlength' => 100]) !!}
+                                @error('correo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono" class="text-secondary">Teléfono</label>
                                 {!! Form::text('telefono', null, ['class' => 'form-control' . ($errors->has('telefono') ? ' is-invalid' : ''),'maxlength' => 9, 'placeholder' => '####-####']) !!}
                                 @error('telefono')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -69,5 +70,5 @@
     </div>
 @stop
 @section('js')
-    <script src="{{ asset('js/clientes/clientes-form.js') }}"></script>
+    <script src="{{ asset('js/contactos/contactos.js') }}"></script>
 @stop

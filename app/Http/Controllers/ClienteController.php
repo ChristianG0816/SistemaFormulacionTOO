@@ -35,7 +35,7 @@ class ClienteController extends Controller
             'name' => 'required',
             'tipo_cliente' => 'required',
             'email' => 'required|email|unique:users,email',
-            'telefono' => 'required'
+            'telefono' => 'required|regex:/^\d{4}-\d{4}$/'
         ];
     
         if ($request->tipo_cliente === 'Persona Natural') {
@@ -84,7 +84,7 @@ class ClienteController extends Controller
             'name' => 'required',
             'tipo_cliente' => 'required',
             'email' => 'required|email|unique:users,email,' . $cliente->id_usuario,
-            'telefono' => 'required'
+            'telefono' => 'required|regex:/^\d{4}-\d{4}$/'
         ];
     
         if ($request->tipo_cliente === 'Persona Natural') {

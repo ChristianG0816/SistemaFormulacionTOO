@@ -16,6 +16,7 @@ class CreateContactoTable extends Migration
         Schema::create('contacto', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre',250);
+            $table->string('apellido',250);
             $table->string('rol', 100);
             $table->string('correo', 100);
             $table->string('telefono', 9)->nullable();
