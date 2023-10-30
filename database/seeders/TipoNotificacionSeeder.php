@@ -66,7 +66,7 @@ class TipoNotificacionSeeder extends Seeder
                 'descripcion' => 'Te han invitado al evento "{{nombre}}".',
                 'icono' => 'fas fa-fw fa-calendar',
                 'color' => '#FF33CC',
-                'ruta' => '/eventos/{{id}}',
+                'ruta' => '/calendario',
             ],
             [
                 'nombre' => 'Actividad pendiente',

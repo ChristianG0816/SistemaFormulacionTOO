@@ -14,6 +14,8 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Evento;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use App\Models\EstadoActividad;
+use App\Models\Notificacion;
+use App\Models\TipoNotificacion;
 
 class CalendarioController extends Controller
 {
@@ -193,8 +195,12 @@ public function GuardarEvento(Request $request){
 
     $evento = new Evento($request->all());
     $evento->id_proyecto = $id_proyecto;
-    $evento->save();
+    $evento->save();  
 
+    // Llama a la función envio_notificacion_evento
+    $tipo_notificacion_valor = 7;
+    $this->envio_notificacion_evento($tipo_notificacion_valor, $evento);
+    
 }
 
 public function showEvento($idProyecto){
@@ -329,5 +335,50 @@ public function consultarEvento($id)
         return response()->json($estado);
     }
 
+    public function envio_notificacion_evento($tipo_notificacion_valor, $evento){
+        
+        $usuario = Auth::user();
+
+        if($evento->proyecto->id_gerente_proyecto!=$usuario->id){
+        //Envío de notificacion a supervisor
+        $notificacion = new Notificacion();
+        $notificacion->id_usuario = $evento->proyecto->id_gerente_proyecto;
+        $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+        $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+
+        if ($tipoNotificacion) {
+            $descripcion=$tipoNotificacion->descripcion;
+            $descripcion2 = str_replace('{{nombre}}', $evento->nombre, $descripcion);
+            $notificacion->descripcion = $descripcion2;
+            $notificacion->ruta = $tipoNotificacion->ruta;
+        }
+        
+        $notificacion->id_proyecto = $evento->id_proyecto;
+        $notificacion->leida = false;
+        $notificacion->save();
+
+    }
+
+        //Envio de notificación para mano de obra
+        $EquipoTrabajo = EquipoTrabajo::where("id_proyecto", $evento->id_proyecto)->get();
+            foreach ($EquipoTrabajo as $miembro) {
+                if($miembro->mano_obra->id_usuario!=$usuario->id){
+                $notificacion = new Notificacion();
+                $notificacion->id_usuario = $miembro->mano_obra->id_usuario;
+                $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+                $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+                if ($tipoNotificacion) {
+                    $descripcion=$tipoNotificacion->descripcion;
+                    $descripcion2 = str_replace('{{nombre}}', $evento->nombre, $descripcion);
+                    $notificacion->descripcion = $descripcion2;
+                    $notificacion->ruta = $tipoNotificacion->ruta;
+                }
+
+                $notificacion->id_proyecto = $evento->id_proyecto;
+                $notificacion->leida = false;
+                $notificacion->save();
+            }
+        }
+    }
 
 }
