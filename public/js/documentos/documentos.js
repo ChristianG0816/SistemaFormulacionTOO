@@ -3,8 +3,9 @@ toastr.options = {
     "progressBar": true
 };
 $(document).ready(function() {
-    var table = $('#tabla-clientes').DataTable({
-        ajax: '/clientes/data/',
+    var id_proyecto = $('#id_proyecto').data('id-proyecto');
+    var table = $('#tabla-documentos').DataTable({
+        ajax: '/documentos/data/'+id_proyecto,
         processing: true,
         serverSide: true,
         order: [[0, 'asc']],
@@ -14,61 +15,35 @@ $(document).ready(function() {
              "<'row w-100'<'col-sm-5'i><'col-sm-7'p>>",
         lengthMenu: [[5, 25, 50, 100, -1], [5, 25, 50, 100, 'Todos']], // Opciones de selección para mostrar registros por página
         pageLength: 5, // Cantidad de registros por página por defecto
-        buttons: [
-            {
-                extend: 'copy',
-                text: 'Copiar',
-                exportOptions: {
-                  columns: [0, 1, 2, 3, 4,] // Índices de las columnas que se copiarán
-                }
-            },
-            {
-                extend: 'excel',
-                text: 'Exportar a Excel',
-                title: 'Clientes', // Título del reporte en Excel
-                filename: 'Clientes ' + getCurrentDateTime(), // Nombre del archivo Excel
-                exportOptions: {
-                  columns: [0, 1, 2, 3, 4,] // Índices de las columnas que se exportarán
-                }
-            },
-            {
-                extend: 'pdf',
-                text: 'Exportar a PDF',
-                title: 'Clientes', // Título del reporte en PDF
-                filename: 'Clientes ' + getCurrentDateTime(), // Nombre del archivo PDF
-                exportOptions: {
-                  columns: [0, 1, 2, 3, 4,] // Índices de las columnas que se exportarán
-                },
-                customize: function (doc) {
-                  doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-                }
-            }
-        ],
         columns: [
-            { data: 'tipo_cliente', title: 'Tipo de Cliente', width: '10%' },
-            { data: 'usuario_cliente.name', title: 'Nombre', width: '20%' },
-            { data: 'usuario_cliente.last_name', title: 'Apellido', width: '20%' },
-            { data: 'usuario_cliente.email', title: 'Correo', width: '15%' },
-            { data: 'telefono', title: 'Teléfono', width: '10%' },
+            { data: 'tipo_documento.nombre', title: 'Tipo de Documento', width: '20%' },
+            { data: 'nombre', title: 'Nombre', width: '20%' },
+            { data: 'autor', title: 'Autor', width: '20%' },              
+            { data: 'fecha_creacion', title: 'Fecha de Creación', width: '20%' },
             {
                 data: null,
                 title: 'Acciones',
                 sortable: false,
                 searchable: false,
-                width: '25%',
+                width: '20%',
                 render: function (data, type, row) {
                     
                     var actionsHtml = '';
                     
-                    //if(hasPrivilegeVerProyecto === true){
-                        actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/clientes/'+row.id+'">Contactos</a>';
-                    //}
-                    actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/clientes/'+row.id+'/edit">Editar</a>';
-    
+                    //if(hasPrivilegeVerActividad === true){
+                        actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/documentos/show/'+row.id+'">Ver</a>';
+                    /*}
+
+                    if(hasPrivilegeEditarActividad === true){*/
+                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/documentos/'+row.id+'/edit">Editar</a>';
+                    /*}
+                    
+                    if(hasPrivilegeEliminarActividad === true){*/
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
-
+                   //}
+                    
                     return actionsHtml || '';
                 }
             }
@@ -132,46 +107,44 @@ $(document).ready(function() {
 
         return year + month + day + '_' + hours + minutes + seconds;
     }
-
+   
    // Método para mostrar el modal de eliminación
-    $(document).on('click', '.eliminarModal-btn', function () {
+    /*$(document).on('click', '.eliminarModal-btn', function () {
         var id = $(this).data('id');
         var modal = $('#confirmarEliminarModal');
         var tituloModal = modal.find('.modal-title');
         var cuerpoModal = modal.find('.modal-body');
-        var eliminarBtn = modal.find('#eliminarClienteBtn');
+        var eliminarBtn = modal.find('#eliminarActividadBtn');
         tituloModal.text('Confirmar eliminación');
-        cuerpoModal.html('<strong>¿Estás seguro de eliminar al Cliente seleccionado?</strong><br>Ten en cuenta que se eliminarán \n\
-        los datos relacionados al cliente');
+        cuerpoModal.html('<strong>¿Estás seguro de eliminar la actividad seleccionada?</strong><br>Ten en cuenta que se eliminarán \n\
+        los datos relacionados a la actividad');
         eliminarBtn.data('id', id);
         modal.modal('show');
     });
    
+   
    //Método para enviar la solicitud de eliminar
-    $(document).on('click', '#eliminarClienteBtn', function () {
+    $(document).on('click', '#eliminarActividadBtn', function () {
         var id = $(this).data('id');
         var modal = $('#confirmarEliminarModal');
         $.ajax({
-            url: '/clientes/' + id,
-            type: 'POST',
-            data: {
-                _method: 'DELETE' // Indica que es una solicitud DELETE
-            },
+            url: '/documentos/' + id,
+            type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
                 modal.modal('hide');
-                var table = $('#tabla-clientes').DataTable();
+                var table = $('#tabla-documentos').DataTable();
                 table.ajax.reload(null, false);
-                toastr.success(response.success);
+                toastr.success('Actividad eliminada con éxito');
             },
             error: function (error) {
                 modal.modal('hide');
-                toastr.error(error.responseJSON.error);
+                var table = $('#tabla-documentos').DataTable();
+                table.ajax.reload(null, false);
+                toastr.error('Ocurrió un error al eliminar la actividad.');
             }
         });
-    });
-    
-
+    }); */   
 });

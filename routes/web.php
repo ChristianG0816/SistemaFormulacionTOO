@@ -11,6 +11,7 @@ use App\Http\Controllers\EquipoTrabajoController;
 use App\Http\Controllers\ManoObraController;
 use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\AsignacionRecursoController;
@@ -63,6 +64,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('clientes/data', [ClienteController::class, 'data'])->name('clientes.data');
     Route::resource('clientes', ClienteController::class);
 
+    //Rutas para contactos
+    Route::get('contactos/{id}', [ContactoController::class, 'index'])->name('contactos.index');
+    Route::get('contactos/create/{id}', [ContactoController::class, 'create'])->name('contactos.create');
+    Route::get('contactos/data/{id}', [ContactoController::class, 'data'])->name('contactos.data');
+    Route::resource('contactos', ContactoController::class)->except(['index','create']);
+
     //Rutas para proyecto
     Route::get('proyectos/data', [ProyectoController::class, 'data'])->name('proyectos.data');
     Route::resource('proyectos', ProyectoController::class);
@@ -73,6 +80,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/proyectos/{id}/iniciar', [ProyectoController::class, 'iniciar'])->name('proyectos.iniciar');
     Route::get('/proyectos/{id}/finalizar', [ProyectoController::class, 'finalizar'])->name('proyectos.finalizar');
     
+    //Rutas para documentos
+    Route::get('documentos/{id}', [DocumentoController::class, 'index'])->name('documentos.index');
+    Route::get('documentos/create/{id}', [DocumentoController::class, 'create'])->name('documentos.create');
+    Route::get('documentos/data/{id}', [DocumentoController::class, 'data'])->name('documentos.data');
+    Route::resource('documentos', DocumentoController::class)->except(['index','create']);
+
+    //Rutas para mano de obra
     Route::get('miembros/verificarPais/{idPais}', [ManoObraController::class, 'verificarPais'])->name('miembros.verificarPais');
     Route::get('miembros/data', [ManoObraController::class, 'data'])->name('miembros.data');
     Route::resource('miembros', ManoObraController::class);

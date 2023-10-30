@@ -46,7 +46,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="telefono" class="text-secondary">Teléfono*</label>
-                                {!! Form::text('telefono', null, ['class' => 'form-control' . ($errors->has('telefono') ? ' is-invalid' : ''),'maxlength' => 9]) !!}
+                                {!! Form::text('telefono', null, ['class' => 'form-control' . ($errors->has('telefono') ? ' is-invalid' : ''),'maxlength' => 9, 'placeholder' => '####-####']) !!}
                                 @error('telefono')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

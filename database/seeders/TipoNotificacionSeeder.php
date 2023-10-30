@@ -111,7 +111,14 @@ class TipoNotificacionSeeder extends Seeder
                 'ruta' => '/actividades/show/{{id}}',
             ],
             [
-                'nombre' => 'Proyeco para Revisión',
+                'nombre' => 'Recordatorio de evento.',
+                'descripcion' => 'Recordatorio para el evento: {{nombre}} perteneciente al proyecto " {{nombre_proyecto}}".',
+                'icono' => 'fas fa-fw fa-calendar',
+                'color' => '#FF33CC',
+                'ruta' => '/calendario',
+            ],
+            [
+                'nombre' => 'Proyecto para Revisión',
                 'descripcion' => 'El proyecto "{{nombre}}", se encuentra listo para ser revisado.',
                 'icono' => 'fas fa-file-import',
                 'color' => '#0B5345',

@@ -11,12 +11,13 @@ class Contacto extends Model
     protected $table = 'contacto';
     protected $fillable = [
         'nombre',
+        'apellido',
         'rol',
         'correo',
         'telefono',
         'id_cliente',
     ];
-    public function contactoCliente(){
+    public function contacto_cliente(){
         return $this->belongsTo(Cliente::class, 'id_cliente');
     }
 }
