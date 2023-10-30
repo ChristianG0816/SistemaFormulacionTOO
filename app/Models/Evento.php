@@ -18,6 +18,7 @@ class Evento extends Model
         'hora_inicio' => 'required|before:hora_fin',
         'hora_fin' => 'required|after:hora_inicio',
         'fecha_recordatorio' => 'required|after_or_equal:fecha_inicio|before_or_equal:fecha_fin',
+        'hora_recordatorio' => 'required',
         'link_reunion' => 'required',
     ];
 
@@ -31,6 +32,7 @@ class Evento extends Model
         'hora_inicio',
         'hora_fin',
         'fecha_recordatorio',
+        'hora_recordatorio',
         'link_reunion',
         'id_proyecto'
     ];
