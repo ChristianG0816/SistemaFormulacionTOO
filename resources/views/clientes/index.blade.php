@@ -5,31 +5,31 @@
 @stop
 
 @section('content')
-
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <!--Sección de botones-->
-                    <a class="btn btn-sm btn-outline-warning" href="{{ route('clientes.create') }}">Nuevo</a> 
-                </h3>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <!--Sección de botones-->
+          <a class="btn btn-sm btn-outline-warning" href="{{ route('clientes.create') }}">Nuevo</a>
+          <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
+          <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
+          <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button>
+        </h3>
+      </div>
+      <div class="card-body">
+        <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
+          <div class="row">
+            <div class="col-sm-12 card-body table-responsive p-0">
+              <!--Sección de tabla-->
+              <table id="tabla-clientes" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed text-nowrap" style="width:100%"></table>
             </div>
-
-            <div class="card-body">
-                <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                    <div class="row">
-                        <div class="col-sm-12 card-body table-responsive p-0" style="height: 60vh;">
-                            <!--Sección de tabla-->
-                            <table id="tabla-clientes"
-                                class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed text-nowrap">
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
-    </div>
+  </div>
+</div>
     <!-- Modal de eliminar -->
     <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true">
