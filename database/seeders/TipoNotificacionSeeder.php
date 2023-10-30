@@ -49,7 +49,7 @@ class TipoNotificacionSeeder extends Seeder
             ],
             [
                 'nombre' => 'Recordatorio de actividad',
-                'descripcion' => 'Recordatorio de actividad "{{nombre}}" en proyecto "{{nombre_proyecto}}".',
+                'descripcion' => 'Recordatorio de actividad pendiente "{{nombre}}" en proyecto "{{nombre_proyecto}}".',
                 'icono' => 'fas fa-fw fa-bell',
                 'color' => '#FF9933',
                 'ruta' => '/actividades/show/{id}',

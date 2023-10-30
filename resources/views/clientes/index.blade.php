@@ -11,7 +11,7 @@
             <div class="card-header">
                 <h3 class="card-title">
                     <!--Sección de botones-->
-                    <a class="btn btn-sm btn-outline-warning" href="{{ route('clientes.create') }}">Nuevo</a>
+                    <a class="btn btn-sm btn-outline-warning" href="{{ route('clientes.create') }}">Nuevo</a> 
                 </h3>
             </div>
 

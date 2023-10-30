@@ -24,7 +24,7 @@ class CalendarioController extends Controller
     $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
 
     //Obtener el id del usuario logueado - En este caso el cliente
-    //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+    $cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
 
     $GerenteGeneral = $usuarioLogueado->hasRole('Gerente');
 
@@ -41,9 +41,12 @@ class CalendarioController extends Controller
         $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)
             ->where('id_gerente_proyecto', $usuarioLogueado->id)
             ->get();
-    }  /*elseif ($cliente) {
-        $proyectos = Proyecto::where('id_cliente', $usuarioLogueado->id)->get();
-    } */
+    }  elseif ($cliente) {
+       // Obtén proyectos iniciados relacionados con el gerente de proyecto
+       $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)
+       ->where('id_cliente', $usuarioLogueado->id)
+       ->get();
+    } 
     elseif ($GerenteGeneral) {
         // Si es un Gerente General, obtén todos los proyectos iniciados
         $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)->get();
@@ -66,7 +69,7 @@ class CalendarioController extends Controller
         // Obtener el id del usuario logueado - En este caso del supervisor
         $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
         // Obtener el id del usuario logueado - En este caso el cliente
-        //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+        $cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
         // Obtener el rol de gerente
         $GerenteGeneral = $usuarioLogueado->hasRole('Gerente');
 
@@ -127,13 +130,12 @@ class CalendarioController extends Controller
             }
 
             return response()->json($eventos);
-        }
-          /*  elseif ($gerenteProyecto || $cliente) {
-        } */ elseif ($gerenteProyecto) {
+        } elseif ($gerenteProyecto || $cliente) {
         if ($idProyecto == 0) {
             // Si idProyecto es igual a 0, se obtienen todas las actividades relacionadas con proyectos del usuario.
             $proyectosUsuario = Proyecto::where(function ($query) use ($usuarioLogueado) {
-                $query->where('id_gerente_proyecto', $usuarioLogueado->id);
+                $query->where('id_gerente_proyecto', $usuarioLogueado->id)
+                ->orWhere('id_cliente', $usuarioLogueado->id);
             })->pluck('id');
 
             // Filtrar proyectos iniciados
@@ -173,8 +175,6 @@ class CalendarioController extends Controller
         return response()->json([]); // En caso de que no se encuentren datos.
     }
 
-
-
     public function consultarActividad($id)
     {
         $actividad = Actividad::find($id);
@@ -207,7 +207,7 @@ public function showEvento($idProyecto){
     // Obtener el id del usuario logueado - En este caso del supervisor
     $gerenteProyecto = Proyecto::where('id_gerente_proyecto', $usuarioLogueado->id)->first();
     // Obtener el id del usuario logueado - En este caso el cliente
-    //$cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
+    $cliente = Proyecto::where('id_cliente', $usuarioLogueado->id)->first();
     // Obtener el rol de gerente
     $GerenteGeneral = $usuarioLogueado->hasRole('Gerente');
 
@@ -239,13 +239,12 @@ public function showEvento($idProyecto){
             }
         }
     }
-    
-    /* elseif($Supervisor || $cliente)*/
-    elseif ($gerenteProyecto) {
+    elseif ($gerenteProyecto || $cliente) {
         if ($idProyecto == 0) {
             // Si idProyecto es igual a 0, obtén todos los proyectos iniciados relacionados con el gerente.
             $proyectosIniciados = Proyecto::where('id_estado_proyecto', EstadoProyecto::where('nombre', 'Iniciado')->first()->id)
                 ->where('id_gerente_proyecto', $usuarioLogueado->id)
+                ->orWhere('id_cliente', $usuarioLogueado->id)
                 ->pluck('id');
     
             // Obtén los eventos relacionados con los proyectos iniciados
@@ -289,6 +288,7 @@ public function showEvento($idProyecto){
             'end' => $evento->fecha_fin,
             'descripcion' => $evento->descripcion,
             'tipo' => 'evento', // Se agrega para que abra el modal dependiendo del evento que tenga
+            'color' => '#FF5733', 
             
         ];
         array_push($eventosData, $eventoData);

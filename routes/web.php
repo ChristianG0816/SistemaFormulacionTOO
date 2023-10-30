@@ -95,6 +95,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('actividades/show/{id}', [ActividadController::class, 'show'])->name('actividades.show');
     Route::get('actividades/data/{id}', [ActividadController::class, 'data'])->name('actividades.data');
     Route::patch('actividades/{id}/actualizar', [ActividadController::class, 'actualizar'])->name('actividades.actualizar');
+    Route::post('/actividades/{id}/recordatorio', [ActividadController::class, 'enviarRecordatorio']);
     Route::resource('actividades', ActividadController::class)->except(['index','create','show']);
 
     Route::resource('comentarios', ComentarioController::class);

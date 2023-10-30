@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Cliente;
 use App\Models\Proyecto;
 use App\Models\Actividad;
 use App\Models\ManoObra;
@@ -18,6 +19,17 @@ class SeederDatosPrueba extends Seeder
      */
     public function run()
     {
+        Cliente::create([
+            'tipo_cliente' => 'Persona Natural',
+            'telefono' => '1235-1235',
+            'id_usuario' => 8,
+        ]);
+        Cliente::create([
+            'tipo_cliente' => 'Persona Natural',
+            'telefono' => '1234-1234',
+            'id_usuario' => 6,
+        ]);
+
         Proyecto::create([
             'nombre' => 'Proyecto 1',
             'objetivo' => 'Objetivo proyecto',
@@ -29,7 +41,7 @@ class SeederDatosPrueba extends Seeder
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
             'id_gerente_proyecto' => 7,
-            'id_cliente' => 8,
+            'id_cliente' => 1,
         ]);
 
         Proyecto::create([
@@ -43,7 +55,7 @@ class SeederDatosPrueba extends Seeder
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
             'id_gerente_proyecto' => 9,
-            'id_cliente' => 8,
+            'id_cliente' => 1,
         ]);
 
         Proyecto::create([
@@ -57,7 +69,7 @@ class SeederDatosPrueba extends Seeder
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
             'id_gerente_proyecto' => 7,
-            'id_cliente' => 6,
+            'id_cliente' => 2,
         ]);
 
         Persona::create([
