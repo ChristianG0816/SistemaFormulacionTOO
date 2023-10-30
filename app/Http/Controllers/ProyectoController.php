@@ -208,7 +208,7 @@ class ProyectoController extends Controller
             // Envía el correo electrónico de revisión a cada usuario
             Mail::to($usuario->email)->send($correo);
 
-            $this->enviar_notificacion($proyecto->id,$usuario->id,$proyecto->nombre,14);
+            $this->enviar_notificacion($proyecto->id,$usuario->id,$proyecto->nombre,15);
         }
 
         return redirect()->route('proyectos.index');
@@ -220,7 +220,7 @@ class ProyectoController extends Controller
     {
         $proyecto = Proyecto::find($id);
         $proyecto->id_estado_proyecto=3;
-        //$proyecto->save();
+        $proyecto->save();
 
         //Enviar correo y notificacion al supervisor.
         $usuario = User::find($proyecto->id_gerente_proyecto);
