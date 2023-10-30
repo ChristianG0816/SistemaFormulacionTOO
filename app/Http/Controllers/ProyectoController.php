@@ -37,38 +37,35 @@ class ProyectoController extends Controller
      }
 
     public function data()
-{
-    $user = Auth::user();
-    $proyectosQuery = Proyecto::query();
-
-    if ($user->hasRole('Supervisor')) {
-        $proyectosQuery->where('id_gerente_proyecto', $user->id);
-    } elseif ($user->hasRole('Cliente')) {
-        $proyectosQuery->where('id_cliente', $user->id);
-    } elseif ($user->hasRole('Colaborador')) {
-        $proyectosQuery->whereIn('id', function ($query) use ($user) {
-            $query->select('id_proyecto')
-                ->from('equipo_trabajo')
-                ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
-                ->where('mano_obra.id_usuario', $user->id);
-        });
-    }else{
-        $proyectos = Proyecto::all();
-     }
-
-    $data = $proyectosQuery->with('estado_proyecto', 'gerente_proyecto')->get();
-
-    return datatables()->of($data)
-        ->addColumn('cliente_nombre', function ($row) {
-            return $row->cliente->usuario_cliente->name . ' ' . $row->cliente->usuario_cliente->last_name;
-        })
-        ->addColumn('gerente_proyecto_nombre', function ($row) {
-            return $row->gerente_proyecto->name . ' ' . $row->gerente_proyecto->last_name;
-        })             
-        ->rawColumns(['action'])
-        ->make(true);
-}
-
+    {
+        $user = Auth::user();
+    
+        if ($user->hasRole('Supervisor')) {
+            $proyectos = Proyecto::where('id_gerente_proyecto', $user->id)->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        } elseif ($user->hasRole('Cliente')) {
+            $cliente = Cliente::where('id_usuario', $user->id)->first();
+            $proyectos = Proyecto::where('id_cliente', $cliente->id)->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        } elseif ($user->hasRole('Colaborador')) {
+            $proyectos = Proyecto::whereIn('id', function ($query) use ($user) {
+                $query->select('id_proyecto')
+                    ->from('equipo_trabajo')
+                    ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
+                    ->where('mano_obra.id_usuario', $user->id);
+            })->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        } else {
+            $proyectos = Proyecto::with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        }
+    
+        return datatables()->of($proyectos)
+            ->addColumn('cliente_nombre', function ($row) {
+                return $row->cliente->usuario_cliente->name . ' ' . $row->cliente->usuario_cliente->last_name;
+            })
+            ->addColumn('gerente_proyecto_nombre', function ($row) {
+                return $row->gerente_proyecto->name . ' ' . $row->gerente_proyecto->last_name;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
     /**
      * Funcion para crear un nuevo proyecto
      *

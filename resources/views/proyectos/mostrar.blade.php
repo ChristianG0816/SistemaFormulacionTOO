@@ -204,7 +204,33 @@
                 </div>
               </div>
             </div>
-            @endcan
+@endcan
+            <!--Sección de documentos legales-->
+            <div class="row">
+              <div class="col-lg-12 col-md-12 mb-3">
+                <div class="card">
+                  <div class="card-header d-flex align-items-center">
+                    <h3 class="card-title">Documentos Legales</h3>
+                    <div class="card-tools ml-auto">
+                      <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('documentos.create', $proyecto->id) }}">Agregar</a>
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                      <i class="fas fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                      <div class="row">
+                        <div class="col-sm-12 card-body table-responsive p-0">
+                          <!--Sección de tabla-->
+                            <table id="tabla-documentos" class="table table-bordered table-striped dataTable dtr-inline mt-1 table-head-fixed w-100"></table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -268,4 +294,5 @@
 <script src="{{ asset('js/proyectos/proyectos.js') }}"></script>
 <script src="{{ asset('js/actividades/actividades.js') }}"></script>
 <script src="{{ asset('js/equipos/equipos.js') }}"></script>
+<script src="{{ asset('js/documentos/documentos.js') }}"></script>
 @stop
