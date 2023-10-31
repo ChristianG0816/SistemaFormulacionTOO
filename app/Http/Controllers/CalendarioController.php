@@ -423,6 +423,23 @@ public function consultarEvento($id)
                 $notificacion->save();
             }
         }
+
+        //Envio de notificación para un cliente
+        if($evento->proyecto->cliente->id_usuario!=$usuario->id){
+        $notificacion = new Notificacion();
+        $notificacion->id_usuario = $evento->proyecto->cliente->id_usuario;
+        $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+        $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+        if ($tipoNotificacion) {
+            $descripcion=$tipoNotificacion->descripcion;
+            $descripcion2 = str_replace('{{nombre}}', $evento->nombre, $descripcion);
+            $notificacion->descripcion = $descripcion2;
+            $notificacion->ruta = $tipoNotificacion->ruta;
+        }
+        $notificacion->id_proyecto = $evento->id_proyecto;
+        $notificacion->leida = false;
+        $notificacion->save();
+        }
     }
 
 }
