@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ContactoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController;
@@ -151,4 +152,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/notificaciones/marcar_leida/{id}', [NotificationsController::class, 'marcarLeida'])->name('notifications.marcarLeidaNotificacion');
     Route::post('/notificaciones/marcar_leida', [NotificationsController::class, 'marcarTodasLeida'])->name('notifications.marcarTodasLeidaNotificacion');
     Route::resource('notificaciones', NotificationsController::class)->except(['show', 'eliminarNotificacion', 'marcarLeida', 'eliminarTodasNotificacion', 'marcarTodasLeida']);
+
+
+    //Rutas para reportes
+    Route::get('reportes/data', [ReporteController::class, 'data'])->name('reportes.data');
+    Route::resource('reportes', ReporteController::class);
+    Route::get('/reportes/{id}/informe-gastos', [ReporteController::class, 'generarInformeGastos'])->name('reportes.informeGasto');
 });

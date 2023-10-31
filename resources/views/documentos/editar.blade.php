@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Agregar Documento')
+@section('title', 'Editar Documento')
 
 @section('content_header')
-    <h1 class="text-center">Agregar Documento</h1>
+    <h1 class="text-center">Editar Documento</h1>
 @stop
 
 @section('content')
@@ -14,7 +14,7 @@
                     <div id="table_wrapper" class="wrapper dt-bootstrap4">
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                            {!! Form::open(['route' => 'documentos.store', 'method' => 'POST']) !!}
+                            {!! Form::model($documento, ['method'=>'PATCH', 'route' => ['documentos.update', $documento->id]]) !!}
                                 {!! Form::text('id_proyecto', $proyecto->id, ['class' => 'form-control d-none']) !!}
                             <div class="form-group">
                                 <label for="id_tipo_documento" class="text-secondary">Tipo de Documento*</label>

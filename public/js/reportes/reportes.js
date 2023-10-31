@@ -3,9 +3,8 @@ toastr.options = {
     "progressBar": true
 };
 $(document).ready(function() {
-    var id_proyecto = $('#id_proyecto').data('id-proyecto');
-    var table = $('#tabla-documentos').DataTable({
-        ajax: '/documentos/data/'+id_proyecto,
+    var table = $('#tabla-reportes').DataTable({
+        ajax: '/reportes/data/',
         processing: true,
         serverSide: true,
         order: [[0, 'asc']],
@@ -15,39 +14,56 @@ $(document).ready(function() {
              "<'row w-100'<'col-sm-5'i><'col-sm-7'p>>",
         lengthMenu: [[5, 25, 50, 100, -1], [5, 25, 50, 100, 'Todos']], // Opciones de selección para mostrar registros por página
         pageLength: 5, // Cantidad de registros por página por defecto
+        buttons: [
+            {
+                extend: 'copy',
+                text: 'Copiar',
+                exportOptions: {
+                  columns: [0, 1, 3, 4, 5, 6] // Índices de las columnas que se copiarán
+                }
+            },
+            {
+                extend: 'excel',
+                text: 'Exportar a Excel',
+                title: 'Reporte Proyectos', // Título del reporte en Excel
+                filename: 'Reporte de Proyectos ' + getCurrentDateTime(), // Nombre del archivo Excel
+                exportOptions: {
+                  columns: [0, 1, 3, 4, 5, 6] // Índices de las columnas que se exportarán
+                }
+            },
+            {
+                extend: 'pdf',
+                text: 'Exportar a PDF',
+                title: 'Reporte Proyectos', // Título del reporte en PDF
+                filename: 'Reporte de Proyectos ' + getCurrentDateTime(), // Nombre del archivo PDF
+                exportOptions: {
+                  columns: [0, 1, 3, 4, 5, 6] // Índices de las columnas que se exportarán
+                },
+                customize: function (doc) {
+                  doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                }
+            }
+        ],
         columns: [
-            { data: 'tipo_documento.nombre', title: 'Tipo de Documento', width: '20%' },
-            { data: 'nombre', title: 'Nombre', width: '20%' },
-            { data: 'autor', title: 'Autor', width: '20%' },              
-            { data: 'fecha_creacion', title: 'Fecha de Creación', width: '20%' },
+            { data: 'nombre', title: 'Nombre Proyecto', width: '20%' },
+            { data: 'estado_proyecto.nombre', title: 'Estado', width: '8%'},
+            { data: 'fecha_inicio', title: 'Fecha Inicio', width: '8%' },
+            { data: 'fecha_fin', title: 'Fecha Fin', width: '8%' },
+            { data: 'cliente_nombre', title: 'Cliente', width: '20%' },
+            { data: 'gerente_proyecto_nombre', title: 'Gerente de Proyecto', width: '20%' },
+            { data: 'presupuesto', title: 'Presupuesto', width: '10%' },
             {
                 data: null,
                 title: 'Acciones',
                 sortable: false,
                 searchable: false,
-                width: '20%',
+                width: '10%',
                 render: function (data, type, row) {
                     
                     var actionsHtml = '';
-                    var fileUrl = row.link;
-
-                    //if(hasPrivilegeVerActividad === true){
-                        if (fileUrl) {
-                            actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="' + fileUrl + '" target="_blank">Ver</a>';
-                        } else {
-                            actionsHtml = 'Archivo no disponible';
-                        }
-                    /*}
-
-                    if(hasPrivilegeEditarActividad === true){*/
-                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/documentos/'+row.id+'/edit">Editar</a>';
-                    /*}
-                    
-                    if(hasPrivilegeEliminarActividad === true){*/
-                    actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarDocModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
-                    actionsHtml += 'data-cod="' + row.id + '">';
-                    actionsHtml += 'Eliminar</button>';
-                   //}
+                    /*if(hasPrivilegeEditarProyecto === true){*/
+                        actionsHtml += '<a class="btn btn-outline-warning btn-sm ml-1 gastos-btn" href="/reportes/'+row.id+'/informe-gastos">Informe de Gastos</a>';
+                    //}
                     
                     return actionsHtml || '';
                 }
@@ -112,48 +128,19 @@ $(document).ready(function() {
 
         return year + month + day + '_' + hours + minutes + seconds;
     }
-   
-    // Método para mostrar el modal de eliminación
-    $(document).on('click', '.eliminarDocModal-btn', function () {
-        var id = $(this).data('id');
-        var modal = $('#confirmarEliminarDocumentoModal');
-        var tituloModal = modal.find('.modal-title');
-        var cuerpoModal = modal.find('.modal-body');
-        var eliminarBtn = modal.find('#eliminarDocumentBtn');
-        tituloModal.text('Confirmar eliminación');
-        cuerpoModal.html('<strong>¿Estás seguro de eliminar el documento seleccionado?</strong><br>Ten en cuenta que se eliminará \n\
-        de forma permanente');
-        eliminarBtn.data('id', id);
-        modal.modal('show');
-    });
-   
-   
-   //Método para enviar la solicitud de eliminar
-    $(document).on('click', '#eliminarDocumentBtn', function () {
-        var id = $(this).data('id');
-        var modal = $('#confirmarEliminarDocumentoModal');
+    // Método para generar backup de proyecto
+    $(document).on('click', '.gastos-btn', function () {
+        var url = $(this).data('url');
         $.ajax({
-            url: '/documentos/' + id,
-            type: 'POST',
-            data: {
-                _method: 'DELETE' // Indica que es una solicitud DELETE
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+            url: url,
+            type: 'GET',
             success: function (response) {
-                modal.modal('hide');
-                var table = $('#tabla-documentos').DataTable();
-                table.ajax.reload(null, false);
-                toastr.success('Documento eliminado con éxito');
+                table.ajax.reload();
             },
             error: function (error) {
-                modal.modal('hide');
-                var table = $('#tabla-documentos').DataTable();
-                table.ajax.reload(null, false);
-                toastr.error('Ocurrió un error al eliminar el documento.');
+                table.ajax.reload();
             }
         });
     });
- 
 });
+

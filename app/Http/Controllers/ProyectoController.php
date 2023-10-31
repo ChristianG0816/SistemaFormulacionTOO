@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Proyecto;
 use App\Models\Cliente;
+use App\Models\Documento;
 use App\Models\EstadoProyecto;
 use App\Models\Evento;
 use App\Models\EquipoTrabajo;
@@ -266,6 +267,9 @@ class ProyectoController extends Controller
 
             // Elimina equipo de trabajos relacionados al proyecto
             DB::table('equipo_trabajo')->where('id_proyecto', $proyecto->id)->delete();
+
+            // Elimina documentos relacionados al proyecto
+            DB::table('documento')->where('id_proyecto', $proyecto->id)->delete();
     
             // Se elimina el proyecto
             $proyecto->delete();
@@ -290,7 +294,7 @@ class ProyectoController extends Controller
     
         // Creando una copia del proyecto
         $copiaProyecto = $proyecto->replicate();
-        $copiaProyecto->nombre = $proyecto->nombre . '_' . now()->format('Ymd_His');
+        $copiaProyecto->nombre = $proyecto->nombre . '_backup_' . now()->format('Ymd_His');
         $copiaProyecto->save();
     
         // Crear una copia de los eventos del proyecto
@@ -312,14 +316,20 @@ class ProyectoController extends Controller
      
         // Crear una copia del equipo de trabajo del proyecto
         $equipoTrabajo = EquipoTrabajo::where('id_proyecto', $proyecto->id)->get();
-
-        // Crear una copia de los equipos de trabajo
         foreach ($equipoTrabajo as $equipo) {
             $copiaEquipoTrabajo = $equipo->replicate();
             $copiaEquipoTrabajo->id_proyecto = $copiaProyecto->id;
             $copiaEquipoTrabajo->save();
         }
     
+        // Crear una copia de documentos del proyecto
+        $documentos = Documento::where('id_proyecto', $proyecto->id)->get();
+        foreach ($documentos as $documento) {
+            $copiaDocumento = $documento->replicate();
+            $copiaDocumento->id_proyecto = $copiaProyecto->id;
+            $copiaDocumento->save();
+        }
+
         // Crear una copia de las actividades
         $actividades = Actividad::where('id_proyecto', $proyecto->id)->get();
         foreach ($actividades as $actividad) {

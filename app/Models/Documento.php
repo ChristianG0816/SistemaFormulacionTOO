@@ -10,12 +10,12 @@ class Documento extends Model
     use HasFactory;
     protected $table = 'documento';
     protected $fillable = [
+        'id_tipo_documento',
         'nombre',
         'autor',
-        'archivo',
+        'link',
         'fecha_creacion',
-        'id_proyecto',
-        'id_tipo_documento',
+        'id_proyecto'
     ];
     public function documento(){
         return $this->belongsTo(Proyecto::class, 'id_proyecto');

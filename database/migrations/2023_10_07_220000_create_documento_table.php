@@ -18,7 +18,7 @@ class CreateDocumentoTable extends Migration
             $table->foreignId('id_tipo_documento')->constrained('tipo_documento')->onDelete('restrict')->onUpdate('cascade');
             $table->string('nombre',255);
             $table->string('autor',255);
-            $table->binary('archivo');
+            $table->string('link',255);
             $table->date('fecha_creacion');
             $table->foreignId('id_proyecto')->constrained('proyecto')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
