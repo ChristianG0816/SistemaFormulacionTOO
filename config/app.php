@@ -183,6 +183,9 @@ return [
         //DATATABLES
         Yajra\DataTables\DataTablesServiceProvider::class,
 
+        //PDF
+        Barryvdh\DomPDF\ServiceProvider::class,
+
     ],
 
     /*
@@ -237,6 +240,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        //pdf
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

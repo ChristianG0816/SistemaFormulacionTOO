@@ -81,7 +81,7 @@ $(document).ready(function() {
             { data: 'fecha_inicio', title: 'Fecha Inicio', width: '8%' },
             { data: 'fecha_fin', title: 'Fecha Fin', width: '8%' },
             { data: 'cliente_nombre', title: 'Cliente', width: '20%' },
-            { data: 'gerente_proyecto_nombre', title: 'Dueño', width: '20%' },
+            { data: 'gerente_proyecto_nombre', title: 'Gerente de Proyecto', width: '20%' },
             {
                 data: null,
                 title: 'Acciones',

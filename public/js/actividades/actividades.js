@@ -193,7 +193,6 @@ $(document).ready(function() {
    
    //Método para enviar la solicitud de eliminar
     $(document).on('click', '#eliminarActividadBtn', function () {
-        e.preventDefault();
         var id = $(this).data('id');
         var modal = $('#confirmarEliminarModal');
         $.ajax({

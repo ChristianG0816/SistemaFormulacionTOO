@@ -361,6 +361,7 @@ return [
         [
             'text' => 'Clientes',
             'url'  => 'clientes',
+            'icon' => 'fas fa-house-user',
         ],
         
         [
@@ -374,43 +375,11 @@ return [
             'url'  => 'roles',
             'icon' => 'fas fa-fw fa-user',
         ],
+        
         [
             'text'    => 'Reportes',
-            'icon'    => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-                [
-                    'text'    => 'level_one',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-            ],
+            'url'  => 'reportes',
+            'icon'    => 'fas fa-file-pdf',
         ],
     ],
 
