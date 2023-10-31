@@ -30,76 +30,77 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //al momento de presionar la actividad con esto se mostrara la información
         eventClick: function (info) {
-            var evento = info.event;
-            var $modal = $("#evento");
+            abrirEventoEnCalendario(info.event);
+        },
+    });
 
-            //console.log(evento.extendedProps.tipo);
-            if (evento.extendedProps.tipo === "evento") {
-                axios
-                    .post(baseUrl + "/calendario/consultarEvento/" + evento.id)
-                    .then((respuesta) => {
-                        formularioEvento.id.value = respuesta.data.id;
-                        formularioEvento.nombre.value = respuesta.data.nombre;
-                        formularioEvento.descripcion.value = respuesta.data.descripcion;
-                        formularioEvento.direccion.value = respuesta.data.direccion;
-                        formularioEvento.proyecto.value = respuesta.data.id_proyecto;
-                        formularioEvento.fecha_inicio.value = respuesta.data.fecha_inicio;
-                        formularioEvento.fecha_fin.value = respuesta.data.fecha_fin;
-                        formularioEvento.hora_inicio.value = respuesta.data.hora_inicio;
-                        formularioEvento.hora_fin.value = respuesta.data.hora_fin;
-                        formularioEvento.fecha_recordatorio.value = respuesta.data.fecha_recordatorio;
-                        formularioEvento.hora_recordatorio.value = respuesta.data.hora_recordatorio;
-                        formularioEvento.link_reunion.value =  respuesta.data.link_reunion;
-
-                        // Deshabilitar el campo del proyecto
-                        formularioEvento.proyecto.disabled = true;
-
-                        // Cambiar el contenido del modal
-                        $modal.find(".modal-title").text("Modificar Evento");
-                        $modal.find("#btnGuardar").hide();
-                        $modal.find("#btnModificar, #btnEliminar").show();
-
-                        //Limpiar mensajes de error
-                        //Mensajes de error
-                        $("#errorNombre").text("");
-                        $("#nombre").removeClass("is-invalid");
-                        $("#errorDes").text("");
-                        $("#descripcion").removeClass("is-invalid");
-                        $("#errorDir").text("");
-                        $("#direccion").removeClass("is-invalid");
-                        $("#errorFechaInicio").text("");
-                        $("#fecha_inicio").removeClass("is-invalid");
-                        $("#errorFechaFin").text("");
-                        $("#fecha_fin").removeClass("is-invalid");
-                        $("#errorHoraInicio").text("");
-                        $("#hora_inicio").removeClass("is-invalid");
-                        $("#errorHoraFin").text("");
-                        $("#hora_fin").removeClass("is-invalid");
-                        $("#errorFechaRecord").text("");
-                        $("#fecha_recordatorio").removeClass("is-invalid");
-                        $("#errorHoraRecordatorio").text("");
-                        $("#hora_recordatorio").removeClass("is-invalid");
-                        $("#errorlink").text("");
-                        $("#link_reunion").removeClass("is-invalid");
-                        
-
-                        // Mostrar el modal
-                        $modal.modal("show");
-                    })
-                    .catch((error) => {
-                        if (error.response) {
-                            console.log(error.response.data);
-                        }
-                    });
-            } else if (evento.extendedProps.tipo === "actividad") {
-                axios
-                    .post(baseUrl + "/calendario/consultar/" + evento.id)
-                    .then((respuesta) => {
-
-                        nombreForm.innerHTML = respuesta.data.nombre;
-                        InicioForm.innerHTML = respuesta.data.fecha_inicio;
-                        FinForm.innerHTML = respuesta.data.fecha_fin;
-
+    function abrirEventoEnCalendario(evento) {
+        var $modal = $("#evento");
+    
+        if (evento.extendedProps.tipo === "evento") {
+            axios
+                .post(baseUrl + "/calendario/consultarEvento/" + evento.id)
+                .then((respuesta) => {
+                    formularioEvento.id.value = respuesta.data.id;
+                    formularioEvento.nombre.value = respuesta.data.nombre;
+                    formularioEvento.descripcion.value = respuesta.data.descripcion;
+                    formularioEvento.direccion.value = respuesta.data.direccion;
+                    formularioEvento.proyecto.value = respuesta.data.id_proyecto;
+                    formularioEvento.fecha_inicio.value = respuesta.data.fecha_inicio;
+                    formularioEvento.fecha_fin.value = respuesta.data.fecha_fin;
+                    formularioEvento.hora_inicio.value = respuesta.data.hora_inicio;
+                    formularioEvento.hora_fin.value = respuesta.data.hora_fin;
+                    formularioEvento.fecha_recordatorio.value = respuesta.data.fecha_recordatorio;
+                    formularioEvento.hora_recordatorio.value = respuesta.data.hora_recordatorio;
+                    formularioEvento.link_reunion.value = respuesta.data.link_reunion;
+    
+                    // Deshabilitar el campo del proyecto
+                    formularioEvento.proyecto.disabled = true;
+    
+                    // Cambiar el contenido del modal
+                    $modal.find(".modal-title").text("Modificar Evento");
+                    $modal.find("#btnGuardar").hide();
+                    $modal.find("#btnModificar, #btnEliminar").show();
+    
+                    //Limpiar mensajes de error
+                    //Mensajes de error
+                    $("#errorNombre").text("");
+                    $("#nombre").removeClass("is-invalid");
+                    $("#errorDes").text("");
+                    $("#descripcion").removeClass("is-invalid");
+                    $("#errorDir").text("");
+                    $("#direccion").removeClass("is-invalid");
+                    $("#errorFechaInicio").text("");
+                    $("#fecha_inicio").removeClass("is-invalid");
+                    $("#errorFechaFin").text("");
+                    $("#fecha_fin").removeClass("is-invalid");
+                    $("#errorHoraInicio").text("");
+                    $("#hora_inicio").removeClass("is-invalid");
+                    $("#errorHoraFin").text("");
+                    $("#hora_fin").removeClass("is-invalid");
+                    $("#errorFechaRecord").text("");
+                    $("#fecha_recordatorio").removeClass("is-invalid");
+                    $("#errorHoraRecordatorio").text("");
+                    $("#hora_recordatorio").removeClass("is-invalid");
+                    $("#errorlink").text("");
+                    $("#link_reunion").removeClass("is-invalid");
+    
+                    // Mostrar el modal
+                    $modal.modal("show");
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        console.log(error.response.data);
+                    }
+                });
+        } else if (evento.extendedProps.tipo === "actividad") {
+            axios
+                .post(baseUrl + "/calendario/consultar/" + evento.id)
+                .then((respuesta) => {
+                    nombreForm.innerHTML = respuesta.data.nombre;
+                    InicioForm.innerHTML = respuesta.data.fecha_inicio;
+                    FinForm.innerHTML = respuesta.data.fecha_fin;
+    
                     // Obtener el nombre del proyecto
                     axios.get(baseUrl + "/proyectodata/" + respuesta.data.id_proyecto)
                     .then((proyectoRespuesta) => {
@@ -107,28 +108,28 @@ document.addEventListener("DOMContentLoaded", function () {
                     })
                     .catch((proyectoError) => {
                         if (proyectoError.response) {
-                        console.log(proyectoError.response.data);
-                     }
+                            console.log(proyectoError.response.data);
+                        }
                     });
-
-                    //Obtener el estado de la actividad
+    
+                    // Obtener el estado de la actividad
                     axios.get(baseUrl + "/estadodata/" + respuesta.data.id_estado_actividad)
                     .then((EstadoRespuesta) => {
                         estadoForm.innerHTML = EstadoRespuesta.data.nombre;
                     })
                     .catch((EstadoError) => {
                         if (EstadoError.response) {
-                        console.log(EstadoError.response.data);
-                     }
+                            console.log(EstadoError.response.data);
+                        }
                     });
-
+    
                     const fechaFin = new Date(respuesta.data.fecha_fin);
                     const fechaActual = new Date();
                     const diferenciaDias = Math.floor((fechaFin - fechaActual) / (1000 * 60 * 60 * 24));
-
+    
                     const dia = document.getElementById("dia");
                     const diasRestantesDiv = document.getElementById("diasRestantesDiv");
-
+    
                     if ((respuesta.data.id_estado_actividad == 1 || respuesta.data.id_estado_actividad == 2) && diferenciaDias < 0) {
                         dia.textContent = "Días Vencidos:";
                         const diasVencidos = Math.floor((fechaActual - fechaFin) / (1000 * 60 * 60 * 24));
@@ -141,31 +142,29 @@ document.addEventListener("DOMContentLoaded", function () {
                         diaForm.innerHTML = diferenciaDias;
                         diasRestantesDiv.style.display = "block"; // Asegura que el div esté visible
                     }
-
+    
                     $("#actividad").modal("show");
-
+    
                     // Agrega un evento clic al botón para redirigir a la actividad
                     btnRedirigir.addEventListener("click", function () {
-                    const actividadId = respuesta.data.id;
-
-                    // Construye la URL para redirigir a la actividad
-                    const url = `/actividades/show/${actividadId}`;
-
-                    // Redirige al usuario a la URL de la actividad
-                    window.location.href = url;
+                        const actividadId = respuesta.data.id;
+    
+                        // Construye la URL para redirigir a la actividad
+                        const url = `/actividades/show/${actividadId}`;
+    
+                        // Redirige al usuario a la URL de la actividad
+                        window.location.href = url;
                     });
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        console.log(error.response.data);
+                    }
+                });
+        }
+    }
 
-
-                    })
-                    .catch((error) => {
-                        if (error.response) {
-                            console.log(error.response.data);
-                        }
-                    });
-            }
-        },
-    });
-
+    
     //Agregar un evento
     document.getElementById("btnGuardar").addEventListener("click", function () {
             enviarDatos("/calendario/agregar", "Evento creado exitosamente");
