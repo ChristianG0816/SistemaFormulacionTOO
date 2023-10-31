@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ProyectoAprobado;
 use App\Models\User;
 use App\Models\Proyecto;
 use App\Models\Cliente;
@@ -21,6 +22,10 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use App\Mail\ProyectoEnRevision;
+use App\Mail\ProyectoRechazado;
+use Illuminate\Support\Facades\Mail;
+use App\Models\TipoNotificacion;
 
 class ProyectoController extends Controller
 {
@@ -191,6 +196,22 @@ class ProyectoController extends Controller
         $proyecto = Proyecto::find($id);
         $proyecto->id_estado_proyecto=2;
         $proyecto->save();
+
+        // Encuentra usuarios por su rol
+        $usuarios = User::whereHas('roles', function($query) {
+            $query->where('name', 'Gerente');
+        })->select('id', 'name','email')->get();
+
+        // Enviar el correo electrónico a cada usuario
+        foreach ($usuarios as $usuario) {
+            // Instancia el Mailable y pasa los parámetros al constructor
+            $correo = new ProyectoEnRevision($usuario->name, $proyecto->nombre);
+            // Envía el correo electrónico de revisión a cada usuario
+            Mail::to($usuario->email)->send($correo);
+
+            $this->enviar_notificacion($proyecto->id,$usuario->id,$proyecto->nombre,15);
+        }
+
         return redirect()->route('proyectos.index');
     }
     /**
@@ -201,6 +222,27 @@ class ProyectoController extends Controller
         $proyecto = Proyecto::find($id);
         $proyecto->id_estado_proyecto=3;
         $proyecto->save();
+
+        //Enviar correo y notificacion al supervisor.
+        $usuario = User::find($proyecto->id_gerente_proyecto);
+        $correo = new ProyectoAprobado($usuario->name, $proyecto->nombre);
+        // Envía el correo electrónico de revisión a cada usuario
+        Mail::to($usuario->email)->send($correo);
+        //Envia notificacion
+        $this->enviar_notificacion($proyecto->id,$usuario->id,$proyecto->nombre,2);
+        //Enviar notificación a cliente
+        $cliente = Cliente::find($proyecto->id_cliente);
+        $this->enviar_notificacion($proyecto->id,$cliente->id_usuario,$proyecto->nombre,2);
+        //Enviar notificacion a colaboradores
+        $idsUsuarios = EquipoTrabajo::where('id_proyecto', $proyecto->id)
+        ->with('mano_obra') // Cargar la relación manoObra
+        ->get()
+        ->pluck('mano_obra.id_usuario'); // Obtener los IDs de usuario directamente desde la relación
+        //iteramos para enviar
+        foreach ($idsUsuarios as $id) {
+            $this->enviar_notificacion($proyecto->id,$id,$proyecto->nombre,2);
+        }
+
         return redirect()->route('proyectos.index');
     }
     /**
@@ -211,6 +253,15 @@ class ProyectoController extends Controller
         $proyecto = Proyecto::find($id);
         $proyecto->id_estado_proyecto=4;
         $proyecto->save();
+
+        //Enviar correo y notificacion al supervisor.
+        $usuario = User::find($proyecto->id_gerente_proyecto);
+        $correo = new ProyectoRechazado($usuario->name, $proyecto->nombre);
+        // Envía el correo electrónico de revisión a cada usuario
+        Mail::to($usuario->email)->send($correo);
+        //Envia notificacion
+        $this->enviar_notificacion($proyecto->id,$usuario->id,$proyecto->nombre,3);
+
         return redirect()->route('proyectos.index');
     }
     /**
@@ -364,5 +415,22 @@ class ProyectoController extends Controller
         }
     
         return redirect()->route('proyectos.index')->with('success', 'Se ha realizado un backup del proyecto');
-    }    
+    } 
+
+    public function enviar_notificacion($id_proyecto,$id_usuario,$nombre_proyecto,$tipo_notificacion_valor){
+        // Crear notificación para cada miembro
+        $notificacion = new Notificacion();
+        $notificacion->id_usuario = $id_usuario;
+        $notificacion->id_tipo_notificacion = $tipo_notificacion_valor;
+        $tipoNotificacion = TipoNotificacion::find($tipo_notificacion_valor);
+        if ($tipoNotificacion) {
+            $descripcion = str_replace(['{{nombre}}'], [$nombre_proyecto], $tipoNotificacion->descripcion);
+            $notificacion->descripcion = $descripcion;
+            $notificacion->ruta = str_replace('{{id}}', $id_proyecto, $tipoNotificacion->ruta);
+        }
+        $notificacion->id_proyecto = $id_proyecto;
+        $notificacion->leida = false;
+        $notificacion->save();
+    }
+    
 }

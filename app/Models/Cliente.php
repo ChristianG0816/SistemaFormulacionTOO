@@ -20,4 +20,5 @@ class Cliente extends Model
     public function contactos() {
         return $this->hasMany(Contacto::class);
     }
+    
 }

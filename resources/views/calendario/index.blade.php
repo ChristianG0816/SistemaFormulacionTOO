@@ -100,6 +100,12 @@
                                 <input type="date" class="form-control" name="fecha_recordatorio" id="fecha_recordatorio" aria-describedby="helpId" placeholder="">
                                 <div id="errorFechaRecord" class="text-danger"></div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="hora_recordatorio">Hora Recordatorio</label>
+                                <input type="time" class="form-control" name="hora_recordatorio" id="hora_recordatorio" aria-describedby="helpId" placeholder="">
+                                <div id="errorHoraRecordatorio" class="text-danger"></div>
+                            </div>
                             
                             <div class="form-group">
                                 <label for="link_reunion">Link de la reunión:</label>
@@ -134,7 +140,7 @@
                 </div>
                 <div class="modal-body custom-modal-body">
                     <form action="" id="actividades">
-                        <p><strong>Nombre Paquete:</strong> <span id="titleForm"></span></p>
+                        <p><strong>Nombre Actividad:</strong> <span id="titleForm"></span></p>
                         <p><strong>Proyecto:</strong> <span id="proyectoForm"></span></p>
                         <p><strong>Fecha Inicio:</strong> <span id="fechaInicioForm"></span></p>
                         <p><strong>Fecha Fin:</strong> <span id="fechaFinForm"></span></p>
