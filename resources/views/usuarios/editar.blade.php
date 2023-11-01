@@ -65,13 +65,14 @@
 
                                 <div class="form-group">
                                     <label for="">Roles*</label>
-                                    {!! Form::select('roles[]', $roles, [], [
+                                    {!! Form::select('roles[]', $roles, $user->getRoleNames(), [
                                         'class' => 'form-control' . ($errors->has('roles') ? ' is-invalid' : ''),
                                     ]) !!}
                                     @error('roles')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                
 
                                 <div class="form-group">
                                     <div class="row align-items-center">
