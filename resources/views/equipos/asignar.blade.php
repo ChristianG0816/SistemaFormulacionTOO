@@ -4,7 +4,11 @@
         <div class="card-header d-flex align-items-center">
         <h3 class="card-title">Equipo de Trabajo</h3>
         <div class="card-tools ml-auto">
+            @if ($proyecto->estado_proyecto->nombre == 'Formulacion')
+            @can('crear-equipo-trabajo')
             <a class="btn btn-sm btn-outline-warning my-0" type="button" value="Agregar" data-toggle="modal" data-target="#agregarMiembroModal">Agregar</a>
+            @endcan
+            @endif
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
             <i class="fas fa-minus"></i>
             </button>

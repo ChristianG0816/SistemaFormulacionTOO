@@ -16,9 +16,9 @@ class EquipoTrabajoController extends Controller
 {
     function __construct(){
         //Defincion de permisos
-        //$this->middleware('permission:ver-equipo-trabajo')->only(['index']);
-        //$this->middleware('permission:crear-equipo-trabajo')->only(['create', 'store']);
-        //$this->middleware('permission:eliminar-equipo-trabajo')->only(['destroy']);
+        $this->middleware('permission:gestionar-equipo-trabajo')->only(['list']);
+        $this->middleware('permission:crear-equipo-trabajo')->only(['crearEquiposTrabajo', 'listMiembrosNoAsignados', 'getMiembro']);
+        $this->middleware('permission:borrar-equipo-trabajo')->only(['eliminarEquipos']);
     }
 
     public function list(Request $request, $proyectoId)
@@ -44,8 +44,16 @@ class EquipoTrabajoController extends Controller
                 return $row->mano_obra->persona->telefono;
             })
             ->addColumn('action', function ($row) {
-                $btnDetalle = '<a href="' . route('miembros.show', $row->mano_obra->id) . '" class="btn btn-outline-secondary btn-sm">Mostrar</a>';
-                $btnEliminar = '<button class="delete btn btn-outline-danger btn-sm ml-1" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
+                if (\Gate::allows('ver-miembro')) {
+                    $btnDetalle = '<a href="' . route('miembros.show', $row->mano_obra->id) . '" class="btn btn-outline-secondary btn-sm">Mostrar</a>';
+                } else {
+                    $btnDetalle = '<button class="btn btn-outline-secondary btn-sm" disabled>Mostrar</button>';
+                }
+                if (\Gate::allows('borrar-equipo-trabajo')) {
+                    $btnEliminar = '<button class="delete btn btn-outline-danger btn-sm ml-1" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
+                }else{
+                    $btnEliminar = '';
+                }
                 return $btnDetalle . ' ' . $btnEliminar;
             })            
             ->rawColumns(['action'])
