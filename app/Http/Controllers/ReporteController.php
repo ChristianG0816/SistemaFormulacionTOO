@@ -58,6 +58,8 @@ class ReporteController extends Controller
                 'subtotal' => $subtotales->sum()
             ];
         }
+
+        $subtotalesRecursos = [];
         $subtotalesRecursos = $recursos->map(function ($asignaciones) {
             return $asignaciones->sum(function ($asignacion) {
                 return $asignacion->cantidad * $asignacion->recurso->costo;
@@ -65,6 +67,7 @@ class ReporteController extends Controller
         });
         $gastoTotalRecursos = $subtotalesRecursos->sum();
     
+        $subtotalesManoObra = [];
         $subtotalesManoObra = $manoDeObra->map(function ($manoObra) {
             return $manoObra->mano_obra->costo_servicio;
         });
@@ -78,6 +81,8 @@ class ReporteController extends Controller
             'proyecto' => $proyecto,
             'manoDeObra' => $manoDeObra,
             'recursosActividad' => $recursosPorActividad,
+            'gastoTotalRecursos' => $gastoTotalRecursos,
+            'gastoTotalManoObra' => $gastoTotalManoObra,
             'gastoTotal' => $gastoTotal,
         ]);
         return $pdf->stream('Informe de Gastos ' . $proyecto->nombre . '.pdf');

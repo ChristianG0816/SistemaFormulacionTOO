@@ -20,7 +20,6 @@ class CreateBitacoraTable extends Migration
             $table->string('nombre_Evento');
             $table->timestamp('hora_accion', $precision = 0);
             $table->string('ip_Equipo');
-            $table->timestamps(); 
         });
     }
 

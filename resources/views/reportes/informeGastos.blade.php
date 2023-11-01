@@ -4,11 +4,9 @@
     h2 {color: #000E51;text-align: left;font-size: 12px;}
     table {width: 100%;border-collapse: collapse;font-size: 12px;border: 1px solid #DDDBDB;}
     table tr td {padding: 8px;border: 1px solid #DDDBDB;}
-
 </style>
 
 <body>
-
   <h1>Informe de Gastos del Proyecto {{ $proyecto->nombre }}</h1>
   <h2>Detalles del proyecto</h2>
   <div class="row">
@@ -74,6 +72,9 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $subtotalesRecursos = [];
+            @endphp
             @foreach ($recursos as $idRecurso => $asignaciones)
                 @php
                     $recurso1 = $asignaciones->first()->recurso;
@@ -109,6 +110,9 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $subtotalesManoObra = [];
+            @endphp
             @foreach ($manoDeObra as $manoObra)
                 @php
                     $persona = $manoObra->mano_obra->persona;
