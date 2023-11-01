@@ -61,9 +61,9 @@ $(document).ready(function() {
                 render: function (data, type, row) {
                     
                     var actionsHtml = '';
-                    /*if(hasPrivilegeEditarProyecto === true){*/
+                    if(canVerInformeGastos){
                         actionsHtml += '<a class="btn btn-outline-warning btn-sm ml-1 gastos-btn" href="/reportes/'+row.id+'/informe-gastos">Informe de Gastos</a>';
-                    //}
+                    }
                     
                     return actionsHtml || '';
                 }

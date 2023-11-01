@@ -45,7 +45,7 @@ class LoginController extends Controller
     {
         if ($user->two_factor_enabled) {
             return redirect()->route('autenticar');
-        }else{
+        }elseif (!$user->hasRole('Administrador')) {
             return redirect()->route('proyectos.index');
         }
     }

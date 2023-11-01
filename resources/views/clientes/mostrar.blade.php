@@ -96,7 +96,9 @@
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Contactos</h3>
                     <div class="card-tools ml-auto">
-                      <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('contactos.create', $cliente->id) }}">Agregar</a>
+                      @can('crear-contacto')
+                        <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('contactos.create', $cliente->id) }}">Agregar</a>
+                      @endcan
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
                       </button>
@@ -158,4 +160,17 @@
   })(jQuery);
 </script>
 <script src="{{ asset('js/contactos/contactos.js') }}"></script>
+<script>
+    var canEditarContacto = @can('editar-contacto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canBorrarContacto = @can('borrar-contacto')
+        true
+    @else
+        false
+    @endcan;
+</script>
 @stop

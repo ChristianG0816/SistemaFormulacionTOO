@@ -10,9 +10,11 @@
       <div class="card-header">
         <h3 class="card-title">
           <!--Sección de botones-->
+          @can('exportar-reporte')
           <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
           <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
           <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button>
+          @endcan
         </h3>
       </div>
       <div class="card-body">
@@ -44,4 +46,12 @@
   })(jQuery);
 </script>
 <script src="{{ asset('js/reportes/reportes.js') }}"></script>
+<script>
+    var canVerInformeGastos = @can('ver-informe-gastos-reporte')
+        true
+    @else
+        false
+    @endcan;
+</script>
+
 @stop

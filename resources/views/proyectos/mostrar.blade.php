@@ -41,7 +41,9 @@
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Información General</h3>
                     <div class="card-tools ml-auto">
+                      @can('editar-proyecto')
                       <button class="btn btn-sm btn-outline-info my-0 edit-proyecto" data-id="{{ $proyecto->id }}" data-origin="detalle">Editar</button>
+                      @endcan
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
                       </button>
@@ -122,6 +124,7 @@
                                 {!! Form::date('fecha_fin', $proyecto->fecha_fin, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                               </div>
                             </div>
+                            @can('ver-presupuesto-proyecto')
                             <div class="row">
                               <div class="col-md-1">
                                 <div class="form-group">
@@ -132,6 +135,7 @@
                                 {!! Form::number('presupuesto', $proyecto->presupuesto, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                               </div>
                             </div>
+                            @endcan                            
                             <div class="row">
                               <div class="col-md-1">
                                 <div class="form-group">
@@ -254,6 +258,25 @@
 @section('js')
 <script>
     var permisos = @json($permisos);
+</script>
+<script>
+    var canEditarDocumento = @can('editar-documento')
+        true
+    @else
+        false
+    @endcan;
+
+    var canBorrarDocumento = @can('borrar-documento')
+        true
+    @else
+        false
+    @endcan;
+
+    var canVerEnlaceDocumento = @can('ver-enlace-documento')
+        true
+    @else
+        false
+    @endcan;
 </script>
 <script>
   jQuery.noConflict();

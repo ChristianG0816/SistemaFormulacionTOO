@@ -16,6 +16,11 @@ use PDF;
 
 class ReporteController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:ver-reporte', ['only' => ['index']]);
+    }
+
     public function index()
     {
         return view('reportes.index');
