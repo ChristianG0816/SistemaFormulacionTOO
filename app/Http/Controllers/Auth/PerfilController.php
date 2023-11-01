@@ -16,6 +16,14 @@ class PerfilController extends Controller
 {
     use AuthenticatesUsers;
 
+    function __construct()
+    {
+        $this->middleware('permission:ver-perfil|editar-info-perfil|cambiar-password-perfil|habilitar-fa-perfil|deshabilitar-fa-perfil', ['only' => ['index']]);
+        $this->middleware('permission:editar-info-perfil', ['only' => ['updateInfo']]);
+        $this->middleware('permission:cambiar-password-perfil', ['only' => ['updatePass']]);
+        $this->middleware('permission:habilitar-fa-perfil', ['only' => ['enableFA']]);
+        $this->middleware('permission:deshabilitar-fa-perfil', ['only' => ['disableFA']]);
+    }
    /**
      * Display a listing of the resource.
      *
