@@ -10,10 +10,14 @@
       <div class="card-header">
         <h3 class="card-title">
           <!--Sección de botones-->
+          @can('crear-proyecto')
           <a class="btn btn-sm btn-outline-warning" href="{{route('proyectos.create')}}">Nuevo</a>
+          @endcan
+          @can('exportar-proyecto')
           <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
           <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
           <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button>
+          @endcan
         </h3>
       </div>
       <div class="card-body">
@@ -65,4 +69,59 @@
   })(jQuery);
 </script>
 <script src="{{ asset('js/proyectos/proyectos.js') }}"></script>
+<script>
+    var canEditarProyecto = @can('editar-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canBorrarProyecto = @can('borrar-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canMostrarProyecto = @can('mostrar-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canRealizarBackup = @can('backup-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canEnviarRevisionProyecto = @can('enviar-revision-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canAprobarProyecto = @can('aprobar-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canRechazarProyecto = @can('rechazar-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canIniciarProyecto = @can('iniciar-proyecto')
+        true
+    @else
+        false
+    @endcan;
+
+    var canFinalizarProyecto = @can('finalizar-proyecto')
+        true
+    @else
+        false
+    @endcan;
+</script>
 @stop

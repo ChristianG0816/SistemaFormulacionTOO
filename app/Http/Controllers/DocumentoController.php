@@ -12,7 +12,15 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentoController extends Controller
-{
+{    
+    function __construct()
+    {
+        $this->middleware('permission:ver-documento|crear-documento|editar-documento|borrar-documento', ['only' => ['index']]);
+        $this->middleware('permission:crear-documento', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-documento', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:borrar-documento', ['only' => ['destroy']]);
+    }
+
     public function index($id)
     {
         $proyecto = Proyecto::findOrFail($id);

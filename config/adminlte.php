@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>GLADIATORS</b>',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -328,11 +328,6 @@ return [
             'can'  => 'manage-blog', //Can es para los permisos
         ],
 
-        [
-            'text' => 'Dashboard',
-            'route'  => 'home',
-        ],
-
         ['header' => 'Datos'],
         
         [
@@ -344,6 +339,7 @@ return [
             'text' => 'Proyectos',
             'url'  => 'proyectos',
             'icon' => 'fas fa-file-invoice',
+            'can' => 'ver-proyecto',
         ],
         [
             'text' => 'Miembros',
@@ -362,6 +358,7 @@ return [
             'text' => 'Clientes',
             'url'  => 'clientes',
             'icon' => 'fas fa-house-user',
+            'can'  => 'ver-cliente',
         ],
         
         [
@@ -380,6 +377,7 @@ return [
             'text'    => 'Reportes',
             'url'  => 'reportes',
             'icon'    => 'fas fa-file-pdf',
+            'can' => 'ver-reporte',
         ],
     ],
 

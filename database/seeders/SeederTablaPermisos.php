@@ -17,7 +17,6 @@ class SeederTablaPermisos extends Seeder
      */
     public function run()
     {
-
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $roles = [
@@ -27,6 +26,47 @@ class SeederTablaPermisos extends Seeder
             Permission::create(['name' => 'borrar-rol']),
         ];
 
+        $proyectos = [
+            Permission::create(['name' => 'ver-proyecto']),
+            Permission::create(['name' => 'crear-proyecto']),
+            Permission::create(['name' => 'exportar-proyecto']),
+            Permission::create(['name' => 'editar-proyecto']),
+            Permission::create(['name' => 'borrar-proyecto']),
+            Permission::create(['name' => 'mostrar-proyecto']),
+            Permission::create(['name' => 'backup-proyecto']),
+            Permission::create(['name' => 'enviar-revision-proyecto']),
+            Permission::create(['name' => 'aprobar-proyecto']),
+            Permission::create(['name' => 'rechazar-proyecto']),
+            Permission::create(['name' => 'iniciar-proyecto']),
+            Permission::create(['name' => 'finalizar-proyecto']),
+            Permission::create(['name' => 'ver-presupuesto-proyecto']),
+        ];
+        $documentos = [
+            Permission::create(['name' => 'ver-documento']),
+            Permission::create(['name' => 'crear-documento']),
+            Permission::create(['name' => 'editar-documento']),
+            Permission::create(['name' => 'borrar-documento']),
+            Permission::create(['name' => 'ver-enlace-documento']),
+        ];
+        $clientes = [
+            Permission::create(['name' => 'ver-cliente']),
+            Permission::create(['name' => 'crear-cliente']),
+            Permission::create(['name' => 'editar-cliente']),
+            Permission::create(['name' => 'borrar-cliente']),
+            Permission::create(['name' => 'exportar-cliente']),
+        ];
+        $contactos = [
+            Permission::create(['name' => 'ver-contacto']),
+            Permission::create(['name' => 'crear-contacto']),
+            Permission::create(['name' => 'editar-contacto']),
+            Permission::create(['name' => 'borrar-contacto']),
+        ];
+        $reportes = [
+            Permission::create(['name' => 'ver-reporte']),
+            Permission::create(['name' => 'exportar-reporte']),
+            Permission::create(['name' => 'ver-informe-gastos-reporte']),
+            Permission::create(['name' => 'ver-informe-seguimiento-reporte']),
+        ];
         $miembros = [
             Permission::create(['name' => 'gestionar-miembro']),
             Permission::create(['name' => 'exportar-miembro']),
@@ -52,27 +92,66 @@ class SeederTablaPermisos extends Seeder
         ];
 
         $roleAdministrador = Role::create(['name' => 'Administrador'])->givePermissionTo([
-            //Roles referentes al administrador
-            $roles
+            $roles,
+            $contactos,
+            $clientes
         ]);
         $roleCliente = Role::create(['name' => 'Cliente'])->givePermissionTo([
-            //Roles referentes al cliente del proyecto
-            $roles
+            //Poyecto
+            'ver-proyecto',
+            'exportar-proyecto',
+            'mostrar-proyecto',
+            //Documento
+            'ver-documento',
+            'ver-enlace-documento',
         ]);
+        
         $roleSupervisor = Role::create(['name' => 'Supervisor'])->givePermissionTo([
-            //Roles referentes al supervisor de proyecto
-            $roles,
+            //Proyecto
+            'ver-proyecto',
+            'crear-proyecto',
+            'exportar-proyecto',
+            'editar-proyecto',
+            'borrar-proyecto',
+            'mostrar-proyecto',
+            'backup-proyecto',
+            'enviar-revision-proyecto',
+            'iniciar-proyecto',
+            'finalizar-proyecto',
+            'ver-presupuesto-proyecto',
+            //Documento
+            'ver-documento',
+            'crear-documento',
+            'editar-documento',
+            'borrar-documento',
+            'ver-enlace-documento',
+            $reportes,
+            $clientes,
+            $contactos,
             $comentarios,
             $actividades
         ]);
         $roleGerente = Role::create(['name' => 'Gerente'])->givePermissionTo([
             //Roles referentes al gerente de proyecto
-            $roles,
+            'ver-proyecto',
+            'exportar-proyecto',
+            'mostrar-proyecto',
+            'backup-proyecto',
+            'aprobar-proyecto',
+            'rechazar-proyecto',
+            'ver-presupuesto-proyecto',
+            //Documento
+            'ver-documento',
+            'ver-enlace-documento',
+            $reportes,
+            $clientes,
+            $contactos,
             $miembros
         ]);
         $roleColaborador = Role::create(['name' => 'Colaborador'])->givePermissionTo([
             //Roles referentes al colaborador de proyecto
-            $roles,
+            'ver-proyecto',
+            'mostrar-proyecto',
             $comentarios,
             $actividades
         ]);

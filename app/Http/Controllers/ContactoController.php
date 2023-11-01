@@ -9,6 +9,14 @@ use App\Models\User;
 
 class ContactoController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:ver-contacto|crear-contacto|editar-contacto|borrar-contacto', ['only' => ['index']]);
+        $this->middleware('permission:crear-contacto', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-contacto', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:borrar-contacto', ['only' => ['destroy']]);
+    }
+
     public function index($id)
     {
         $cliente = Cliente::findOrFail($id);
