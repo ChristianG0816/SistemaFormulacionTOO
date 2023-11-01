@@ -105,35 +105,42 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $rules = [
             'name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => [
+            'email' => 'required|email|unique:users,email,' . $id,
+            'roles' => 'required',
+        ];
+    
+        // Verificar si se proporcionó una nueva contraseña
+        if (!empty($request->input('password'))) {
+            $rules['password'] = [
+                'nullable',
                 'regex:/(^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,}))/',
                 'same:confirm-password',
-            ],
-            'roles'=>'required'
-        ], [
+            ];
+        }
+    
+        $this->validate($request, $rules, [
             'password.regex' => 'La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.',
         ]);
-
+    
         $input = $request->all();
-        if(!empty($input['password'])){
+        if (!empty($input['password'])) {
             $input['password'] = Hash::make($input['password']);
-        }else{
-            $input = Arr::except($input, array('password'));
+        } else {
+            $input = Arr::except($input, ['password']);
         }
-
+    
         $user = User::find($id);
-        
+    
         $user->update($input);
         DB::table('model_has_roles')->where('model_id', $id)->delete();
-
+    
         $user->assignRole($request->input('roles'));
         return redirect()->route('usuarios.index')->with('success', 'Usuario modificado con éxito');
-
     }
+    
 
     /**
      * Remove the specified resource from storage.
