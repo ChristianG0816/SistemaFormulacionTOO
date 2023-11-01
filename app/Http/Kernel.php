@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\LogActions::class,
         ],
 
         'api' => [
@@ -71,6 +72,9 @@ class Kernel extends HttpKernel
 
         //Google2FA
         '2fa' => \App\Http\Middleware\TwoFactorAuthMiddleware::class,
+
+        //bitacora
+        'logActions' => \App\Http\Middleware\LogActions::class,
 
     ];
 }

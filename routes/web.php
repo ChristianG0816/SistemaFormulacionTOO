@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/cancelTwoFactor', [TwoFactorController::class, 'cancelTwoFactorResponse'])->name('cancel');
 });
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'logActions']], function() {
     
     Route::get('/', function () {return view('home');});
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
