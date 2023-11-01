@@ -160,6 +160,16 @@ class ActividadController extends Controller
             'id_responsable' => 'required',
         ]);
         $input = $request->all();
+
+        // Verificar si el estado de la actividad es "Finalizada"
+        if ($input['id_estado_actividad'] == 3) {
+            // Si es finalizada, guarda la fecha actual en el atributo fecha_fin_real
+            $input['fecha_fin_real'] = date('Y-m-d');
+        } else {
+            // Si no es finalizada, asegúrate de que fecha_fin_real sea null
+            $input['fecha_fin_real'] = null;
+        }
+
         $actividad->update($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
         if($actividad->estado_actividad->nombre == "Pendiente"){

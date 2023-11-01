@@ -88,4 +88,64 @@ class ReporteController extends Controller
         return $pdf->stream('Informe de Gastos ' . $proyecto->nombre . '.pdf');
     }
 
+    public function generarInformeSeguimiento($id)
+    {
+        $proyecto = Proyecto::find($id);
+        $actividades = Actividad::select(
+            'actividad.*', 
+            'users.name as nombre_responsable',
+            'estado_actividad.nombre as nombre_estado'
+        )
+        ->join('equipo_trabajo', 'actividad.id_responsable', '=', 'equipo_trabajo.id')
+        ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
+        ->join('users', 'mano_obra.id_usuario', '=', 'users.id')
+        ->leftJoin('estado_actividad', 'actividad.id_estado_actividad', '=', 'estado_actividad.id')
+        ->where('actividad.id_proyecto', $id)
+        ->get();
+
+        $pendientes = 0;
+        $enProceso = 0;
+        $finalizadas = 0;
+        $finalizadasATiempo = 0;
+        $finalizadasConRetraso = 0;
+            
+        foreach ($actividades as $actividad) {
+            if ($actividad->fecha_fin_real === null) {
+                $actividad->estado_finalizacion = 'No finalizada';
+                if($actividad->id_estado_actividad == 1){
+                    $pendientes++;
+                }else{
+                    $enProceso++;
+                }
+            } elseif ($actividad->fecha_fin >= $actividad->fecha_fin_real) {
+                $actividad->estado_finalizacion = 'A tiempo';
+                $finalizadasATiempo++;
+                $finalizadas++;
+            } else {
+                $actividad->estado_finalizacion = 'Con retraso';
+                $finalizadasConRetraso++;
+                $finalizadas++;
+            }
+        }
+    
+        //dd($actividades);
+        // Genera el PDF con la información obtenida
+        $pdf = PDF::loadView('reportes.informeSeguimiento', [
+            'proyecto' => $proyecto,
+            'actividades' => $actividades,
+            'pendientes' => $pendientes,
+            'enProceso' => $enProceso,
+            'finalizadas' => $finalizadas,
+            'finalizadasATiempo' => $finalizadasATiempo,
+            'finalizadasConRetraso' => $finalizadasConRetraso,
+        ])->setPaper('legal', 'landscape');
+        
+        return $pdf->stream('Informe de Gastos ' . $proyecto->nombre . '.pdf');
+    }
+
 }
+
+// $idsUsuarios = EquipoTrabajo::where('id_proyecto', $proyecto->id)
+//         ->with('mano_obra') // Cargar la relación manoObra
+//         ->get()
+//         ->pluck('mano_obra.id_usuario'); // Obtener los IDs de usuario directamente desde la relación
