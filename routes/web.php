@@ -158,4 +158,5 @@ Route::group(['middleware' => ['auth', 'logActions']], function() {
     Route::get('reportes/data', [ReporteController::class, 'data'])->name('reportes.data');
     Route::resource('reportes', ReporteController::class);
     Route::get('/reportes/{id}/informe-gastos', [ReporteController::class, 'generarInformeGastos'])->name('reportes.informeGasto');
+    Route::get('/reportes/{id}/informe-seguimiento', [ReporteController::class, 'generarInformeSeguimiento'])->name('reportes.informeSeguimiento');
 });

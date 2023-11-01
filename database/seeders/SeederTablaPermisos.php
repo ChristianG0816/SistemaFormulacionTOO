@@ -151,7 +151,7 @@ class SeederTablaPermisos extends Seeder
             $comentarios,
             $actividades,
             $eventos,
-            $calendario
+            $calendario,
             $equipoTrabajo
         ]);
 

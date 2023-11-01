@@ -19,6 +19,7 @@ class CreateActividadTable extends Migration
             $table->integer('prioridad'); // int not null
             $table->date('fecha_inicio'); // date not null
             $table->date('fecha_fin'); // date not null
+            $table->date('fecha_fin_real')->nullable();
             $table->text('responsabilidades'); // text not null
             $table->foreignId('id_proyecto')->constrained('proyecto')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('id_estado_actividad')->constrained('estado_actividad')->onDelete('restrict')->onUpdate('cascade');

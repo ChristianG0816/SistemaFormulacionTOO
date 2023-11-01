@@ -13,6 +13,7 @@ use App\Models\Actividad;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use PDF;
+use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
@@ -93,4 +94,80 @@ class ReporteController extends Controller
         return $pdf->stream('Informe de Gastos ' . $proyecto->nombre . '.pdf');
     }
 
+    public function generarInformeSeguimiento($id)
+    {
+        $proyecto = Proyecto::find($id);
+        $actividades = Actividad::select(
+            'actividad.*', 
+            DB::raw('users.name || \' \' || users.last_name as nombre_responsable'),
+            'estado_actividad.nombre as nombre_estado'
+        )
+        ->join('equipo_trabajo', 'actividad.id_responsable', '=', 'equipo_trabajo.id')
+        ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
+        ->join('users', 'mano_obra.id_usuario', '=', 'users.id')
+        ->leftJoin('estado_actividad', 'actividad.id_estado_actividad', '=', 'estado_actividad.id')
+        ->where('actividad.id_proyecto', $id)
+        ->get();
+
+        $pendientes = 0;
+        $enProceso = 0;
+        $finalizadas = 0;
+        $finalizadasATiempo = 0;
+        $finalizadasConRetraso = 0;
+        $totalActividades = 0;
+
+        //actividades agrupadas por responsable
+        $actividadesPorColaborador = [];
+            
+        foreach ($actividades as $actividad) {
+            if ($actividad->fecha_fin_real === null) {
+                if($actividad->id_estado_actividad == 1){
+                    $pendientes++;
+                    $actividad->observacion = 'Sin iniciar';
+                }else{
+                    $enProceso++;
+                    $actividad->observacion = 'No finalizada';
+                }
+            } elseif ($actividad->fecha_fin >= $actividad->fecha_fin_real) {
+                $actividad->observacion = 'Finalizada a tiempo';
+                $finalizadasATiempo++;
+                $finalizadas++;
+            } else {
+                $actividad->observacion = 'Finalizada con retraso';
+                $finalizadasConRetraso++;
+                $finalizadas++;
+            }
+            
+            $nombreResponsable = $actividad->nombre_responsable;
+            // Si el responsable no está en el array, lo inicializas con un array vacío
+            if (!isset($actividadesPorColaborador[$nombreResponsable])) {
+                $actividadesPorColaborador[$nombreResponsable] = [];
+            }
+            // Añades la actividad al array del responsable correspondiente
+            $actividadesPorColaborador[$nombreResponsable][] = $actividad;
+
+            $totalActividades++;
+        }
+        //dd($actividadesPorColaborador);
+        // Genera el PDF con la información obtenida
+        $pdf = PDF::loadView('reportes.informeSeguimiento', [
+            'proyecto' => $proyecto,
+            'actividades' => $actividades,
+            'pendientes' => $pendientes,
+            'enProceso' => $enProceso,
+            'finalizadas' => $finalizadas,
+            'finalizadasATiempo' => $finalizadasATiempo,
+            'finalizadasConRetraso' => $finalizadasConRetraso,
+            'totalActividades' => $totalActividades,
+            'actividadesPorColaborador' => $actividadesPorColaborador,
+        ])->setPaper('legal', 'landscape');
+        
+        return $pdf->stream('Informe de Gastos ' . $proyecto->nombre . '.pdf');
+    }
+
 }
+
+// $idsUsuarios = EquipoTrabajo::where('id_proyecto', $proyecto->id)
+//         ->with('mano_obra') // Cargar la relación manoObra
+//         ->get()
+//         ->pluck('mano_obra.id_usuario'); // Obtener los IDs de usuario directamente desde la relación

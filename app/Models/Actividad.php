@@ -14,6 +14,7 @@ class Actividad extends Model
         'prioridad',
         'fecha_inicio',
         'fecha_fin',
+        'fecha_fin_real',
         'responsabilidades',
         'id_proyecto',
         'id_estado_actividad',
