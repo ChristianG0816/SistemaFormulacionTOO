@@ -171,7 +171,9 @@
               </div>
             </div>
             <!--Sección de equipo de trabajo-->
+            @can('gestionar-equipo-trabajo')
             @include('equipos.asignar')
+            @endcan
             @can('gestionar-actividad')
             <!--Sección de actividades-->
             <div class="row">
