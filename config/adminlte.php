@@ -339,6 +339,7 @@ return [
             'text' => 'Calendario',
             'url'  => 'calendario',
             'icon' => 'fas fa-calendar',
+            'can'  => 'ver-calendario', //Aqui se agrega el permiso
         ],
         [
             'text' => 'Proyectos',
@@ -374,6 +375,7 @@ return [
             'text' => 'Roles',
             'url'  => 'roles',
             'icon' => 'fas fa-fw fa-user',
+            'can'  => 'ver-rol', //Aqui se agrega el permiso
         ],
         
         [

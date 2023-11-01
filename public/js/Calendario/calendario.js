@@ -1,4 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
+    
+    //permisos
+    if (canCrearEvento) {
+        document.getElementById("btnCrearEvento").classList.remove("d-none");
+    }
+
+    if (canGuardarEvento) {
+        document.getElementById("btnGuardar").classList.remove("d-none");
+    }
+
+    if (canEditarEvento) {
+        document.getElementById("btnModificar").classList.remove("d-none");
+    }
+
+    if (canBorrarEvento) {
+        document.getElementById("btnEliminar").classList.remove("d-none");
+    }
+
     //Selecciono el formulario
     let formulario = document.querySelector("#actividades");
     let formularioEvento = document.querySelector("#eventos");

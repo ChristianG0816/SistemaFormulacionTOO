@@ -24,10 +24,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
+        /*
         //aqui debo de colocar el correo del superadmin
         Gate::before(function ($user,$ability){
             return $user->email == 'admin@gmail.com' ?? null;
-        });
+        });*/
     }
 }

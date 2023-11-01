@@ -17,7 +17,7 @@
                 @endforeach
             </select>
             <!-- Agregamos el botón al lado del select -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#evento" id="btnCrearEvento">Crear Evento</button>
+            <button type="button" class="btn btn-primary d-none" data-toggle="modal" data-target="#evento" id="btnCrearEvento">Crear Evento</button>
         </div>
     </div>
     <div id="calendario"></div>
@@ -124,9 +124,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="btnGuardar">Guardar</button>
-                    <button type="button" class="btn btn-warning" id="btnModificar">Modificar</button>
-                    <button type="button" class="btn btn-danger" id="btnEliminar" >Eliminar</button>
+                    <button type="button" class="btn btn-success d-none" id="btnGuardar" >Guardar</button>
+                    <button type="button" class="btn btn-warning d-none" id="btnModificar" >Modificar</button>
+                    <button type="button" class="btn btn-danger d-none" id="btnEliminar" >Eliminar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -193,5 +193,47 @@
     <script type="text/javascript">
         var baseUrl = {!! json_encode(url('')) !!}
     </script>
+
+    <!--Permisos-->
+
+    <script>
+        var canCrearEvento =
+            @can('crear-evento')
+                true
+            @else
+                false
+            @endcan ;
+        var mensajeNoTienesPermiso = '';
+    </script>
+
+<script>
+    var canGuardarEvento =
+        @can('guardar-evento')
+            true
+        @else
+            false
+        @endcan ;
+    var mensajeNoTienesPermiso = '';
+</script>
+
+<script>
+    var canEditarEvento =
+        @can('editar-evento')
+            true
+        @else
+            false
+        @endcan ;
+    var mensajeNoTienesPermiso = '';
+</script>
+
+<script>
+    var canBorrarEvento =
+        @can('borrar-evento')
+            true
+        @else
+            false
+        @endcan ;
+    var mensajeNoTienesPermiso = '';
+</script>
 
 @stop
