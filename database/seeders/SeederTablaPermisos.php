@@ -102,6 +102,13 @@ class SeederTablaPermisos extends Seeder
             Permission::create(['name' => 'ver-calendario']),
         ];
     
+        $perfil = [
+            Permission::create(['name' => 'ver-perfil']),
+            Permission::create(['name' => 'editar-info-perfil']),
+            Permission::create(['name' => 'cambiar-password-perfil']),
+            Permission::create(['name' => 'habilitar-fa-perfil']),
+            Permission::create(['name' => 'deshabilitar-fa-perfil']),
+        ];
 
         $equipoTrabajo = [
             Permission::create(['name' => 'gestionar-equipo-trabajo']),
@@ -112,7 +119,8 @@ class SeederTablaPermisos extends Seeder
         $roleAdministrador = Role::create(['name' => 'Administrador'])->givePermissionTo([
             $roles,
             $contactos,
-            $clientes
+            $clientes,
+            $perfil
         ]);
 
         $roleCliente = Role::create(['name' => 'Cliente'])->givePermissionTo([
@@ -123,7 +131,8 @@ class SeederTablaPermisos extends Seeder
             //Documento
             'ver-documento',
             'ver-enlace-documento',
-            $calendario
+            $calendario,
+            $perfil
         ]);
         
         $roleSupervisor = Role::create(['name' => 'Supervisor'])->givePermissionTo([
@@ -152,7 +161,8 @@ class SeederTablaPermisos extends Seeder
             $actividades,
             $eventos,
             $calendario,
-            $equipoTrabajo
+            $equipoTrabajo,
+            $perfil
         ]);
 
         $roleGerente = Role::create(['name' => 'Gerente'])->givePermissionTo([
@@ -171,7 +181,8 @@ class SeederTablaPermisos extends Seeder
             $clientes,
             $contactos,
             $miembros,
-            $calendario
+            $calendario,
+            $perfil
         ]);
 
         $roleColaborador = Role::create(['name' => 'Colaborador'])->givePermissionTo([
@@ -180,7 +191,8 @@ class SeederTablaPermisos extends Seeder
             'mostrar-proyecto',
             $comentarios,
             $actividades,
-            $calendario
+            $calendario,
+            $perfil
 
         ]);
 

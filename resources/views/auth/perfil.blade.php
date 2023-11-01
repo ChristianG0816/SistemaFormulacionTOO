@@ -89,6 +89,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @can('editar-info-perfil')
                                             <div class="row">
                                                 <div class="col-sm-12 card-body table-responsive p-0 text-right">
                                                     <div class="col-lg-12 col-md-12 mb-3">
@@ -100,6 +101,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endcan
                                         </div>
                                         {!! Form::close() !!}
                                     </div>
@@ -184,6 +186,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @can('cambiar-password-perfil')
                                             <div class="row">
                                                 <div class="col-sm-12 card-body table-responsive p-0 text-right">
                                                     <div class="col-lg-12 col-md-12 mb-3">
@@ -195,6 +198,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endcan
                                         </div>
                                         {!! Form::close() !!}
                                     </div>
@@ -209,10 +213,14 @@
                                         <h3 class="card-title">Autenticación de Doble Factor</h3>
                                         <div class="card-tools ml-auto">
                                             @if ($factorEnabled)
-                                            <a href="{{ route('deshabilitarFA') }}"class="btn btn-sm btn-outline-danger my-0">Deshabilitar</a>
+                                            @can('deshabilitar-fa-perfil')
+                                                <a href="{{ route('deshabilitarFA') }}"class="btn btn-sm btn-outline-danger my-0">Deshabilitar</a>
+                                            @endcan
                                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse"><i class="fas fa-minus"></i></button>
                                             @else
-                                            <a href="{{ route('habilitarFA') }}"class="btn btn-sm btn-outline-info my-0">Habilitar</a>
+                                            @can('habilitar-fa-perfil')
+                                                <a href="{{ route('habilitarFA') }}"class="btn btn-sm btn-outline-info my-0">Habilitar</a>
+                                            @endcan
                                             @endif
                                         </div>
                                     </div>
