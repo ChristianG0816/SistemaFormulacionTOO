@@ -7,17 +7,6 @@
 @stop
 
 @section('content')
-    @if ($errors->any())
-        <div class="alert alert-dark alert-dismissible fade show" role="alert">
-            <strong>Revise los campos</strong>
-            @foreach ($errors->all() as $error)
-                <span class="badge badge-danger">{{ $error }}</span>
-            @endforeach
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
 
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -30,9 +19,18 @@
 
                                 <div class="form-group">
                                     <label for="name">Nombre del Rol:</label>
-                                    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                                    {!! Form::text('name', null, [
+                                        'class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''),
+                                    ]) !!}
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
+
                                 <div class="form-group">
+                                    @error('permission')
+                                        <div style="font-size: 80%; color: #dc3545;">{{ $message }}</div>
+                                    @enderror
                                     <label for="">Permisos para este Rol:</label>
                                     <br>
                                     @foreach ($permission as $value)

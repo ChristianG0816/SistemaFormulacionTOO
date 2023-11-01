@@ -103,7 +103,10 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         $.ajax({
             url: '/roles/' + id,
-            type: 'DELETE',
+            type: 'POST',
+            data: {
+                _method: 'DELETE' // Indica que es una solicitud DELETE
+            },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -115,8 +118,10 @@ $(document).ready(function() {
             },
             error: function (error) {
                 modal.modal('hide');
+                console.log(error);
                 var table = $('#tabla-roles').DataTable();
                 table.ajax.reload(null, false);
+                toastr.error('Ha ocurrido un error al eliminar el rol');
             }
         });
     });

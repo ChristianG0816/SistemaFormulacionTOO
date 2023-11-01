@@ -96,7 +96,10 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         $.ajax({
             url: '/usuarios/' + id,
-            type: 'DELETE',
+            type: 'POST',
+            data: {
+                _method: 'DELETE' // Indica que es una solicitud DELETE
+            },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },

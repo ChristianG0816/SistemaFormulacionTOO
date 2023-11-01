@@ -63,27 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     $modal.find("#btnModificar, #btnEliminar").show();
     
                     //Limpiar mensajes de error
-                    //Mensajes de error
-                    $("#errorNombre").text("");
                     $("#nombre").removeClass("is-invalid");
-                    $("#errorDes").text("");
                     $("#descripcion").removeClass("is-invalid");
-                    $("#errorDir").text("");
                     $("#direccion").removeClass("is-invalid");
-                    $("#errorFechaInicio").text("");
                     $("#fecha_inicio").removeClass("is-invalid");
-                    $("#errorFechaFin").text("");
                     $("#fecha_fin").removeClass("is-invalid");
-                    $("#errorHoraInicio").text("");
                     $("#hora_inicio").removeClass("is-invalid");
-                    $("#errorHoraFin").text("");
                     $("#hora_fin").removeClass("is-invalid");
-                    $("#errorFechaRecord").text("");
                     $("#fecha_recordatorio").removeClass("is-invalid");
-                    $("#errorHoraRecordatorio").text("");
                     $("#hora_recordatorio").removeClass("is-invalid");
-                    $("#errorlink").text("");
                     $("#link_reunion").removeClass("is-invalid");
+                    $("#proyecto").removeClass("is-invalid");
     
                     // Mostrar el modal
                     $modal.modal("show");
@@ -194,63 +184,17 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch((error) => {
                 if (error.response) {
-
-                //Aqui capturo los mensajes de error y se los paso al modal.
-
-                // Mostrar el mensaje de error para nombre
-                const mensajeError = error.response.data.errors.nombre;  
-                $("#errorNombre").text(mensajeError);
-                $("#nombre").addClass("is-invalid"); 
-
-                // Mostrar el mensaje de error para descripción
-                const mensajeErrorDes = error.response.data.errors.descripcion;  
-                $("#errorDes").text(mensajeErrorDes);
-                $("#descripcion").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para direccion
-                const mensajeErrorDir = error.response.data.errors.direccion;  
-                $("#errorDir").text(mensajeErrorDir);
-                $("#direccion").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para fechaInicio
-                const mensajeErrorFechaInicio = error.response.data.errors.fecha_inicio;  
-                $("#errorFechaInicio").text(mensajeErrorFechaInicio);
-                $("#fecha_inicio").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para fechaFin
-                const mensajeErrorFechaFin = error.response.data.errors.fecha_fin;  
-                $("#errorFechaFin").text(mensajeErrorFechaFin);
-                $("#fecha_fin").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para Hora Inicio
-                const mensajeErrorHoraInicio = error.response.data.errors.hora_inicio;  
-                $("#errorHoraInicio").text(mensajeErrorHoraInicio);
-                $("#hora_inicio").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para Hora Fin
-                const mensajeErrorHoraFin = error.response.data.errors.hora_fin;  
-                $("#errorHoraFin").text(mensajeErrorHoraFin);
-                $("#hora_fin").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para Fecha Recordatorio
-                const mensajeErrorFechaRecordatorio = error.response.data.errors.fecha_recordatorio;  
-                $("#errorFechaRecord").text(mensajeErrorFechaRecordatorio);
-                $("#fecha_recordatorio").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para HoraRecordatorio
-                const mensajeErrorHoraRecordatorio = error.response.data.errors.hora_recordatorio;  
-                $("#errorHoraRecordatorio").text(mensajeErrorHoraRecordatorio);
-                $("#hora_recordatorio").addClass("is-invalid");
-
-                // Mostrar el mensaje de error para Link de reunion
-                const mensajeErrorLink = error.response.data.errors.link_reunion;  
-                $("#errorlink").text(mensajeErrorLink);
-                $("#link_reunion").addClass("is-invalid");
-
-                console.log(error.response.data);
-
-            }
+                    const errors = error.response.data.errors;
+                    for (const field in errors) {
+                        const errorMessage = errors[field][0]; // Toma el primer mensaje de error para el campo.
+                        console.log(field);
+                        $(`#error${field}`).text(errorMessage);
+                        $(`#${field}`).addClass("is-invalid");
+                    }
+                    console.log(errors);
+                }
             });
+            
     }
 
     // Agrega un listener al botón "Crear Evento"
@@ -281,26 +225,17 @@ document.addEventListener("DOMContentLoaded", function () {
             $modal.find("#btnModificar, #btnEliminar").hide();
 
             //Mensajes de error
-            $("#errorNombre").text("");
             $("#nombre").removeClass("is-invalid");
-            $("#errorDes").text("");
             $("#descripcion").removeClass("is-invalid");
-            $("#errorDir").text("");
             $("#direccion").removeClass("is-invalid");
-            $("#errorFechaInicio").text("");
             $("#fecha_inicio").removeClass("is-invalid");
-            $("#errorFechaFin").text("");
             $("#fecha_fin").removeClass("is-invalid");
-            $("#errorHoraInicio").text("");
             $("#hora_inicio").removeClass("is-invalid");
-            $("#errorHoraFin").text("");
             $("#hora_fin").removeClass("is-invalid");
-            $("#errorFechaRecord").text("");
             $("#fecha_recordatorio").removeClass("is-invalid");
-            $("#errorHoraRecordatorio").text("");
             $("#hora_recordatorio").removeClass("is-invalid");
-            $("#errorlink").text("");
             $("#link_reunion").removeClass("is-invalid");
+            $("#proyecto").removeClass("is-invalid");
 
             // Mostrar el modal
             $modal.modal("show");

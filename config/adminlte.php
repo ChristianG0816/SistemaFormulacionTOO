@@ -338,7 +338,7 @@ return [
         [
             'text' => 'Calendario',
             'url'  => 'calendario',
-            'icon' => 'fas fa-file-invoice',
+            'icon' => 'fas fa-calendar',
         ],
         [
             'text' => 'Proyectos',

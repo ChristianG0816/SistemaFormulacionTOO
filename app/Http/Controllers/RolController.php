@@ -48,14 +48,20 @@ class RolController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $this->validate($request, ['name'=>'required', 'permission'=>'required']);
-        $role = Role::create(['name' => $request->input('name')]);
-        $role->syncPermissions($request->input('permission'));
+{
+    $this->validate($request, [
+        'name' => 'required',
+        'permission' => 'required',
+    ], [
+        'permission.required' => 'Debes seleccionar al menos un permiso.',
+    ]);
 
-        return redirect()->route('roles.index');
+    $role = Role::create(['name' => $request->input('name')]);
+    $role->syncPermissions($request->input('permission'));
 
-    }
+    return redirect()->route('roles.index')->with('success', 'Rol creado con éxito');
+}
+
 
     /**
      * Display the specified resource.
@@ -94,13 +100,18 @@ class RolController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['name'=>'required', 'permission'=>'required']);
+        $this->validate($request, [
+            'name' => 'required',
+            'permission' => 'required',
+        ], [
+            'permission.required' => 'Debes seleccionar al menos un permiso.',
+        ]);
         $role = Role::find($id);
         $role->name = $request->input('name');
         $role->save();
 
         $role->syncPermissions($request->input('permission'));
-        return redirect()->route('roles.index');
+        return redirect()->route('roles.index')->with('success', 'Rol modificado con éxito');
     }
 
     /**
@@ -112,7 +123,8 @@ class RolController extends Controller
     public function destroy($id)
     {
         DB::table('roles')->where('id', $id)->delete();
-        return redirect()->routes('roles.index');
+        return redirect()->route('roles.index');
+
     }
 
     public function data() {

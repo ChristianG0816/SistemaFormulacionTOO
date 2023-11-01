@@ -48,17 +48,25 @@ class UsuarioController extends Controller
             'name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password'=>'required|same:confirm-password',
-            'roles'=>'required'
+            'password' => [
+                'required',
+                'regex:/(^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,}))/',
+                'same:confirm-password',
+            ],
+            'confirm-password' => 'required',
+            'roles' => 'required'
+        ], [
+            'password.regex' => 'La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.',
         ]);
-
+        
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
-
-        return redirect()->route('usuarios.index');
+        
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado con éxito');
+        
 
     }
 
@@ -101,8 +109,13 @@ class UsuarioController extends Controller
             'name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
-            'password'=>'same:confirm-password',
+            'password' => [
+                'regex:/(^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,}))/',
+                'same:confirm-password',
+            ],
             'roles'=>'required'
+        ], [
+            'password.regex' => 'La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.',
         ]);
 
         $input = $request->all();
@@ -118,7 +131,7 @@ class UsuarioController extends Controller
         DB::table('model_has_roles')->where('model_id', $id)->delete();
 
         $user->assignRole($request->input('roles'));
-        return redirect()->route('usuarios.index');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario modificado con éxito');
 
     }
 
@@ -131,7 +144,7 @@ class UsuarioController extends Controller
     public function destroy($id)
     {
         User::find($id)->delete();
-        return redirect()->route('usuarios.index');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado con éxito');
     }
 
     public function data() {
