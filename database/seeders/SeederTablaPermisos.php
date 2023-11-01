@@ -51,37 +51,54 @@ class SeederTablaPermisos extends Seeder
             Permission::create(['name' => 'borrar-comentario']),
         ];
 
+        $eventos = [
+            Permission::create(['name' => 'crear-evento']),
+            Permission::create(['name' => 'guardar-evento']),
+            Permission::create(['name' => 'editar-evento']),
+            Permission::create(['name' => 'borrar-evento']),
+        ];
+
+        $calendario = [
+            Permission::create(['name' => 'ver-calendario']),
+        ];
+    
+
         $equipoTrabajo = [
             Permission::create(['name' => 'gestionar-equipo-trabajo']),
             Permission::create(['name' => 'crear-equipo-trabajo']),
             Permission::create(['name' => 'borrar-equipo-trabajo']),
         ];
-
+      
         $roleAdministrador = Role::create(['name' => 'Administrador'])->givePermissionTo([
             //Roles referentes al administrador
             $roles
         ]);
+
         $roleCliente = Role::create(['name' => 'Cliente'])->givePermissionTo([
             //Roles referentes al cliente del proyecto
-            $roles
+            $calendario
         ]);
         $roleSupervisor = Role::create(['name' => 'Supervisor'])->givePermissionTo([
             //Roles referentes al supervisor de proyecto
-            $roles,
             $comentarios,
             $actividades,
+            $eventos,
+            $calendario
             $equipoTrabajo
         ]);
+
         $roleGerente = Role::create(['name' => 'Gerente'])->givePermissionTo([
             //Roles referentes al gerente de proyecto
-            $roles,
-            $miembros
+            $miembros,
+            $calendario
         ]);
+
         $roleColaborador = Role::create(['name' => 'Colaborador'])->givePermissionTo([
             //Roles referentes al colaborador de proyecto
-            $roles,
             $comentarios,
             $actividades,
+            $calendario
+
         ]);
 
     }

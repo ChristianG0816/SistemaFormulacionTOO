@@ -21,6 +21,12 @@ use App\Models\Cliente;
 class CalendarioController extends Controller
 {
 
+    function __construct()
+    {
+        $this->middleware('permission:ver-calendario', ['only'=>['index']]);
+    }
+
+
     public function index(){
     $usuarioLogueado = Auth::user();
     
