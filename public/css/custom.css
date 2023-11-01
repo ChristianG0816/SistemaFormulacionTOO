@@ -1,6 +1,8 @@
 #my-notification .dropdown-menu {
     max-height: 45rem;
     overflow-y: scroll;
+    width: 25rem;
+    max-width: 25rem;
 }
 
 .select2-container .select2-selection--single {

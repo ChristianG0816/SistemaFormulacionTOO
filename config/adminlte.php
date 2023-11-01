@@ -310,7 +310,7 @@ return [
             'dropdown_flabel' => 'Todas las notificaciones',
             'update_cfg'   => [
                 'url' => 'notificaciones/get',
-                'period' => 10,
+                'period' => 5,
             ],
         ],
         [
@@ -333,7 +333,8 @@ return [
         [
             'text' => 'Calendario',
             'url'  => 'calendario',
-            'icon' => 'fas fa-file-invoice',
+            'icon' => 'fas fa-calendar',
+            'can'  => 'ver-calendario', //Aqui se agrega el permiso
         ],
         [
             'text' => 'Proyectos',
@@ -371,6 +372,7 @@ return [
             'text' => 'Roles',
             'url'  => 'roles',
             'icon' => 'fas fa-fw fa-user',
+            'can'  => 'ver-rol', //Aqui se agrega el permiso
         ],
         
         [
