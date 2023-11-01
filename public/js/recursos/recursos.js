@@ -3,6 +3,7 @@ toastr.options = {
     "progressBar": true
 };
 $(document).ready(function() {
+    var csrfToken = $('#csrf-token').data('token');
     var table = $('#tabla-recursos').DataTable({
         ajax: '/recursos/data/',
         processing: true,
@@ -146,9 +147,9 @@ $(document).ready(function() {
         var modal = $('#confirmarEliminarModal');
         $.ajax({
             url: '/recursos/' + id,
-            type: 'GET',
+            type: 'DELETE',
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': csrfToken, // Agrega el token CSRF aquí
             },
             success: function (response) {
                 modal.modal('hide');

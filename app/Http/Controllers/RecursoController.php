@@ -49,7 +49,7 @@ class RecursoController extends Controller
     {
         $this->validate($request, [
             'nombre' => 'required',
-            'disponibilidad'=> ['required', 'regex:/^\d+(\.\d+)?$/'],
+            'disponibilidad' => ['required', 'regex:/^\d+$/'],
             'costo'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
 
@@ -135,9 +135,8 @@ class RecursoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
+    {   
         Recurso::find($id)->delete();
         
-        return redirect()->route('recursos.index')->with('success', 'Recurso eliminado con éxito');
     }
 }
