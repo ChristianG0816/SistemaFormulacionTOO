@@ -21,6 +21,12 @@ use App\Models\Cliente;
 class CalendarioController extends Controller
 {
 
+    function __construct()
+    {
+        $this->middleware('permission:ver-calendario', ['only'=>['index']]);
+    }
+
+
     public function index(){
     $usuarioLogueado = Auth::user();
     
@@ -215,7 +221,20 @@ class CalendarioController extends Controller
     //Funcionalidades de Eventos
 
 public function GuardarEvento(Request $request){
-    request()->validate(Evento::$rules);
+    
+    $request->validate([
+        'nombre' => 'required',
+        'descripcion' => 'required',
+        'direccion' => 'required',
+        'fecha_inicio' => 'required',
+        'fecha_fin' => 'required|after:fecha_inicio',
+        'hora_inicio' => 'required|before:hora_fin',
+        'hora_fin' => 'required|after:hora_inicio',
+        'fecha_recordatorio' => 'required|after_or_equal:fecha_inicio|before_or_equal:fecha_fin',
+        'hora_recordatorio' => 'required',
+        'link_reunion' => 'required',
+        'proyecto' => 'required|not_in: ""', // Nueva regla de validación
+    ]);
 
     // Obtiene el valor seleccionado del select en el formulario.
     $id_proyecto = $request->input('proyecto');
@@ -361,7 +380,19 @@ public function consultarEvento($id)
 
     public function actualizarEvento(Request $request, Evento $evento)
     {
-        request()->validate(Evento::$rules);
+        $request->validate([
+            'nombre' => 'required',
+            'descripcion' => 'required',
+            'direccion' => 'required',
+            'fecha_inicio' => 'required',
+            'fecha_fin' => 'required|after:fecha_inicio',
+            'hora_inicio' => 'required|before:hora_fin',
+            'hora_fin' => 'required|after:hora_inicio',
+            'fecha_recordatorio' => 'required|after_or_equal:fecha_inicio|before_or_equal:fecha_fin',
+            'hora_recordatorio' => 'required',
+            'link_reunion' => 'required',
+        ]);
+
         $evento->update($request->all());
         return response()->json($evento);
 

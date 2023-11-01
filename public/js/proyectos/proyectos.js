@@ -57,23 +57,34 @@ $(document).ready(function() {
         
                     switch (estado) {
                         case 'Formulacion':
-                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/revision">Enviar a Revisión</a>';
+                            if(canEnviarRevisionProyecto){
+                                actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/revision">Enviar a Revisión</a>';
+                            }
                             break;
                         case 'Revision':
-                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/aprobar">Aprobar</a>' + '<span>&nbsp;</span>';
-                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/rechazar">Rechazar</a>';
+                            if(canAprobarProyecto){
+                                actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/aprobar">Aprobar</a>' + '<span>&nbsp;</span>';
+                            }
+                            if(canRechazarProyecto){
+                                actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/rechazar">Rechazar</a>';
+                            }
                             break;
                         case 'Aprobado':
-                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/iniciar">Iniciar</a>';
+                            if(canIniciarProyecto){
+                                actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/iniciar">Iniciar</a>';
+                            }
                             break;
                         case 'Rechazado':
-                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/revision">Enviar a Revisión</a>';
+                            if(canEnviarRevisionProyecto){
+                                actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/revision">Enviar a Revisión</a>';
+                            }
                             break;
                         case 'Iniciado':
-                            actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/finalizar">Finalizar</a>';
+                            if(canFinalizarProyecto){
+                                actionsHtml += '<a class="btn btn-outline-secondary btn-sm estado-proyecto-btn" href="#" data-url="/proyectos/' + row.id + '/finalizar">Finalizar</a>';
+                            }
                             break;
                     }
-
                     actionsHtml += '</td></tr></table>';
                     return actionsHtml || '';
                 }
@@ -92,23 +103,27 @@ $(document).ready(function() {
                     
                     var actionsHtml = '';
                     
-                    //if(hasPrivilegeVerProyecto === true){
+                    
+                    if(canMostrarProyecto){                      
                         actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/proyectos/'+row.id+'">Mostrar</a>';
-                    /*}
+                    }
 
-                    if(hasPrivilegeEditarProyecto === true){*/
+                    
+                    if(canEditarProyecto){
                         actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/proyectos/'+row.id+'/edit">Editar</a>';
-                    /*}
+                    }
                     
-                    if(hasPrivilegeEliminarProyecto === true){*/
-                    actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
-                    actionsHtml += 'data-cod="' + row.id + '">';
-                    actionsHtml += 'Eliminar</button>';
-                   /*}
                     
-                    if(hasPrivilegeEditarProyecto === true){*/
+                    if(canBorrarProyecto){
+                        actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                        actionsHtml += 'data-cod="' + row.id + '">';
+                        actionsHtml += 'Eliminar</button>';
+                    }
+                    
+                    
+                    if(canRealizarBackup){
                         actionsHtml += '<a class="btn btn-outline-warning btn-sm ml-1 backup-btn" href="#" data-url="/proyectos/'+row.id+'/backup">Backup</a>';
-                    //}
+                    }
                     
                     return actionsHtml || '';
                 }
@@ -202,7 +217,6 @@ $(document).ready(function() {
             },
             error: function (error) {
                 table.ajax.reload();
-                toastr.error('No se ha podido actualizar el estado del proyecto');
             }
         });
     });

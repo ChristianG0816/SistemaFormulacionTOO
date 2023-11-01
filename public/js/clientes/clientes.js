@@ -60,14 +60,17 @@ $(document).ready(function() {
                     
                     var actionsHtml = '';
                     
-                    //if(hasPrivilegeVerProyecto === true){
+                    if(canVerContacto){
                         actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/clientes/'+row.id+'">Contactos</a>';
-                    //}
-                    actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/clientes/'+row.id+'/edit">Editar</a>';
-    
-                    actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
-                    actionsHtml += 'data-cod="' + row.id + '">';
-                    actionsHtml += 'Eliminar</button>';
+                    }
+                    if(canEditarCliente){
+                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/clientes/'+row.id+'/edit">Editar</a>';
+                    }
+                    if(canBorrarCliente){
+                        actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                        actionsHtml += 'data-cod="' + row.id + '">';
+                        actionsHtml += 'Eliminar</button>';
+                    }
 
                     return actionsHtml || '';
                 }

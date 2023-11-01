@@ -31,23 +31,23 @@ $(document).ready(function() {
                     var actionsHtml = '';
                     var fileUrl = row.link;
 
-                    //if(hasPrivilegeVerActividad === true){
+                    if(canVerEnlaceDocumento){
                         if (fileUrl) {
                             actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="' + fileUrl + '" target="_blank">Ver</a>';
                         } else {
                             actionsHtml = 'Archivo no disponible';
                         }
-                    /*}
+                    }
 
-                    if(hasPrivilegeEditarActividad === true){*/
+                    if(canEditarDocumento){
                         actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/documentos/'+row.id+'/edit">Editar</a>';
-                    /*}
+                    }
                     
-                    if(hasPrivilegeEliminarActividad === true){*/
+                    if(canBorrarDocumento){
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarDocModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
-                   //}
+                   }
                     
                     return actionsHtml || '';
                 }

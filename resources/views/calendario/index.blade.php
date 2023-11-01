@@ -17,7 +17,7 @@
                 @endforeach
             </select>
             <!-- Agregamos el botón al lado del select -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#evento" id="btnCrearEvento">Crear Evento</button>
+            <button type="button" class="btn btn-primary d-none" data-toggle="modal" data-target="#evento" id="btnCrearEvento">Crear Evento</button>
         </div>
     </div>
     <div id="calendario"></div>
@@ -47,22 +47,23 @@
                                 
                             <div class="form-group">
                                 <label for="nombre">Nombre:</label>
-                                <input type="text" class="form-control" name="nombre" id="nombre" aria-describedby="helpId" placeholder="">
-                                <div id="errorNombre" class="text-danger"></div>
+                                <input type="text" class="form-control" name="nombre" id="nombre">
+                                <div class="invalid-feedback" id="errornombre"></div>
                             </div>
 
                             <div class="form-group">
                                 <label for="descripcion">Descripción:</label>
                                 <input type="text" class="form-control" name="descripcion" id="descripcion" aria-describedby="helpId" placeholder="">
-                                <div id="errorDes" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errordescripcion"></div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="direccion">Dirección:</label>
                                 <input type="text" class="form-control" name="direccion" id="direccion" aria-describedby="helpId" placeholder="">
-                                <div id="errorDir" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errordireccion"></div>
                             </div>
                             
+                            <div class="form-group">
                             <label for="proyecto">Proyecto Asociado:</label>
                             <select class="form-control" name="proyecto" id="proyecto" disabled>
                                 <option value="">Seleccione un proyecto</option>
@@ -70,56 +71,62 @@
                                     <option value="{{ $proyecto->id }}">{{ $proyecto->nombre }}</option>
                                 @endforeach
                             </select>
+                            <div class="invalid-feedback" id="errorproyecto">
+                                @error('proyecto')
+                                    {{ $message }}
+                                @enderror
+                            </div>
+                        </div>
 
                             <div class="form-group">
                                 <label for="fecha_inicio">Fecha Inicio</label>
                                 <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio" aria-describedby="helpId" placeholder="">
-                                <div id="errorFechaInicio" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errorfecha_inicio"></div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="fecha_fin">Fecha Fin</label>
                                 <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" aria-describedby="helpId" placeholder="">
-                                <div id="errorFechaFin" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errorfecha_fin"></div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="hora_inicio">Hora Inicio</label>
                                 <input type="time" class="form-control" name="hora_inicio" id="hora_inicio" aria-describedby="helpId" placeholder="">
-                                <div id="errorHoraInicio" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errorhora_inicio"></div>
                             </div>
 
                             <div class="form-group">
                                 <label for="hora_fin">Hora Fin</label>
                                 <input type="time" class="form-control" name="hora_fin" id="hora_fin" aria-describedby="helpId" placeholder="">
-                                <div id="errorHoraFin" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errorhora_fin"></div>
                             </div>
 
                             <div class="form-group">
                                 <label label for="fecha_recordatorio">Fecha Recordatorio:</label>
                                 <input type="date" class="form-control" name="fecha_recordatorio" id="fecha_recordatorio" aria-describedby="helpId" placeholder="">
-                                <div id="errorFechaRecord" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errorfecha_recordatorio"></div>
                             </div>
 
                             <div class="form-group">
                                 <label for="hora_recordatorio">Hora Recordatorio</label>
                                 <input type="time" class="form-control" name="hora_recordatorio" id="hora_recordatorio" aria-describedby="helpId" placeholder="">
-                                <div id="errorHoraRecordatorio" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errorhora_recordatorio"></div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="link_reunion">Link de la reunión:</label>
                                 <input type="text" class="form-control" name="link_reunion" id="link_reunion" aria-describedby="helpId" placeholder="">
-                                <div id="errorlink" class="text-danger"></div>
+                                <div class="invalid-feedback" id="errorlink_reunion"></div>
                             </div>
 
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="btnGuardar">Guardar</button>
-                    <button type="button" class="btn btn-warning" id="btnModificar">Modificar</button>
-                    <button type="button" class="btn btn-danger" id="btnEliminar" >Eliminar</button>
+                    <button type="button" class="btn btn-success d-none" id="btnGuardar" >Guardar</button>
+                    <button type="button" class="btn btn-warning d-none" id="btnModificar" >Modificar</button>
+                    <button type="button" class="btn btn-danger d-none" id="btnEliminar" >Eliminar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -186,5 +193,47 @@
     <script type="text/javascript">
         var baseUrl = {!! json_encode(url('')) !!}
     </script>
+
+    <!--Permisos-->
+
+    <script>
+        var canCrearEvento =
+            @can('crear-evento')
+                true
+            @else
+                false
+            @endcan ;
+        var mensajeNoTienesPermiso = '';
+    </script>
+
+<script>
+    var canGuardarEvento =
+        @can('guardar-evento')
+            true
+        @else
+            false
+        @endcan ;
+    var mensajeNoTienesPermiso = '';
+</script>
+
+<script>
+    var canEditarEvento =
+        @can('editar-evento')
+            true
+        @else
+            false
+        @endcan ;
+    var mensajeNoTienesPermiso = '';
+</script>
+
+<script>
+    var canBorrarEvento =
+        @can('borrar-evento')
+            true
+        @else
+            false
+        @endcan ;
+    var mensajeNoTienesPermiso = '';
+</script>
 
 @stop

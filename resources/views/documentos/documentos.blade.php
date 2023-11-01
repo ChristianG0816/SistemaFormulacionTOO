@@ -1,11 +1,14 @@
 <!--Sección de documentos legales-->
+@can('ver-documento')
 <div class="row">
     <div class="col-lg-12 col-md-12 mb-3">
     <div class="card">
         <div class="card-header d-flex align-items-center">
         <h3 class="card-title">Documentos Legales</h3>
         <div class="card-tools ml-auto">
+        @can('crear-documento')
             <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('documentos.create', $proyecto->id) }}">Agregar</a>
+        @endcan
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse"><i class="fas fa-minus"></i></button>
         </div>
         </div>
@@ -22,6 +25,7 @@
     </div>
     </div>
 </div>
+@endcan
 <!-- Modal de eliminar Documento-->
 <div class="modal fade" id="confirmarEliminarDocumentoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">

@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>GLADIATORS</b>',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -310,7 +310,7 @@ return [
             'dropdown_flabel' => 'Todas las notificaciones',
             'update_cfg'   => [
                 'url' => 'notificaciones/get',
-                'period' => 10,
+                'period' => 5,
             ],
         ],
         [
@@ -328,22 +328,19 @@ return [
             'can'  => 'manage-blog', //Can es para los permisos
         ],
 
-        [
-            'text' => 'Dashboard',
-            'route'  => 'home',
-        ],
-
         ['header' => 'Datos'],
         
         [
             'text' => 'Calendario',
             'url'  => 'calendario',
-            'icon' => 'fas fa-file-invoice',
+            'icon' => 'fas fa-calendar',
+            'can'  => 'ver-calendario', //Aqui se agrega el permiso
         ],
         [
             'text' => 'Proyectos',
             'url'  => 'proyectos',
             'icon' => 'fas fa-file-invoice',
+            'can' => 'ver-proyecto',
         ],
         [
             'text' => 'Miembros',
@@ -362,6 +359,7 @@ return [
             'text' => 'Clientes',
             'url'  => 'clientes',
             'icon' => 'fas fa-house-user',
+            'can'  => 'ver-cliente',
         ],
         
         [
@@ -374,12 +372,14 @@ return [
             'text' => 'Roles',
             'url'  => 'roles',
             'icon' => 'fas fa-fw fa-user',
+            'can'  => 'ver-rol', //Aqui se agrega el permiso
         ],
         
         [
             'text'    => 'Reportes',
             'url'  => 'reportes',
             'icon'    => 'fas fa-file-pdf',
+            'can' => 'ver-reporte',
         ],
     ],
 

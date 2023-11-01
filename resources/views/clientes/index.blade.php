@@ -11,10 +11,14 @@
       <div class="card-header">
         <h3 class="card-title">
           <!--Sección de botones-->
-          <a class="btn btn-sm btn-outline-warning" href="{{ route('clientes.create') }}">Nuevo</a>
-          <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
-          <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
-          <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button>
+          @can('crear-cliente')
+            <a class="btn btn-sm btn-outline-warning" href="{{ route('clientes.create') }}">Nuevo</a>
+          @endcan
+          @can('exportar-cliente')
+            <button id="export-copy" class="btn btn-sm btn-outline-secondary buttons-copy" type="button"><span>Copiar</span></button> 
+            <button id="export-excel" class="btn btn-sm btn-outline-success buttons-excel" type="button"><span>Exportar</span></button> 
+            <button id="export-pdf" class="btn btn-sm btn-outline-danger buttons-pdf" type="button"><span>Exportar</span></button>
+          @endcan
         </h3>
       </div>
       <div class="card-body">
@@ -72,4 +76,23 @@
         })(jQuery);
     </script>
     <script src="{{ asset('js/clientes/clientes.js') }}"></script>
+    <script>
+      var canEditarCliente = @can('editar-cliente')
+          true
+      @else
+          false
+      @endcan;
+
+      var canBorrarCliente = @can('borrar-cliente')
+          true
+      @else
+          false
+      @endcan;
+
+      var canVerContacto = @can('ver-contacto')
+          true
+      @else
+          false
+      @endcan;
+  </script>
 @stop

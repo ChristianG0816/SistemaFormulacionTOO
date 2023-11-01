@@ -29,11 +29,14 @@ use App\Models\TipoNotificacion;
 
 class ProyectoController extends Controller
 {
-    /**
-     * Funcion para mostrar la vista de todos los proyectos.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    function __construct()
+    {
+        $this->middleware('permission:ver-proyecto|crear-proyecto|editar-proyecto|borrar-proyecto|mostrar-proyecto', ['only' => ['index']]);
+        $this->middleware('permission:crear-proyecto', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-proyecto', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:borrar-proyecto', ['only' => ['destroy']]);
+        $this->middleware('permission:mostrar-proyecto', ['only' => ['show']]);
+    }
 
      public function index()
      {
