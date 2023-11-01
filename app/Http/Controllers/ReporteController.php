@@ -13,6 +13,7 @@ use App\Models\Actividad;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use PDF;
+use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
@@ -98,7 +99,7 @@ class ReporteController extends Controller
         $proyecto = Proyecto::find($id);
         $actividades = Actividad::select(
             'actividad.*', 
-            'users.name as nombre_responsable',
+            DB::raw('users.name || \' \' || users.last_name as nombre_responsable'),
             'estado_actividad.nombre as nombre_estado'
         )
         ->join('equipo_trabajo', 'actividad.id_responsable', '=', 'equipo_trabajo.id')
@@ -113,27 +114,41 @@ class ReporteController extends Controller
         $finalizadas = 0;
         $finalizadasATiempo = 0;
         $finalizadasConRetraso = 0;
+        $totalActividades = 0;
+
+        //actividades agrupadas por responsable
+        $actividadesPorColaborador = [];
             
         foreach ($actividades as $actividad) {
             if ($actividad->fecha_fin_real === null) {
-                $actividad->estado_finalizacion = 'No finalizada';
                 if($actividad->id_estado_actividad == 1){
                     $pendientes++;
+                    $actividad->observacion = 'Sin iniciar';
                 }else{
                     $enProceso++;
+                    $actividad->observacion = 'No finalizada';
                 }
             } elseif ($actividad->fecha_fin >= $actividad->fecha_fin_real) {
-                $actividad->estado_finalizacion = 'A tiempo';
+                $actividad->observacion = 'Finalizada a tiempo';
                 $finalizadasATiempo++;
                 $finalizadas++;
             } else {
-                $actividad->estado_finalizacion = 'Con retraso';
+                $actividad->observacion = 'Finalizada con retraso';
                 $finalizadasConRetraso++;
                 $finalizadas++;
             }
+            
+            $nombreResponsable = $actividad->nombre_responsable;
+            // Si el responsable no está en el array, lo inicializas con un array vacío
+            if (!isset($actividadesPorColaborador[$nombreResponsable])) {
+                $actividadesPorColaborador[$nombreResponsable] = [];
+            }
+            // Añades la actividad al array del responsable correspondiente
+            $actividadesPorColaborador[$nombreResponsable][] = $actividad;
+
+            $totalActividades++;
         }
-    
-        //dd($actividades);
+        //dd($actividadesPorColaborador);
         // Genera el PDF con la información obtenida
         $pdf = PDF::loadView('reportes.informeSeguimiento', [
             'proyecto' => $proyecto,
@@ -143,6 +158,8 @@ class ReporteController extends Controller
             'finalizadas' => $finalizadas,
             'finalizadasATiempo' => $finalizadasATiempo,
             'finalizadasConRetraso' => $finalizadasConRetraso,
+            'totalActividades' => $totalActividades,
+            'actividadesPorColaborador' => $actividadesPorColaborador,
         ])->setPaper('legal', 'landscape');
         
         return $pdf->stream('Informe de Gastos ' . $proyecto->nombre . '.pdf');
