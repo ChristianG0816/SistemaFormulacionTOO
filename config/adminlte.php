@@ -310,7 +310,7 @@ return [
             'dropdown_flabel' => 'Todas las notificaciones',
             'update_cfg'   => [
                 'url' => 'notificaciones/get',
-                'period' => 10,
+                'period' => 5,
             ],
         ],
         [

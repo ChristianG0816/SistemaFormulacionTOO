@@ -51,6 +51,12 @@ class SeederTablaPermisos extends Seeder
             Permission::create(['name' => 'borrar-comentario']),
         ];
 
+        $equipoTrabajo = [
+            Permission::create(['name' => 'gestionar-equipo-trabajo']),
+            Permission::create(['name' => 'crear-equipo-trabajo']),
+            Permission::create(['name' => 'borrar-equipo-trabajo']),
+        ];
+
         $roleAdministrador = Role::create(['name' => 'Administrador'])->givePermissionTo([
             //Roles referentes al administrador
             $roles
@@ -63,7 +69,8 @@ class SeederTablaPermisos extends Seeder
             //Roles referentes al supervisor de proyecto
             $roles,
             $comentarios,
-            $actividades
+            $actividades,
+            $equipoTrabajo
         ]);
         $roleGerente = Role::create(['name' => 'Gerente'])->givePermissionTo([
             //Roles referentes al gerente de proyecto
@@ -74,7 +81,7 @@ class SeederTablaPermisos extends Seeder
             //Roles referentes al colaborador de proyecto
             $roles,
             $comentarios,
-            $actividades
+            $actividades,
         ]);
 
     }
