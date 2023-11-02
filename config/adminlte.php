@@ -352,6 +352,7 @@ return [
             'text' => 'Recursos',
             'url'  => 'recursos',
             'icon' => 'fas fa-coins',
+            'can'  => 'ver-recurso',
         ],
         ['header' => 'Administración'],
         

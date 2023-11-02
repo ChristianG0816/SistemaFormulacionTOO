@@ -13,6 +13,15 @@ use Illuminate\Http\Response;
 class AsignacionRecursoController extends Controller
 {   
 
+    function __construct()
+    {
+        $this->middleware('permission:ver-asignacionRecurso|crear-recurso|editar-asignacionRecurso|borrar-asignacionRecurso|mostrar-asignacionRecurso', ['only' => ['index']]);
+        $this->middleware('permission:crear-asignacionRecurso', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-asignacionRecurso', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:borrar-asignacionRecurso', ['only' => ['destroy']]);
+        $this->middleware('permission:mostrar-asignacionRecurso', ['only' => ['show']]);
+    }
+    
     public function RecursosDisponibles($id){
         //trae recursos disponibles no asignados a esta actividad
         $data = Recurso::where('disponibilidad', '>=', 1)

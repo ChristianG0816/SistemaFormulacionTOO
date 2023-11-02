@@ -115,12 +115,30 @@ class SeederTablaPermisos extends Seeder
             Permission::create(['name' => 'crear-equipo-trabajo']),
             Permission::create(['name' => 'borrar-equipo-trabajo']),
         ];
+
+        $recursos = [
+            Permission::create(['name' => 'gestionar-recurso']),
+            Permission::create(['name' => 'ver-recurso']),
+            Permission::create(['name' => 'crear-recurso']),
+            Permission::create(['name' => 'editar-recurso']),
+            Permission::create(['name' => 'borrar-recurso']),
+        ];
+
+        $asignacionRecursos = [
+            Permission::create(['name' => 'gestionar-asignacionRecurso']),
+            Permission::create(['name' => 'ver-asignacionRecurso']),
+            Permission::create(['name' => 'crear-asignacionRecurso']),
+            Permission::create(['name' => 'editar-asignacionRecurso']),
+            Permission::create(['name' => 'borrar-asignacionRecurso']),
+        ];
+        
       
         $roleAdministrador = Role::create(['name' => 'Administrador'])->givePermissionTo([
             $roles,
             $contactos,
             $clientes,
-            $perfil
+            $perfil,
+            $recursos
         ]);
 
         $roleCliente = Role::create(['name' => 'Cliente'])->givePermissionTo([
@@ -162,7 +180,8 @@ class SeederTablaPermisos extends Seeder
             $eventos,
             $calendario,
             $equipoTrabajo,
-            $perfil
+            $perfil,
+            $asignacionRecursos
         ]);
 
         $roleGerente = Role::create(['name' => 'Gerente'])->givePermissionTo([
@@ -182,7 +201,7 @@ class SeederTablaPermisos extends Seeder
             $contactos,
             $miembros,
             $calendario,
-            $perfil
+            $perfil,
         ]);
 
         $roleColaborador = Role::create(['name' => 'Colaborador'])->givePermissionTo([

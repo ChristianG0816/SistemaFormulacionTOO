@@ -1,4 +1,5 @@
  <!-- Seccion para agregar recursos -->
+@can('ver-asignacionRecurso')
 <div class="row">
     <div class="col-lg-12 col-md-12 mb-3">
         <div class="card collapsed-card">
@@ -24,6 +25,7 @@
         </div>
     </div>
 </div>
+@endcan
 
 <div id="actividad-id" data-id="{{ $actividad->id }}"></div>
 <div id="csrf-token" data-token="{{ csrf_token() }}"></div>

@@ -29,7 +29,14 @@ class ReporteController extends Controller
 
     public function data()
     {
-        $proyectos = Proyecto::with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        //$proyectos = Proyecto::with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        $user = Auth::user();
+    
+        if ($user->hasRole('Supervisor')) {
+            $proyectos = Proyecto::where('id_gerente_proyecto', $user->id)->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        }elseif ($user->hasRole('Gerente')) {
+            $proyectos = Proyecto::with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+        }
     
         return datatables()->of($proyectos)
             ->addColumn('cliente_nombre', function ($row) {
