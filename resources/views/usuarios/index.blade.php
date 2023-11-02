@@ -11,7 +11,9 @@
             <div class="card-header">
                 <h3 class="card-title">
                     <!--Sección de botones-->
+                    @can('crear-usuario')
                     <a class="btn btn-sm btn-outline-warning" href="{{ route('usuarios.create') }}">Nuevo</a>
+                    @endcan
                 </h3>
             </div>
 
@@ -72,4 +74,27 @@
         })(jQuery);
     </script>
     <script src="{{ asset('js/usuarios/usuarios.js') }}"></script>
+
+    <!--Permisos-->
+
+    <script>
+        var canEditarUsuario =
+            @can('editar-usuario', $usuarios)
+                true
+            @else
+                false
+            @endcan ;
+        var mensajeNoTienesPermiso = '';
+    </script>
+
+    <script>
+        var canEliminarUsuario =
+            @can('borrar-usuario', $usuarios)
+                true
+            @else
+                false
+            @endcan ;
+        var mensajeNoTienesPermiso = '';
+    </script>
+
 @stop
