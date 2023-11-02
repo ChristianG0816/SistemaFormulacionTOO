@@ -15,7 +15,6 @@ class AsignacionRecursoController extends Controller
 
     function __construct()
     {
-        $this->middleware('permission:ver-asignacionRecurso|crear-recurso|editar-asignacionRecurso|borrar-asignacionRecurso|mostrar-asignacionRecurso', ['only' => ['index']]);
         $this->middleware('permission:crear-asignacionRecurso', ['only' => ['create', 'store']]);
         $this->middleware('permission:editar-asignacionRecurso', ['only' => ['edit', 'update']]);
         $this->middleware('permission:borrar-asignacionRecurso', ['only' => ['destroy']]);

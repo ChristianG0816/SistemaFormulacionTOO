@@ -104,7 +104,8 @@ class ActividadController extends Controller
         $usuario= Auth::user();
         $userRole = $usuario->roles->pluck('name')->first();
         $comentarios = Comentario::where('id_actividad', $actividad->id)->orderBy('created_at', 'desc')->get();
-        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios', 'userRole'));
+        $id_estado_proyecto = $proyecto->id_estado_proyecto;
+        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios', 'userRole','id_estado_proyecto'));
     }
 
     /**

@@ -206,6 +206,8 @@ class SeederTablaPermisos extends Seeder
             $contactos,
             $calendario,
             $perfil,
+            //Asignacion Recurso
+            'ver-asignacionRecurso'
         ]);
 
         $roleColaborador = Role::create(['name' => 'Colaborador'])->givePermissionTo([
