@@ -4,6 +4,8 @@ toastr.options = {
 };
 $(document).ready(function() {
     var id_proyecto = $('#id_proyecto').data('id-proyecto');
+    var estado_proyecto = $('#estado_proyecto').val();
+    var rol_usuario = $('#rol_usuario').data('rol-usuario');
     var table = $('#tabla-actividades').DataTable({
         ajax: '/actividades/data/'+id_proyecto,
         select:true,
@@ -90,20 +92,26 @@ $(document).ready(function() {
                 render: function (data, type, row) {
                     
                     var actionsHtml = '';
-                    
-                    if(permisos['ver-actividad']){
-                        actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/actividades/show/'+row.id+'">Mostrar</a>';
+
+                    if(estado_proyecto=='Iniciado' || estado_proyecto=='Finalizado' || rol_usuario=='Gerente' || rol_usuario=='Supervisor'){
+                        if(permisos['ver-actividad']){
+                            actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/actividades/show/'+row.id+'">Mostrar</a>';
+                        }
                     }
 
-                    if(permisos['editar-actividad']){
-                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/actividades/'+row.id+'/edit">Editar</a>';
+                    if(estado_proyecto=='Formulacion' || estado_proyecto=='Rechazado'){
+                        if(rol_usuario!='Gerente' && rol_usuario!='Cliente' && rol_usuario!='Colaborador'){
+                            if(permisos['editar-actividad']){
+                                actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/actividades/'+row.id+'/edit">Editar</a>';
+                            }
+                            
+                            if(permisos['borrar-actividad']){
+                                actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                                actionsHtml += 'data-cod="' + row.id + '">';
+                                actionsHtml += 'Eliminar</button>';
+                            }
+                        }
                     }
-                    
-                    if(permisos['borrar-actividad']){
-                    actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
-                    actionsHtml += 'data-cod="' + row.id + '">';
-                    actionsHtml += 'Eliminar</button>';
-                   }
                     
                     return actionsHtml || '';
                 }
