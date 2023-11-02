@@ -124,6 +124,13 @@ class TipoNotificacionSeeder extends Seeder
                 'color' => '#0B5345',
                 'ruta' => '/proyectos',
             ],
+            [
+                'nombre' => 'Proyecto Iniciado',
+                'descripcion' => 'El proyecto "{{nombre}}", se ha iniciado.',
+                'icono' => 'fas fa-file-export',
+                'color' => '#0B5345',
+                'ruta' => '/proyectos/{{$id}}',
+            ],
         ];
 
         foreach ($tiposNotificacion as $tipo) {
