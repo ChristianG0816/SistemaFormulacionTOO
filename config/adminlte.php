@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Formulación de Proyectos - GLADIATORS',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -253,7 +253,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => '/',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -322,11 +322,11 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog', //Can es para los permisos
-        ],
+        // [
+        //     'text' => 'blog',
+        //     'url'  => 'admin/blog',
+        //     'can'  => 'manage-blog', //Can es para los permisos
+        // ],
 
         ['header' => 'Datos'],
         

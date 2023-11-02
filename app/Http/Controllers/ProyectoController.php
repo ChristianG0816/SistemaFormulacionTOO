@@ -53,16 +53,38 @@ class ProyectoController extends Controller
             $proyectos = Proyecto::where('id_gerente_proyecto', $user->id)->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
         } elseif ($user->hasRole('Cliente')) {
             $cliente = Cliente::where('id_usuario', $user->id)->first();
-            $proyectos = Proyecto::where('id_cliente', $cliente->id)->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+            #$proyectos = Proyecto::where('id_cliente', $cliente->id)->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+            $proyectos = Proyecto::where('id_cliente', $cliente->id)
+                ->whereHas('estado_proyecto', function ($query) {
+                    $query->whereIn('nombre', ['Iniciado', 'Finalizado']);
+                })
+                ->with('estado_proyecto', 'gerente_proyecto', 'cliente')
+                ->get();
         } elseif ($user->hasRole('Colaborador')) {
+            // $proyectos = Proyecto::whereIn('id', function ($query) use ($user) {
+            //     $query->select('id_proyecto')
+            //         ->from('equipo_trabajo')
+            //         ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
+            //         ->where('mano_obra.id_usuario', $user->id);
+            // })->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
             $proyectos = Proyecto::whereIn('id', function ($query) use ($user) {
                 $query->select('id_proyecto')
                     ->from('equipo_trabajo')
                     ->join('mano_obra', 'equipo_trabajo.id_mano_obra', '=', 'mano_obra.id')
                     ->where('mano_obra.id_usuario', $user->id);
-            })->with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+            })
+            ->whereHas('estado_proyecto', function ($query) {
+                $query->whereIn('nombre', ['Iniciado', 'Finalizado']);
+            })
+            ->with('estado_proyecto', 'gerente_proyecto', 'cliente')
+            ->get();
         } else {
-            $proyectos = Proyecto::with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+            // $proyectos = Proyecto::with('estado_proyecto', 'gerente_proyecto', 'cliente')->get();
+            $proyectos = Proyecto::whereHas('estado_proyecto', function ($query) {
+                $query->whereIn('nombre', ['Revision', 'Aprobado', 'Rechazado', 'Iniciado', 'Finalizado']);
+            })
+            ->with('estado_proyecto', 'gerente_proyecto', 'cliente')
+            ->get();
         }
     
         return datatables()->of($proyectos)

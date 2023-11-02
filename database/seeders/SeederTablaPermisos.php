@@ -182,6 +182,8 @@ class SeederTablaPermisos extends Seeder
             'editar-documento',
             'borrar-documento',
             'ver-enlace-documento',
+            //Miembro
+            'ver-miembro',
             $reportes,
             $clientes,
             $contactos,
@@ -199,7 +201,6 @@ class SeederTablaPermisos extends Seeder
             'ver-proyecto',
             'exportar-proyecto',
             'mostrar-proyecto',
-            'backup-proyecto',
             'aprobar-proyecto',
             'rechazar-proyecto',
             'ver-presupuesto-proyecto',
@@ -209,6 +210,8 @@ class SeederTablaPermisos extends Seeder
             'gestionar-actividad',
             'gestionar-comentario',
             'ver-actividad',
+            //Miembro
+            'ver-miembro',
             $reportes,
             $clientes,
             $contactos,
