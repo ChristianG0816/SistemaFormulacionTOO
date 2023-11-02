@@ -235,18 +235,6 @@ class ProyectoController extends Controller
         Mail::to($usuario->email)->send($correo);
         //Envia notificacion
         $this->enviar_notificacion($proyecto->id,$usuario->id,$proyecto->nombre,2);
-        //Enviar notificación a cliente
-        $cliente = Cliente::find($proyecto->id_cliente);
-        $this->enviar_notificacion($proyecto->id,$cliente->id_usuario,$proyecto->nombre,2);
-        //Enviar notificacion a colaboradores
-        $idsUsuarios = EquipoTrabajo::where('id_proyecto', $proyecto->id)
-        ->with('mano_obra') // Cargar la relación manoObra
-        ->get()
-        ->pluck('mano_obra.id_usuario'); // Obtener los IDs de usuario directamente desde la relación
-        //iteramos para enviar
-        foreach ($idsUsuarios as $id) {
-            $this->enviar_notificacion($proyecto->id,$id,$proyecto->nombre,2);
-        }
 
         return redirect()->route('proyectos.index');
     }
@@ -277,6 +265,32 @@ class ProyectoController extends Controller
         $proyecto = Proyecto::find($id);
         $proyecto->id_estado_proyecto=5;
         $proyecto->save();
+
+        // Encuentra usuarios por su rol
+        $usuarios = User::whereHas('roles', function($query) {
+            $query->where('name', 'Gerente');
+        })->select('id', 'name','email')->get();
+        // Enviar el correo electrónico a cada usuario
+        foreach ($usuarios as $usuario) {
+            // Instancia el Mailable y pasa los parámetros al constructor
+            $correo = new ProyectoEnRevision($usuario->name, $proyecto->nombre);
+            // Envía el correo electrónico de revisión a cada usuario
+            Mail::to($usuario->email)->send($correo);
+            $this->enviar_notificacion($proyecto->id,$usuario->id,$proyecto->nombre,16);
+        }
+        //Enviar notificación a cliente
+        $cliente = Cliente::find($proyecto->id_cliente);
+        $this->enviar_notificacion($proyecto->id,$cliente->id_usuario,$proyecto->nombre,16);
+        //Enviar notificacion a colaboradores
+        $idsUsuarios = EquipoTrabajo::where('id_proyecto', $proyecto->id)
+        ->with('mano_obra') // Cargar la relación manoObra
+        ->get()
+        ->pluck('mano_obra.id_usuario'); // Obtener los IDs de usuario directamente desde la relación
+        //iteramos para enviar
+        foreach ($idsUsuarios as $id) {
+            $this->enviar_notificacion($proyecto->id,$id,$proyecto->nombre,16);
+        }
+
         return redirect()->route('proyectos.index');
     }
     /**
