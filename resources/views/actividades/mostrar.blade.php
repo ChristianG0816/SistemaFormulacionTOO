@@ -49,17 +49,17 @@
                                     <label for="fecha_fin" class="text-secondary">Fecha Fin</label>
                                     {!! Form::date('fecha_fin', $actividad->fecha_fin, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                                 </div>
-                                @if ($proyecto->estado_proyecto->nombre != 'Aprobado')
-                                <div class="form-group">
-                                    <label for="id_estado_actividad" class="text-secondary">Estado Actividad</label>
-                                    {!! Form::text('estado_actividad',  $actividad->estado_actividad->nombre, ['class' => 'form-control' , 'readonly' => 'readonly']) !!}
-                                </div>
-                                @else
+                                @if ($proyecto->estado_proyecto->nombre == 'Iniciado' && $userRole == 'Colaborador')
                                 <div class="form-group">
                                     <label for="id_estado_actividad" class="text-secondary">Estado Actividad</label>
                                     {!! Form::select('id_estado_actividad', $estadosActividad,  $actividad->id_estado_actividad, [
                                         'class' => 'form-control' . ($errors->has('id_estado_actividad') ? ' is-invalid' : ''), 'id' => 'select-estado-actividad',
                                     ]) !!}
+                                </div>
+                                @else
+                                <div class="form-group">
+                                    <label for="id_estado_actividad" class="text-secondary">Estado Actividad</label>
+                                    {!! Form::text('estado_actividad',  $actividad->estado_actividad->nombre, ['class' => 'form-control' , 'readonly' => 'readonly']) !!}
                                 </div>
                                 @endif
                             </div>
@@ -94,13 +94,16 @@
                                 <div class="card-header border-0 m-0 p-0 w-100" style="background-color: #EBF5FB;">
                                     <div class="d-flex align-items-center m-1">
                                         <h5 class="text-center font-weight-bold">Comentarios</h5>
+                                        @if ($proyecto->estado_proyecto->nombre == 'Iniciado')
                                         @can('crear-comentario')
                                         <a type="button" class="btn btn-tool ml-auto" data-card-widget="collapse" title="Collapse">
                                             <i id="icono-boton-comentario" class="fas fa-plus"></i>
                                         </a>
                                         @endcan
+                                        @endif
                                     </div>
                                 </div>
+                                @if ($proyecto->estado_proyecto->nombre == 'Iniciado')
                                 @can('crear-comentario')
                                 <div id="formulario-comentario" class="card-body border-0 m-0 p-0 pr-1" style="display: none;">
                                     <div class="card bg-white">
@@ -116,6 +119,7 @@
                                     </div>
                                 </div>
                                 @endcan
+                                @endif
                             </div>
                             <div id="lista-comentarios" class="table-responsive" style="max-height: 70vh; margin-top:45px;">
                                 @foreach ($comentarios as $comentario)
@@ -123,6 +127,7 @@
                                         <div class="card-body pb-0">
                                             <p class="font-weight-bold text-secondary m-0">{{ $comentario->usuario->name }} {{ $comentario->usuario->last_name }}</p>
                                             <p id="parrafo-comentario{{$comentario->id}}" class="text-justify text-black mb-3">{{ $comentario->linea_comentario }}</p>
+                                            @if ($proyecto->estado_proyecto->nombre == 'Iniciado')
                                             @if ($comentario->usuario->id == $usuario->id)
                                                 @can('editar-comentario')
                                                 {!! Form::model($comentario, ['method' => 'PATCH', 'route' => ['comentarios.update', $comentario->id], 'id' => 'comentario-form-actualizar' . $comentario->id]) !!}
@@ -149,6 +154,7 @@
                                                     {!! Form::close() !!}
                                                     @endcan
                                                 </p>
+                                            @endif
                                             @endif
                                         </div>
                                     </div>

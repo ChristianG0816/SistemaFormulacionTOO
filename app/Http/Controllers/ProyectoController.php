@@ -132,7 +132,9 @@ class ProyectoController extends Controller
     public function show($id)
     {
         $proyecto = Proyecto::find($id);
-        return view('proyectos.mostrar', compact('proyecto'));
+        $user = Auth::user();
+        $userRole = $user->roles->pluck('name')->first();
+        return view('proyectos.mostrar', compact('proyecto','userRole'));
     }
 
     /**

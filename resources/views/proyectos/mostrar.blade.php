@@ -10,6 +10,7 @@
 @section('content_header')
 <h1 class="text-center">Gestionar Proyecto</h1>
 <p id="id_proyecto" data-id-proyecto="{{ $proyecto->id }}" class="d-none"></p>
+<p id="rol_usuario" data-rol-usuario="{{ $userRole }}" class="d-none"></p>
 @stop
 @section('content')
 @if ($errors->any())
@@ -163,7 +164,7 @@
                                 </div>
                               </div>
                               <div class="col-md-11">
-                                {!! Form::text('id_estado_proyecto', $proyecto->estado_proyecto->nombre, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                                {!! Form::text('id_estado_proyecto', $proyecto->estado_proyecto->nombre, ['class' => 'form-control', 'readonly' => 'readonly', 'id' => 'estado_proyecto']) !!}
                               </div>
                             </div>
                           </div>
@@ -186,11 +187,13 @@
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Actividades</h3>
                     <div class="card-tools ml-auto">
-                      @if ($proyecto->estado_proyecto->nombre != 'Aprobado')
+                      @if ($proyecto->estado_proyecto->nombre == 'Formulacion' || $proyecto->estado_proyecto->nombre == 'Rechazado' )
+                      @if ($userRole !='Gerente' && $userRole !='Cliente' && $userRole !='Colaborador')
                       @can('crear-actividad')
                       <button type="button" class="btn btn-sm btn-outline-primary my-0" id="enviarRecordatorioBtn" style="display: none;">Enviar Recordatorio</button>
                       <a class="btn btn-sm btn-outline-warning my-0" href="{{ route('actividades.create', $proyecto->id) }}">Agregar</a>
                       @endcan
+                      @endif
                       @endif
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
@@ -211,7 +214,6 @@
               </div>
             </div>
             @endcan
-
             <!--Sección de documentos-->
             @include('documentos.documentos')
           </div>
