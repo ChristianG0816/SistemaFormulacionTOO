@@ -131,6 +131,13 @@ class SeederTablaPermisos extends Seeder
             Permission::create(['name' => 'editar-asignacionRecurso']),
             Permission::create(['name' => 'borrar-asignacionRecurso']),
         ];
+
+        $usuarios = [
+            Permission::create(['name' => 'ver-usuario']),
+            Permission::create(['name' => 'crear-usuario']),
+            Permission::create(['name' => 'editar-usuario']),
+            Permission::create(['name' => 'borrar-usuario']),
+        ];
         
       
         $roleAdministrador = Role::create(['name' => 'Administrador'])->givePermissionTo([
@@ -138,7 +145,8 @@ class SeederTablaPermisos extends Seeder
             $contactos,
             $clientes,
             $perfil,
-            $recursos
+            $recursos,
+            $usuarios
         ]);
 
         $roleCliente = Role::create(['name' => 'Cliente'])->givePermissionTo([
