@@ -53,7 +53,7 @@
   <br>
   <h2>Resumen de Actividades</h2>
   <div class="row">
-    <table class="table-striped">
+    <table class="">
       <tbody>
         <tr>
           <th>Actividades Pendientes</th>
@@ -75,11 +75,12 @@
   </table>
   </div>
   <br>
+  <h2>Listado de Actividades</h2>
   <div class="row">
-    <table class="table-striped">
+    <table class="">
         <thead>
             <tr>
-                <th>Nombre</th>
+                <th>Actividad</th>
                 <th>Estado</th>
                 <th>Responsable</th>
                 <th>Prioridad</th>
@@ -104,7 +105,7 @@
     </table>
 </div>
   <br>
-  <h2>Actividades por Colaborador</h2>
+  <h2>Seguimiento de Actividades de los colaboradores</h2>
   <div class="row">
     @foreach ($actividadesPorColaborador as $nombreResponsable => $actividades)
       @php
@@ -115,13 +116,13 @@
         $finalizadasConRetraso = 0;
         $totalActividades = 0;
       @endphp
-      <table class="table-striped">
+      <table class="">
         <thead>
           <tr>
-            <th colspan="6">{{ $nombreResponsable }}</th>
+            <th colspan="6" style="text-align: center; font-weight:bold; background-color: #F8FDFF;">{{ $nombreResponsable }}</th>
           </tr>
           <tr>
-              <td style="text-align: center; font-weight:bold">Nombre</td>
+              <td style="text-align: center; font-weight:bold">Actividad</td>
               <td style="text-align: center; font-weight:bold">Estado</td>
               <td style="text-align: center; font-weight:bold">Prioridad</td>
               <td style="text-align: center; font-weight:bold">Fecha Inicio</td>

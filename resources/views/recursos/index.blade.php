@@ -32,6 +32,7 @@
           </div>
         </div>
       </div>
+      <div id="csrf-token" data-token="{{ csrf_token() }}"></div>
     <!-- Modal de eliminar -->
     <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">

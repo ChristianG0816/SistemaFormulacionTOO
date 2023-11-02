@@ -169,8 +169,18 @@
     </div>
 </div>
 @stop
-
+@php
+$permisos = [
+    'ver-asignacionRecurso' => auth()->user()->can('ver-asignacionRecurso'),
+    'editar-asignacionRecurso' => auth()->user()->can('editar-asignacionRecurso'),
+    'borrar-asignacionRecurso' => auth()->user()->can('borrar-asignacionRecurso'),
+];
+@endphp
 @section('js')
+    <script>
+        var permisos = @json($permisos);
+        var id_estado_proyecto = parseInt(@json($id_estado_proyecto),10);
+    </script>
     <script>
     jQuery.noConflict();
     (function($) {      

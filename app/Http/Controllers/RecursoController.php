@@ -7,7 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RecursoController extends Controller
-{
+{   
+    function __construct()
+    {
+        $this->middleware('permission:ver-recurso|crear-recurso|editar-recurso|borrar-recurso|mostrar-recurso', ['only' => ['index']]);
+        $this->middleware('permission:crear-recurso', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-recurso', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:borrar-recurso', ['only' => ['destroy']]);
+        $this->middleware('permission:mostrar-recurso', ['only' => ['show']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -49,7 +57,7 @@ class RecursoController extends Controller
     {
         $this->validate($request, [
             'nombre' => 'required',
-            'disponibilidad'=> ['required', 'regex:/^\d+(\.\d+)?$/'],
+            'disponibilidad' => ['required', 'regex:/^\d+$/'],
             'costo'=> ['required', 'regex:/^\d+(\.\d+)?$/']
         ]);
 
@@ -135,9 +143,8 @@ class RecursoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
+    {   
         Recurso::find($id)->delete();
         
-        return redirect()->route('recursos.index')->with('success', 'Recurso eliminado con éxito');
     }
 }

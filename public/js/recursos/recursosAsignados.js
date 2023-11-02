@@ -28,14 +28,21 @@ $(document).ready(function(){
                     
                     var actionsHtml = '';
 
-                    actionsHtml += '<button id="type="button" class="btn btn-outline-info editarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
-                    actionsHtml += 'data-cod="' + row.id + '">';
-                    actionsHtml += 'Editar</button>';
+                    if(permisos['editar-asignacionRecurso']){
+                        if(id_estado_proyecto === 1 || id_estado_proyecto === 4){
+                            actionsHtml += '<button id="type="button" class="btn btn-outline-info editarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                            actionsHtml += 'data-cod="' + row.id + '">';
+                            actionsHtml += 'Editar</button>';
+                        }
+                    }
 
-                    actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
-                    actionsHtml += 'data-cod="' + row.id + '">';
-                    actionsHtml += 'Eliminar</button>';
-                   
+                    if(permisos['borrar-asignacionRecurso']){
+                        if(id_estado_proyecto === 1 || id_estado_proyecto === 4){
+                            actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModalRecurso-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                            actionsHtml += 'data-cod="' + row.id + '">';
+                            actionsHtml += 'Eliminar</button>';
+                        }
+                    }
                     return actionsHtml || '';
                 }
             }
