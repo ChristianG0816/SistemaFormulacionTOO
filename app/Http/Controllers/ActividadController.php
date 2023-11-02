@@ -87,13 +87,6 @@ class ActividadController extends Controller
         $input = $request->all();
         $actividad = Actividad::create($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        if($actividad->estado_actividad->nombre == "Pendiente"){
-            $this->envio_notificacion_actividad(8, $actividad);
-        }else if($actividad->estado_actividad->nombre == "En Proceso"){
-            $this->envio_notificacion_actividad(9, $actividad);
-        }else if($actividad->estado_actividad->nombre == "Finalizada"){
-            $this->envio_notificacion_actividad(10, $actividad);
-        }
         return redirect()->route('proyectos.show', ['proyecto' => $proyecto])->with('success', 'Actividad creada con éxito');
     }
 
@@ -109,8 +102,9 @@ class ActividadController extends Controller
         $proyecto = Proyecto::findOrFail($actividad->id_proyecto);
         $estadosActividad = EstadoActividad::pluck('nombre', 'id')->all();
         $usuario= Auth::user();
+        $userRole = $usuario->roles->pluck('name')->first();
         $comentarios = Comentario::where('id_actividad', $actividad->id)->orderBy('created_at', 'desc')->get();
-        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios'));
+        return view('actividades.mostrar', compact('actividad', 'estadosActividad', 'proyecto', 'usuario', 'comentarios', 'userRole'));
     }
 
     /**
@@ -172,13 +166,6 @@ class ActividadController extends Controller
 
         $actividad->update($input);
         $proyecto = Proyecto::find($actividad->id_proyecto);
-        if($actividad->estado_actividad->nombre == "Pendiente"){
-            $this->envio_notificacion_actividad(8, $actividad);
-        }else if($actividad->estado_actividad->nombre == "En Proceso"){
-            $this->envio_notificacion_actividad(9, $actividad);
-        }else if($actividad->estado_actividad->nombre == "Finalizada"){
-            $this->envio_notificacion_actividad(10, $actividad);
-        }
         return redirect()->route('proyectos.show', ['proyecto' => $proyecto])->with('success', 'Actividad actualizada con éxito');
     }
 
