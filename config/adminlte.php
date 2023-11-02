@@ -354,8 +354,9 @@ return [
             'icon' => 'fas fa-coins',
             'can'  => 'ver-recurso',
         ],
-        ['header' => 'Administración'],
-        
+            ['header' => 'Administración',
+            'can'  => ['ver-cliente', 'ver-usuario', 'ver-rol', 'ver-reporte'],
+            ],
         [
             'text' => 'Clientes',
             'url'  => 'clientes',
@@ -367,6 +368,7 @@ return [
             'text' => 'Usuarios',
             'url'  => 'usuarios',
             'icon' => 'fas fa-fw fa-user',
+            'can' => 'ver-usuario',
         ],
         
         [
