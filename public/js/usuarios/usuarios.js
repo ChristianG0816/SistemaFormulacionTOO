@@ -28,11 +28,20 @@ $(document).ready(function() {
                 render: function (data, type, row) {
                     
                     var actionsHtml = '';
+
+                    if (canEditarUsuario) {
                         actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/usuarios/'+row.id+'/edit">Editar</a>';
-    
+                    }else{
+                        actionsHtml += '<span class="text-muted">' + mensajeNoTienesPermiso + '</span>';
+                    }
+
+                    if(canEliminarUsuario){
                     actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
                     actionsHtml += 'data-cod="' + row.id + '">';
                     actionsHtml += 'Eliminar</button>';
+                    }else{
+                        actionsHtml += '<span class="text-muted">' + mensajeNoTienesPermiso + '</span>';
+                    }
 
                     return actionsHtml || '';
                 }
