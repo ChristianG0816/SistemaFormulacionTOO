@@ -108,16 +108,18 @@ $(document).ready(function() {
                         actionsHtml = '<a class="btn btn-outline-secondary btn-sm" href="/proyectos/'+row.id+'">Mostrar</a>';
                     }
 
-                    
-                    if(canEditarProyecto){
-                        actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/proyectos/'+row.id+'/edit">Editar</a>';
+                    if(row.estado_proyecto.nombre=='Formulacion' || row.estado_proyecto.nombre=='Rechazado'){
+                        if(canEditarProyecto){
+                            actionsHtml += '<a class="btn btn-outline-info btn-sm ml-1" href="/proyectos/'+row.id+'/edit">Editar</a>';
+                        }
                     }
                     
-                    
-                    if(canBorrarProyecto){
-                        actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
-                        actionsHtml += 'data-cod="' + row.id + '">';
-                        actionsHtml += 'Eliminar</button>';
+                    if(row.estado_proyecto.nombre=='Formulacion' || row.estado_proyecto.nombre=='Rechazado'){
+                        if(canBorrarProyecto){
+                            actionsHtml += '<button type="button" class="btn btn-outline-danger eliminarModal-btn btn-sm ml-1" data-id="' + row.id + '" ';
+                            actionsHtml += 'data-cod="' + row.id + '">';
+                            actionsHtml += 'Eliminar</button>';
+                        }
                     }
                     
                     
