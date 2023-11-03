@@ -42,9 +42,11 @@
                   <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">Información General</h3>
                     <div class="card-tools ml-auto">
-                      @can('editar-proyecto')
-                      <button class="btn btn-sm btn-outline-info my-0 edit-proyecto" data-id="{{ $proyecto->id }}" data-origin="detalle">Editar</button>
-                      @endcan
+                      @if ($proyecto->estado_proyecto->nombre == 'Formulacion' || $proyecto->estado_proyecto->nombre == 'Rechazado')
+                        @can('editar-proyecto')
+                        <button class="btn btn-sm btn-outline-info my-0 edit-proyecto" data-id="{{ $proyecto->id }}" data-origin="detalle">Editar</button>
+                        @endcan
+                      @endif
                       <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
                       </button>
