@@ -50,9 +50,14 @@ class EquipoTrabajoController extends Controller
                     $btnDetalle = '<button class="btn btn-outline-secondary btn-sm" disabled>Mostrar</button>';
                 }
                 if (\Gate::allows('borrar-equipo-trabajo')) {
-                    $btnEliminar = '<button class="delete btn btn-outline-danger btn-sm ml-1" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
+                    $estadoProyecto = Proyecto::find($row->proyecto->id)->estado_proyecto->nombre;
+                    if ($estadoProyecto === 'Formulacion' || $estadoProyecto === 'Rechazado') {
+                        $btnEliminar = '<button class="delete btn btn-outline-danger btn-sm ml-1" data-id="' . $row->mano_obra->id . '">Eliminar</button>';
+                    }else{
+                        $btnEliminar = '<button class="btn btn-outline-danger btn-sm ml-1" disabled>Eliminar</button>';
+                    }
                 }else{
-                    $btnEliminar = '';
+                    $btnEliminar = '<button class="btn btn-outline-danger btn-sm ml-1" disabled>Eliminar</button>';
                 }
                 return $btnDetalle . ' ' . $btnEliminar;
             })            

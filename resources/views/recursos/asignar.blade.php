@@ -6,9 +6,11 @@
             <div class="card-header d-flex align-items-center">
                 <h3 class="card-title mb-0">Recursos</h3>
                 <div class="card-tools ml-auto">
+                    @if ($proyecto->estado_proyecto->nombre == 'Formulacion' || $proyecto->estado_proyecto->nombre == 'Rechazado')
                     @can('crear-asignacionRecurso')
                     <input type="button" value="Agregar" class="btn btn-sm btn-outline-warning my-0" data-toggle="modal" data-target="#agregarRecursoModal">
                     @endcan
+                    @endif
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-plus"></i>
                     </button>

@@ -129,7 +129,7 @@ class TipoNotificacionSeeder extends Seeder
                 'descripcion' => 'El proyecto "{{nombre}}", se ha iniciado.',
                 'icono' => 'fas fa-file-export',
                 'color' => '#0B5345',
-                'ruta' => '/proyectos/{{$id}}',
+                'ruta' => '/proyectos/{{id}}',
             ],
         ];
 
