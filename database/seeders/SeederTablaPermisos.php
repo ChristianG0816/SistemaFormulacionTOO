@@ -159,6 +159,9 @@ class SeederTablaPermisos extends Seeder
             'ver-enlace-documento',
             'gestionar-actividad',
             'ver-actividad',
+            'gestionar-equipo-trabajo',
+            //Miembro
+            'ver-miembro',
             $calendario,
             $perfil
         ]);
@@ -225,6 +228,7 @@ class SeederTablaPermisos extends Seeder
             //Proyecto
             'ver-proyecto',
             'mostrar-proyecto',
+            'gestionar-equipo-trabajo',
             $comentarios,
             $actividades,
             $calendario,
