@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this -> call([SeederMunicipio::class]);
         $this -> call([SeederDatosPrueba::class]);
         $this -> call([TipoNotificacionSeeder::class]);
+        $this -> call([SeederTablaRecurso::class]);
     }
 }

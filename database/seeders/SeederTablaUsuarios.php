@@ -16,18 +16,18 @@ class SeederTablaUsuarios extends Seeder
     {
 
         $administrador = User::create([
-            'name'=> 'admin',
-            'last_name'=> 'apellido',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('12345678'),
+            'name'=> 'William Enrique',
+            'last_name'=> 'Vásquez Mancia',
+            'email' => 'vm19003@ues.edu.sv',
+            'password' => bcrypt('123'),
             'two_factor_enabled' => false,
         ]);
 
         $administrador->assignRole('Administrador');
 
         $usuario1 = User::create([
-            'name'=> 'nombre',
-            'last_name'=> 'apellido',
+            'name'=> 'Ana María',
+            'last_name'=> 'García Rodríguez',
             'email' => 'user@gmail.com',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
@@ -36,9 +36,9 @@ class SeederTablaUsuarios extends Seeder
         $usuario1->assignRole('Colaborador');
 
         $usuario2 = User::create([
-            'name'=> 'Ingeniero',
-            'last_name'=> 'apellido',
-            'email' => 'ingeniero@gmail.com',
+            'name'=> 'Jorge Eduardo',
+            'last_name'=> 'Romero García',
+            'email' => 'rg19041@ues.edu.sv',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
         ]);
@@ -46,9 +46,9 @@ class SeederTablaUsuarios extends Seeder
         $usuario2->assignRole('Colaborador');
 
         $usuario3 = User::create([
-            'name'=> 'Tester',
-            'last_name'=> 'apellido',
-            'email' => 'tester@gmail.com',
+            'name'=> 'Christopher Javier',
+            'last_name'=> 'Ayala Guerra',
+            'email' => 'chrisgue081611@gmail.com',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
         ]);
@@ -56,8 +56,8 @@ class SeederTablaUsuarios extends Seeder
         $usuario3->assignRole('Colaborador');
 
         $usuario4 = User::create([
-            'name'=> 'Ayudante1',
-            'last_name'=> 'apellido',
+            'name'=> 'Juan Alejandro',
+            'last_name'=> 'González Pérez',
             'email' => 'ayudante1@gmail.com',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
@@ -66,8 +66,8 @@ class SeederTablaUsuarios extends Seeder
         $usuario4->assignRole('Colaborador');
 
         $usuario5 = User::create([
-            'name'=> 'Cliente',
-            'last_name'=> 'apellido',
+            'name'=> 'Laura Sofia',
+            'last_name'=> 'Martínez Fernández',
             'email' => 'cliente@gmail.com',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
@@ -76,9 +76,9 @@ class SeederTablaUsuarios extends Seeder
         $usuario5->assignRole('Cliente');
 
         $usuario6 = User::create([
-            'name'=> 'Supervisor',
-            'last_name'=> 'apellido',
-            'email' => 'Supervisor@gmail.com',
+            'name'=> 'Carolina Isabel',
+            'last_name'=> 'Pineda Delgado',
+            'email' => 'pd19007@ues.edu.sv',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
         ]);
@@ -86,9 +86,9 @@ class SeederTablaUsuarios extends Seeder
         $usuario6->assignRole('Supervisor');
 
         $usuario7 = User::create([
-            'name'=> 'Cliente2',
-            'last_name'=> 'apellido',
-            'email' => 'cliente2@gmail.com',
+            'name'=> 'José Gustavo',
+            'last_name'=> 'Pineda Delgado',
+            'email' => 'pd18020@ues.edu.sv',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
         ]);
@@ -96,24 +96,14 @@ class SeederTablaUsuarios extends Seeder
         $usuario7->assignRole('Cliente');
 
         $usuario8 = User::create([
-            'name'=> 'Supervisor2',
-            'last_name'=> 'apellido',
-            'email' => 'Supervisor2@gmail.com',
+            'name'=> 'Christian Javier',
+            'last_name'=> 'Ayala Guerra',
+            'email' => 'ag19013@ues.edu.sv',
             'password' => bcrypt('123'),
             'two_factor_enabled' => false,
         ]);
 
-        $usuario8->assignRole('Supervisor');
-
-        $usuario9 = User::create([
-            'name'=> 'Gerente',
-            'last_name'=> 'apellido',
-            'email' => 'gerente@gmail.com',
-            'password' => bcrypt('123'),
-            'two_factor_enabled' => false,
-        ]);
-
-        $usuario9->assignRole('Gerente');
+        $usuario8->assignRole('Gerente');
 
     }
 }

@@ -31,10 +31,10 @@ class SeederDatosPrueba extends Seeder
         ]);
 
         Proyecto::create([
-            'nombre' => 'Proyecto 1',
-            'objetivo' => 'Objetivo proyecto',
-            'descripcion' => 'Descripcion proyecto',
-            'entregable' => 'Entregable',
+            'nombre' => 'Reconvirtiendo el Territorio',
+            'objetivo' => 'Mitigar el impacto del COVID-19 en las empresas, impulsando la transformación digital y la innovación en 32 municipios costeros, a través de un instrumento de cofinanciamiento no reembolsable para la reconversión de negocios',
+            'descripcion' => 'Este proyecto propone un instrumento de cofinanciamiento no reembolsable que facilitará la reconversión de negocios, estimulando la creación de nuevos productos y servicios diferenciados',
+            'entregable' => 'Documento de Planificación Estratégica, Informe de Impacto y Resultados.',
             'fecha_inicio' => '2023/10/01',
             'fecha_fin' => '2023/11/01',
             'presupuesto' => 4500.00,
@@ -45,24 +45,24 @@ class SeederDatosPrueba extends Seeder
         ]);
 
         Proyecto::create([
-            'nombre' => 'Proyecto 2',
-            'objetivo' => 'Objetivo proyecto 2',
-            'descripcion' => 'Descripcion proyecto 2',
-            'entregable' => 'Entregable',
+            'nombre' => 'Plataforma de Capacitación Empresarial',
+            'objetivo' => 'Desarrollar una plataforma en línea que brinde capacitación empresarial a emprendedores y empresarios, promoviendo el crecimiento económico mediante cursos y recursos de formación en gestión de negocios, marketing, finanzas y habilidades empresariales',
+            'descripcion' => 'El proyecto se enfoca en la creación de una plataforma educativa en línea que ofrecerá una amplia gama de cursos y materiales de capacitación. Los usuarios podrán acceder a contenido educativo de alta calidad y participar en actividades de aprendizaje interactivo, lo que les permitirá adquirir conocimientos y habilidades empresariales clave',
+            'entregable' => 'Plataforma de Capacitación Empresarial',
             'fecha_inicio' => '2023/11/01',
-            'fecha_fin' => '2023/11/30',
+            'fecha_fin' => '2023/11/30' ,
             'presupuesto' => 2500.00,
             'prioridad' => 1,
             'id_estado_proyecto' => 1,
-            'id_gerente_proyecto' => 9,
+            'id_gerente_proyecto' => 7,
             'id_cliente' => 1,
         ]);
 
         Proyecto::create([
-            'nombre' => 'Proyecto 3',
-            'objetivo' => 'Objetivo proyecto 3',
-            'descripcion' => 'Descripcion proyecto 3',
-            'entregable' => 'Entregable',
+            'nombre' => 'Portal de Información Económica',
+            'objetivo' => 'Crear plataforma online para ofrecer información económica actualizada y relevante, para facilitar acceso a datos, informes y análisis para tomadores de decisiones, fomentando el desarrollo económico mediante decisiones informadas',
+            'descripcion' => 'El proyecto se enfoca en la creación y desarrollo de un portal web que albergará información económica clave, como indicadores económicos, tasas de cambio, cifras de empleo, y más. Los usuarios podrán acceder a datos actualizados, informes, gráficos y análisis, lo que facilitará la toma de decisiones informadas en el ámbito económico',
+            'entregable' => 'Portal de Información Económica',
             'fecha_inicio' => '2023/09/01',
             'fecha_fin' => '2023/09/30',
             'presupuesto' => 2500.00,
@@ -147,44 +147,44 @@ class SeederDatosPrueba extends Seeder
 
         
         Actividad::create([
-            'nombre' => 'Actividad 1 Proyecto 1',
+            'nombre' => 'Reconversión de modelo de negocio basado en soluciones TICs',
             'prioridad' => 1,
             'fecha_inicio' => '2023/10/10',
             'fecha_fin' => '2023/10/15',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Investigación de mercado para identificar oportunidades en el sector de tecnologías de la información y comunicación',
             'id_proyecto' => 1,
             'id_estado_actividad' => 1,
             'id_responsable' => 1,
         ]);
 
         Actividad::create([
-            'nombre' => 'Actividad 2 Proyecto 1',
+            'nombre' => 'Reconversión de modelo de negocio basado en innovación organizacional',
             'prioridad' => 1,
             'fecha_inicio' => '2023/10/12',
             'fecha_fin' => '2023/10/16',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Desarrollo de estrategias y planes de acción para promover la innovación en la estructura y cultura organizacional',
             'id_proyecto' => 1,
             'id_estado_actividad' => 1,
             'id_responsable' => 1,
         ]);
 
         Actividad::create([
-            'nombre' => 'Actividad 1 Proyecto 2',
+            'nombre' => 'Desarrollo de Contenido Educativo',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/10',
             'fecha_fin' => '2023/11/26',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Diseño y creación de materiales educativos, como cursos, lecciones, videos, y recursos de aprendizaje',
             'id_proyecto' => 2,
             'id_estado_actividad' => 1,
             'id_responsable' => 2,
         ]);
 
         Actividad::create([
-            'nombre' => 'Actividad 2 Proyecto 2',
+            'nombre' => 'Implementación de Módulos Interactivos',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/12',
             'fecha_fin' => '2023/11/20',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Diseño y desarrollo de módulos interactivos para la plataforma',
             'id_proyecto' => 2,
             'id_estado_actividad' => 1,
             'id_responsable' => 2,
@@ -192,55 +192,55 @@ class SeederDatosPrueba extends Seeder
 
 
         Actividad::create([
-            'nombre' => 'Actividad 1 Proyecto 3',
+            'nombre' => 'Recopilación de Datos Económicos',
             'prioridad' => 1,
             'fecha_inicio' => '2023/09/10',
             'fecha_fin' => '2023/09/26',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Coordinar con departamentos y fuentes externas para recopilar datos económicos relevantes',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
             'id_responsable' => 3,
         ]);
 
         Actividad::create([
-            'nombre' => 'Actividad 2 Proyecto 3',
+            'nombre' => 'Desarrollo de la Base de Datos',
             'prioridad' => 1,
             'fecha_inicio' => '2023/09/12',
             'fecha_fin' => '2023/09/20',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Diseñar y crear la estructura de la base de datos que albergará los datos económicos recopilados',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
             'id_responsable' => 3,
         ]);
 
         Actividad::create([
-            'nombre' => 'Actividad 3 Proyecto 3',
+            'nombre' => 'Generación de Informes Económicos',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/10',
             'fecha_fin' => '2023/11/12',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Desarrollar scripts y procesos para generar informes económicos a partir de los datos almacenados en la base de datos',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
             'id_responsable' => 3,
         ]);
 
         Actividad::create([
-            'nombre' => 'Actividad 4 Proyecto 3',
+            'nombre' => 'Implementación de Herramientas de Visualización',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/2',
             'fecha_fin' => '2023/11/8',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Seleccionar y configurar herramientas de visualización de datos para presentar los informes económicos de manera efectiva',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
             'id_responsable' => 3,
         ]);
 
         Actividad::create([
-            'nombre' => 'Actividad 5 Proyecto 3',
+            'nombre' => 'Pruebas de Usabilidad del Portal',
             'prioridad' => 1,
             'fecha_inicio' => '2023/11/05',
             'fecha_fin' => '2023/11/15',
-            'responsabilidades' => 'responsabilidad 1, 2, 3',
+            'responsabilidades' => 'Realizar pruebas de usabilidad del portal de información económica para identificar y documentar cualquier problema de accesibilidad o experiencia del usuario',
             'id_proyecto' => 3,
             'id_estado_actividad' => 1,
             'id_responsable' => 3,
